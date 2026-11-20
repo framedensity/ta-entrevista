@@ -1,46 +1,45 @@
 TA.add({
   id: 'm10',
-  title: 'Interfaz con PySide',
-  en: 'PySide UI',
+  title: 'UI with PySide',
 
   explain: [
-    'Las herramientas de Maya suelen tener una ventana hecha con **PySide** (Qt para Python). Maya 2025 usa PySide6; versiones anteriores, PySide2. El código es casi igual.',
-    { type: 'analogy', text: 'la interfaz es el salpicadero de un coche: botones y palancas. El motor es tu lógica (las funciones de las lecciones anteriores). El salpicadero solo **llama** al motor; no debería contener el motor.' },
-    '### Las piezas de Qt',
-    '- **Widgets**: `QPushButton` (botón), `QLineEdit` (texto), `QListWidget` (lista), `QCheckBox`…\n- **Layouts**: colocan los widgets: `QVBoxLayout` (en columna), `QHBoxLayout` (en fila).\n- **Signals y slots**: un widget emite una **señal** (`clicked`) y la conectas a una función (el **slot**).',
-    '```python\nboton = QtWidgets.QPushButton("Revisar")\nboton.clicked.connect(self.revisar)\n```',
-    '### Ventana hija de Maya',
-    'Si la ventana no tiene a Maya como **padre**, se esconde detrás de Maya al hacer clic fuera. Se obtiene la ventana principal de Maya con `shiboken` y `OpenMayaUI`.',
-    '```python\nimport maya.OpenMayaUI as omui\nfrom shiboken6 import wrapInstance\nfrom PySide6 import QtWidgets\n\ndef ventana_maya():\n    ptr = omui.MQtUtil.mainWindow()\n    return wrapInstance(int(ptr), QtWidgets.QWidget)\n```',
-    '### Las reglas de oro',
-    '- **Separar lógica e interfaz**: la ventana llama a `revisar(nodos)`, que no sabe nada de Qt. Así la misma lógica sirve en un lote sin ventana.\n- **Una sola instancia**: si el artista abre la herramienta dos veces, cierra la anterior (o reutilízala).\n- **No congelar Maya**: en procesos largos, muestra progreso (`QProgressDialog`) y permite cancelar.\n- **Nombre de objeto** (`setObjectName`) para encontrar y cerrar la ventana antigua.',
-    { type: 'cg', text: 'un exportador de cinemáticas: una lista de tomas con casillas, un botón «Exportar seleccionadas» y una barra de progreso. Por dentro, cada toma la exporta la misma función que se usa en la granja de render sin interfaz.' },
-    { type: 'tip', text: 'si te preguntan por PySide, lo que más puntúa no es saber todos los widgets, sino decir: «separo la lógica de la interfaz; la UI solo recoge parámetros y muestra resultados».' },
-    'Esta lección no tiene simulador: los ejercicios son de respuesta escrita.'
+    'Maya tools usually have a window built with **PySide** (Qt for Python). Maya 2025 uses PySide6; earlier versions, PySide2. The code is almost the same.',
+    { type: 'analogy', text: 'the UI is a car\'s dashboard: buttons and levers. The engine is your logic (the functions from the earlier lessons). The dashboard only **calls** the engine; it should not contain the engine.' },
+    '### The Qt pieces',
+    '- **Widgets**: `QPushButton` (button), `QLineEdit` (text), `QListWidget` (list), `QCheckBox`…\n- **Layouts**: they arrange the widgets: `QVBoxLayout` (in a column), `QHBoxLayout` (in a row).\n- **Signals and slots**: a widget emits a **signal** (`clicked`) and you connect it to a function (the **slot**).',
+    '```python\nbutton = QtWidgets.QPushButton("Check")\nbutton.clicked.connect(self.check)\n```',
+    '### A window parented to Maya',
+    'If the window does not have Maya as its **parent**, it hides behind Maya when you click outside it. You get Maya\'s main window with `shiboken` and `OpenMayaUI`.',
+    '```python\nimport maya.OpenMayaUI as omui\nfrom shiboken6 import wrapInstance\nfrom PySide6 import QtWidgets\n\ndef maya_window():\n    ptr = omui.MQtUtil.mainWindow()\n    return wrapInstance(int(ptr), QtWidgets.QWidget)\n```',
+    '### The golden rules',
+    '- **Separate logic and UI**: the window calls `check(nodes)`, which knows nothing about Qt. That way the same logic works in a batch with no window.\n- **A single instance**: if the artist opens the tool twice, close the previous one (or reuse it).\n- **Do not freeze Maya**: for long processes, show progress (`QProgressDialog`) and allow cancelling.\n- **Object name** (`setObjectName`) to find and close the old window.',
+    { type: 'cg', text: 'a cinematics exporter: a list of shots with checkboxes, an «Export selected» button and a progress bar. Under the hood, each shot is exported by the same function the render farm uses without a UI.' },
+    { type: 'tip', text: 'if they ask about PySide, what scores best is not knowing every widget, but saying: «I separate logic from UI; the UI only collects parameters and shows results».' },
+    'This lesson has no simulator: the exercises are written answers.'
   ],
 
   example: {
-    intro: 'Una ventana mínima que llama a la lógica del verificador.',
+    intro: 'A minimal window that calls the checker logic.',
     lines: [
-      { label: 'Importar', code: 'from PySide6 import QtWidgets\nfrom shiboken6 import wrapInstance\nimport maya.OpenMayaUI as omui\nfrom maya import cmds\nfrom mis_herramientas import verificador  # la lógica, sin Qt', note: 'La lógica vive en otro módulo.' },
-      { label: 'La ventana', code: 'class Ventana(QtWidgets.QDialog):\n    def __init__(self, parent=None):\n        super().__init__(parent)\n        self.setObjectName("verificador_ui")\n        self.setWindowTitle("Verificador de nombres")\n        self.lista = QtWidgets.QListWidget()\n        boton = QtWidgets.QPushButton("Revisar selección")\n        boton.clicked.connect(self.revisar)\n        capa = QtWidgets.QVBoxLayout(self)\n        capa.addWidget(boton)\n        capa.addWidget(self.lista)', note: 'Widgets en un layout vertical. La señal `clicked` va al método `revisar`.' },
-      { label: 'El slot', code: '    def revisar(self):\n        nodos = cmds.ls(sl=True, long=True)\n        problemas = verificador.revisar(nodos)\n        self.lista.clear()\n        self.lista.addItems([f"{n}: {motivo}" for n, motivo in problemas.items()])', note: 'La UI recoge la selección, llama a la lógica y muestra el resultado. Nada más.' },
-      { label: 'Abrir una sola vez', code: '_ventana = None\n\ndef mostrar():\n    global _ventana\n    if _ventana is not None:\n        _ventana.close()\n        _ventana.deleteLater()\n    padre = wrapInstance(int(omui.MQtUtil.mainWindow()), QtWidgets.QWidget)\n    _ventana = Ventana(padre)\n    _ventana.show()', note: 'Cierra la ventana anterior y crea la nueva con Maya como padre.' }
+      { label: 'Imports', code: 'from PySide6 import QtWidgets\nfrom shiboken6 import wrapInstance\nimport maya.OpenMayaUI as omui\nfrom maya import cmds\nfrom my_tools import checker  # the logic, no Qt', note: 'The logic lives in another module.' },
+      { label: 'The window', code: 'class Window(QtWidgets.QDialog):\n    def __init__(self, parent=None):\n        super().__init__(parent)\n        self.setObjectName("checker_ui")\n        self.setWindowTitle("Naming checker")\n        self.results = QtWidgets.QListWidget()\n        button = QtWidgets.QPushButton("Check selection")\n        button.clicked.connect(self.check)\n        layout = QtWidgets.QVBoxLayout(self)\n        layout.addWidget(button)\n        layout.addWidget(self.results)', note: 'Widgets in a vertical layout. The `clicked` signal goes to the `check` method.' },
+      { label: 'The slot', code: '    def check(self):\n        nodes = cmds.ls(sl=True, long=True)\n        problems = checker.check(nodes)\n        self.results.clear()\n        self.results.addItems([f"{n}: {reason}" for n, reason in problems.items()])', note: 'The UI collects the selection, calls the logic and shows the result. Nothing more.' },
+      { label: 'Open only once', code: '_window = None\n\ndef show():\n    global _window\n    if _window is not None:\n        _window.close()\n        _window.deleteLater()\n    parent = wrapInstance(int(omui.MQtUtil.mainWindow()), QtWidgets.QWidget)\n    _window = Window(parent)\n    _window.show()', note: 'Closes the previous window and creates the new one with Maya as parent.' }
     ]
   },
 
   mini: [
     {
-      q: '¿Para qué sirve dar a Maya como padre de tu ventana?',
-      options: ['Para que sea más rápida', 'Para que no se esconda detrás de Maya y se cierre con ella', 'Es obligatorio para que funcionen los botones'],
+      q: 'What is the point of making Maya your window\'s parent?',
+      options: ['To make it faster', 'So it does not hide behind Maya and closes with it', 'Buttons do not work otherwise'],
       answer: 1,
-      why: 'Una ventana hija se mantiene delante de Maya y se gestiona con ella.'
+      why: 'A child window stays in front of Maya and is managed along with it.'
     },
     {
-      q: '¿Qué conecta `boton.clicked.connect(self.revisar)`?',
-      options: ['Un atributo de Maya con otro', 'La señal de clic del botón con el método `revisar` (slot)', 'Dos ventanas'],
+      q: 'What does `button.clicked.connect(self.check)` connect?',
+      options: ['One Maya attribute to another', 'The button\'s click signal to the `check` method (the slot)', 'Two windows'],
       answer: 1,
-      why: 'Signals y slots: cuando el botón emite `clicked`, Qt llama a `revisar`.'
+      why: 'Signals and slots: when the button emits `clicked`, Qt calls `check`.'
     }
   ],
 
@@ -48,40 +47,40 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: 'Diseña la ventana del exportador',
-      prompt: 'Describe (o escribe en código) la interfaz de un exportador de cinemáticas: qué widgets tendría, cómo se organizaría el código y cómo se comportaría en una exportación de 30 tomas.',
+      title: 'Design the exporter window',
+      prompt: 'Describe (or write in code) the UI of a cinematics exporter: which widgets it would have, how the code would be organized and how it would behave on a 30-shot export.',
       checklist: [
-        'Lista de tomas con casillas o selección múltiple (`QListWidget` / `QTreeWidget`).',
-        'Opciones claras (carpeta de destino, formato) con valores por defecto de la configuración.',
-        'La lógica de exportar está en funciones/clases sin Qt; la UI solo las llama.',
-        'Barra de progreso (`QProgressDialog`) y posibilidad de cancelar en lotes largos.',
-        'Informe final: qué tomas fueron bien y cuáles fallaron, con el motivo.',
-        'Ventana hija de Maya y una sola instancia abierta.'
+        'A list of shots with checkboxes or multi-select (`QListWidget` / `QTreeWidget`).',
+        'Clear options (output folder, format) with defaults from the config.',
+        'The export logic lives in functions/classes with no Qt; the UI only calls them.',
+        'A progress bar (`QProgressDialog`) and the option to cancel long batches.',
+        'A final report: which shots went fine and which failed, with the reason.',
+        'Window parented to Maya and only one instance open.'
       ],
-      model: '**Widgets:** un `QTreeWidget` con las tomas (casilla, nombre, rango de frames, cámara), un `QLineEdit` + botón para la carpeta de destino, un `QComboBox` para el formato, y los botones «Revisar» y «Exportar».\n\n**Código:**\n- `exportador.py`: funciones puras (`planificar`, `validar`, `exportar_toma`), sin Qt.\n- `exportador_ui.py`: la ventana. Recoge parámetros, llama a la lógica y muestra resultados.\n\n**Lote de 30 tomas:** un `QProgressDialog` que avanza por toma y se puede cancelar. Cada toma va en un `try/except`: si una falla, se registra con `logging` y se sigue. Al final, un resumen «28 bien, 2 con error (y por qué)».\n\n**Detalles:** la ventana es hija de Maya, tiene `objectName` para cerrar la anterior al reabrir, y recuerda la última carpeta usada (`QSettings`).',
-      followups: ['¿Cómo evitarías que Maya se congele durante la exportación?', '¿Cómo reutilizarías la lógica en la granja, sin interfaz?', '¿Qué guardarías en `QSettings`?']
+      model: '**Widgets:** a `QTreeWidget` with the shots (checkbox, name, frame range, camera), a `QLineEdit` + button for the output folder, a `QComboBox` for the format, and «Check» and «Export» buttons.\n\n**Code:**\n- `exporter.py`: pure functions (`plan`, `validate`, `export_shot`), no Qt.\n- `exporter_ui.py`: the window. It collects parameters, calls the logic and shows results.\n\n**30-shot batch:** a `QProgressDialog` that advances per shot and can be cancelled. Each shot runs in a `try/except`: if one fails, it is logged with `logging` and the batch continues. At the end, a summary «28 OK, 2 with errors (and why)».\n\n**Details:** the window is parented to Maya, has an `objectName` so the old one closes on reopen, and remembers the last folder used (`QSettings`).',
+      followups: ['How would you keep Maya from freezing during the export?', 'How would you reuse the logic on the farm, with no UI?', 'What would you store in `QSettings`?']
     },
     {
       id: 'e2',
       kind: 'free',
-      title: '¿Qué mejorarías de este código?',
-      prompt: 'Un compañero escribió esto. Señala los problemas y cómo los arreglarías:\n\n```python\ndef abrir():\n    w = QtWidgets.QWidget()\n    b = QtWidgets.QPushButton("Ocultar", w)\n    def ocultar():\n        for n in cmds.ls(sl=True):\n            cmds.setAttr(n + ".visibility", 0)\n    b.clicked.connect(ocultar)\n    w.show()\n```',
+      title: 'What would you improve in this code?',
+      prompt: 'A teammate wrote this. Point out the problems and how you would fix them:\n\n```python\ndef open_tool():\n    w = QtWidgets.QWidget()\n    b = QtWidgets.QPushButton("Hide", w)\n    def hide():\n        for n in cmds.ls(sl=True):\n            cmds.setAttr(n + ".visibility", 0)\n    b.clicked.connect(hide)\n    w.show()\n```',
       checklist: [
-        'La ventana no tiene padre (Maya): se esconde detrás y se puede perder.',
-        '`w` es una variable local: Python puede borrar la ventana al salir de la función. Hay que guardarla (en un global o atributo).',
-        'Cada llamada abre otra ventana: falta controlar una sola instancia.',
-        'La lógica (`ocultar`) está dentro de la UI y depende de la selección: mejor una función que reciba nodos.',
-        'Sin undo chunk: ocultar 50 nodos necesita 50 Ctrl+Z.',
-        'No hay layout: el botón se coloca a mano.'
+        'The window has no parent (Maya): it hides behind Maya and can get lost.',
+        '`w` is a local variable: Python may delete the window when the function returns. It has to be kept (in a global or attribute).',
+        'Every call opens another window: there is no single-instance control.',
+        'The logic (`hide`) lives inside the UI and depends on the selection: better a function that takes nodes.',
+        'No undo chunk: hiding 50 nodes takes 50 Ctrl+Z.',
+        'No layout: the button is placed by hand.'
       ],
-      model: 'Problemas: sin padre, ventana local (se puede borrar sola), varias instancias, lógica mezclada con la UI y dependiente de la selección, sin undo chunk, sin layout.\n\n```python\ndef ocultar(nodos):\n    with undo_chunk():\n        for n in nodos:\n            if cmds.objExists(n):\n                cmds.setAttr(n + ".visibility", False)\n\nclass OcultarUI(QtWidgets.QDialog):\n    def __init__(self, parent=None):\n        super().__init__(parent)\n        self.setObjectName("ocultar_ui")\n        boton = QtWidgets.QPushButton("Ocultar selección")\n        boton.clicked.connect(lambda: ocultar(cmds.ls(sl=True, long=True)))\n        QtWidgets.QVBoxLayout(self).addWidget(boton)\n\n_ui = None\ndef abrir():\n    global _ui\n    if _ui:\n        _ui.close()\n    _ui = OcultarUI(ventana_maya())\n    _ui.show()\n```',
-      followups: ['¿Por qué la ventana desaparece a veces justo después de abrirse?', '¿Cómo probarías `ocultar` sin abrir la ventana?']
+      model: 'Problems: no parent, a local window (it can delete itself), several instances, logic mixed into the UI and dependent on the selection, no undo chunk, no layout.\n\n```python\ndef hide(nodes):\n    with undo_chunk():\n        for n in nodes:\n            if cmds.objExists(n):\n                cmds.setAttr(n + ".visibility", False)\n\nclass HideUI(QtWidgets.QDialog):\n    def __init__(self, parent=None):\n        super().__init__(parent)\n        self.setObjectName("hide_ui")\n        button = QtWidgets.QPushButton("Hide selection")\n        button.clicked.connect(lambda: hide(cmds.ls(sl=True, long=True)))\n        QtWidgets.QVBoxLayout(self).addWidget(button)\n\n_ui = None\ndef open_tool():\n    global _ui\n    if _ui:\n        _ui.close()\n    _ui = HideUI(maya_window())\n    _ui.show()\n```',
+      followups: ['Why does the window sometimes vanish right after opening?', 'How would you test `hide` without opening the window?']
     }
   ],
 
   summary: [
-    'Widgets + layouts + signals/slots (`boton.clicked.connect(funcion)`).',
-    'Ventana hija de Maya (`wrapInstance` + `MQtUtil.mainWindow()`), una sola instancia, guardada fuera de la función.',
-    'La UI solo recoge parámetros y muestra resultados; la lógica vive aparte y se puede usar sin ventana.'
+    'Widgets + layouts + signals/slots (`button.clicked.connect(func)`).',
+    'Window parented to Maya (`wrapInstance` + `MQtUtil.mainWindow()`), a single instance, kept outside the function.',
+    'The UI only collects parameters and shows results; the logic lives elsewhere and works without a window.'
   ]
 });

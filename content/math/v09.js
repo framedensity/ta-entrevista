@@ -1,121 +1,120 @@
 (function () {
 var SETUP = [
-  'def _cerca(a, b, tol=1e-6):',
+  'def _close(a, b, tol=1e-6):',
   '    if isinstance(a, (int, float)) and isinstance(b, (int, float)):',
   '        return abs(a - b) < tol',
   '    try:',
   '        a, b = list(a), list(b)',
   '    except TypeError:',
   '        return False',
-  '    return len(a) == len(b) and all(_cerca(x, y, tol) for x, y in zip(a, b))'
+  '    return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))'
 ].join('\n') + '\n';
 
 TA.add({
   id: 'v09',
-  title: 'Interpolación lineal',
-  en: 'lerp',
+  title: 'Linear interpolation',
 
   explain: [
-    '**Interpolar** es calcular los valores intermedios entre dos valores. La **interpolación lineal** (lerp, de *linear interpolation*) va en línea recta y a velocidad constante.',
-    { type: 'analogy', text: 'es como una barra de progreso: con `t = 0` estás al principio, con `t = 1` al final, y con `t = 0.5` justo en la mitad.' },
-    '### La fórmula',
+    'To **interpolate** is to compute the values in between two values. **Linear interpolation** (lerp) goes in a straight line at constant speed.',
+    { type: 'analogy', text: 'it is like a progress bar: at `t = 0` you are at the start, at `t = 1` at the end, and at `t = 0.5` right in the middle.' },
+    '### The formula',
     '`lerp(a, b, t) = a + (b − a) · t`',
-    'Funciona igual con números, con posiciones 3D y con colores: se aplica a cada componente.',
+    'It works the same with numbers, 3D positions and colors: apply it to each component.',
     { type: 'viz', name: 'lerp' },
-    '### La inversa y el remapeo',
-    '- **Lerp inversa** (inverse lerp): dado un valor `x` entre `a` y `b`, ¿qué `t` le corresponde? `t = (x − a) / (b − a)`.\n- **Remapear** (remap): pasar un valor de un rango a otro. Es una lerp inversa seguida de una lerp.',
-    '### Suavizar: ease in / ease out',
-    'Una lerp pura empieza y termina de golpe. Para que acelere y frene, se «deforma» `t` antes de usarlo. La función más común es **smoothstep**: `3t² − 2t³`.',
-    { type: 'cg', text: 'las tangentes *linear* del Graph Editor son lerp entre claves. Las tangentes *auto* o *spline* suavizan la entrada y la salida, como un smoothstep. Y remapear sirve, por ejemplo, para convertir la distancia de la cámara (de 2 a 20 metros) en una apertura de profundidad de campo.' },
-    { type: 'tip', text: '`t` no tiene por qué ser tiempo: es «cuánto del camino». Con `t` fuera de [0, 1] la lerp **extrapola** (se pasa). Muchas veces conviene limitarlo (clamp).' }
+    '### Inverse lerp and remapping',
+    '- **Inverse lerp**: given a value `x` between `a` and `b`, which `t` does it match? `t = (x − a) / (b − a)`.\n- **Remap**: move a value from one range to another. It is an inverse lerp followed by a lerp.',
+    '### Smoothing: ease in / ease out',
+    'A plain lerp starts and stops abruptly. To make it speed up and slow down, you «bend» `t` before using it. The most common function is **smoothstep**: `3t² − 2t³`.',
+    { type: 'cg', text: '*linear* tangents in the Graph Editor are a lerp between keys. *Auto* or *spline* tangents smooth the start and end, like a smoothstep. And remapping is handy, for example, to turn the camera distance (2 to 20 meters) into a depth-of-field aperture.' },
+    { type: 'tip', text: '`t` does not have to be time: it is «how much of the way». With `t` outside [0, 1] the lerp **extrapolates** (overshoots). Often you want to clamp it.' }
   ],
 
   example: {
-    intro: 'Lerp de una posición en 3D.',
+    intro: 'Lerp of a 3D position.',
     lines: [
-      { code: 'def lerp(a, b, t):\n    return a + (b - a) * t', note: 'Para números.' },
-      { code: 'inicio = (0, 0, 0)\nfin = (10, 4, -2)', note: 'Dos posiciones de la cámara.' },
-      { code: 'cuarto = tuple(lerp(a, b, 0.25) for a, b in zip(inicio, fin))', note: 'Misma lerp, componente a componente.' },
-      { code: 'print(cuarto)', note: 'A un cuarto del camino.' }
+      { code: 'def lerp(a, b, t):\n    return a + (b - a) * t', note: 'For numbers.' },
+      { code: 'start = (0, 0, 0)\nend = (10, 4, -2)', note: 'Two camera positions.' },
+      { code: 'quarter = tuple(lerp(a, b, 0.25) for a, b in zip(start, end))', note: 'The same lerp, component by component.' },
+      { code: 'print(quarter)', note: 'A quarter of the way.' }
     ],
     output: '(2.5, 1.0, -0.5)'
   },
 
   mini: [
     {
-      q: '¿Cuánto vale `lerp(10, 20, 0.3)`?',
+      q: 'What is `lerp(10, 20, 0.3)`?',
       options: ['3', '13', '16'],
       answer: 1,
       why: '`10 + (20 − 10) · 0.3 = 13`.'
     },
     {
-      q: 'Un valor va de 0 a 50. ¿Qué `t` le corresponde a 40?',
+      q: 'A value goes from 0 to 50. Which `t` matches 40?',
       options: ['0.4', '0.8', '40'],
       answer: 1,
-      why: 'Lerp inversa: `(40 − 0) / (50 − 0) = 0.8`.'
+      why: 'Inverse lerp: `(40 − 0) / (50 − 0) = 0.8`.'
     }
   ],
   extra: [
     {
-      q: '¿Qué pasa con `lerp(0, 10, 1.5)`?',
-      options: ['Da 10 (se para en el final)', 'Da 15 (extrapola)', 'Da un error'],
+      q: 'What happens with `lerp(0, 10, 1.5)`?',
+      options: ['It gives 10 (stops at the end)', 'It gives 15 (extrapolates)', 'It raises an error'],
       answer: 1,
-      why: 'La fórmula no limita `t`. Si no quieres pasarte, limítalo a [0, 1] antes.'
+      why: 'The formula does not clamp `t`. If you do not want to overshoot, clamp it to [0, 1] first.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Lerp de números y vectores',
-      prompt: 'Escribe `lerp(a, b, t)` para números y `lerp_vec(a, b, t)` para tuplas de cualquier tamaño.',
+      title: 'Lerp for numbers and vectors',
+      prompt: 'Write `lerp(a, b, t)` for numbers and `lerp_vec(a, b, t)` for tuples of any size.',
       setup: SETUP,
       starter: 'def lerp(a, b, t):\n    pass\n\ndef lerp_vec(a, b, t):\n    pass\n',
       tests: [
-        { check: '_cerca(lerp(10, 20, 0.3), 13)', msg: 'lerp(10, 20, 0.3) = 13' },
-        { check: '_cerca(lerp(5, -5, 1), -5)', msg: 'con t = 1 da b' },
-        { check: '_cerca(lerp_vec((0, 0, 0), (10, 4, -2), 0.25), (2.5, 1, -0.5))', msg: 'lerp_vec a un cuarto del camino' },
-        { check: 'isinstance(lerp_vec((0, 0), (1, 1), 0.5), tuple)', msg: 'lerp_vec devuelve una tupla' }
+        { check: '_close(lerp(10, 20, 0.3), 13)', msg: 'lerp(10, 20, 0.3) = 13' },
+        { check: '_close(lerp(5, -5, 1), -5)', msg: 'with t = 1 it gives b' },
+        { check: '_close(lerp_vec((0, 0, 0), (10, 4, -2), 0.25), (2.5, 1, -0.5))', msg: 'lerp_vec a quarter of the way' },
+        { check: 'isinstance(lerp_vec((0, 0), (1, 1), 0.5), tuple)', msg: 'lerp_vec returns a tuple' }
       ],
       hints: ['`return a + (b - a) * t`', '`lerp_vec`: `tuple(lerp(x, y, t) for x, y in zip(a, b))`.'],
       solution: 'def lerp(a, b, t):\n    return a + (b - a) * t\n\ndef lerp_vec(a, b, t):\n    return tuple(lerp(x, y, t) for x, y in zip(a, b))\n'
     },
     {
       id: 'e2',
-      title: 'Remapear',
-      prompt: 'Escribe `remapear(x, de_min, de_max, a_min, a_max)`: pasa `x` del rango `[de_min, de_max]` al rango `[a_min, a_max]`.\n\nEjemplo: la distancia de cámara 11 en el rango 2–20 corresponde a 0.5 en el rango 0–1.',
+      title: 'Remap',
+      prompt: 'Write `remap(x, from_min, from_max, to_min, to_max)`: move `x` from the range `[from_min, from_max]` to the range `[to_min, to_max]`.\n\nExample: a camera distance of 11 in the range 2–20 matches 0.5 in the range 0–1.',
       setup: SETUP,
-      starter: 'def remapear(x, de_min, de_max, a_min, a_max):\n    pass\n',
+      starter: 'def remap(x, from_min, from_max, to_min, to_max):\n    pass\n',
       tests: [
-        { check: '_cerca(remapear(5, 0, 10, 0, 100), 50)', msg: '5 en 0–10 → 50 en 0–100' },
-        { check: '_cerca(remapear(11, 2, 20, 0, 1), 0.5)', msg: '11 en 2–20 → 0.5 en 0–1' },
-        { check: '_cerca(remapear(0.25, 0, 1, 16, 1.4), 12.35)', msg: 'funciona con rangos al revés (16 → 1.4)' }
+        { check: '_close(remap(5, 0, 10, 0, 100), 50)', msg: '5 in 0–10 → 50 in 0–100' },
+        { check: '_close(remap(11, 2, 20, 0, 1), 0.5)', msg: '11 in 2–20 → 0.5 in 0–1' },
+        { check: '_close(remap(0.25, 0, 1, 16, 1.4), 12.35)', msg: 'works with reversed ranges (16 → 1.4)' }
       ],
-      hints: ['Primero la lerp inversa: `t = (x - de_min) / (de_max - de_min)`.', 'Después la lerp: `a_min + (a_max - a_min) * t`.'],
-      solution: 'def remapear(x, de_min, de_max, a_min, a_max):\n    t = (x - de_min) / (de_max - de_min)\n    return a_min + (a_max - a_min) * t\n'
+      hints: ['First the inverse lerp: `t = (x - from_min) / (from_max - from_min)`.', 'Then the lerp: `to_min + (to_max - to_min) * t`.'],
+      solution: 'def remap(x, from_min, from_max, to_min, to_max):\n    t = (x - from_min) / (from_max - from_min)\n    return to_min + (to_max - to_min) * t\n'
     },
     {
       id: 'e3',
       title: 'Ease in / ease out',
-      prompt: 'Escribe `suavizar(t)`: limita `t` a [0, 1] y devuelve el **smoothstep** `3t² − 2t³`.',
+      prompt: 'Write `smoothstep(t)`: clamp `t` to [0, 1] and return `3t² − 2t³`.',
       setup: SETUP,
-      starter: 'def suavizar(t):\n    pass\n',
+      starter: 'def smoothstep(t):\n    pass\n',
       tests: [
-        { check: '_cerca(suavizar(0), 0) and _cerca(suavizar(1), 1)', msg: 'empieza en 0 y acaba en 1' },
-        { check: '_cerca(suavizar(0.5), 0.5)', msg: 'en la mitad vale 0.5' },
-        { check: '_cerca(suavizar(0.25), 0.15625)', msg: 'al principio va más despacio que una lerp (0.156 < 0.25)' },
-        { check: '_cerca(suavizar(-1), 0) and _cerca(suavizar(2), 1)', msg: 'limita los valores fuera de [0, 1]' }
+        { check: '_close(smoothstep(0), 0) and _close(smoothstep(1), 1)', msg: 'starts at 0 and ends at 1' },
+        { check: '_close(smoothstep(0.5), 0.5)', msg: 'in the middle it is 0.5' },
+        { check: '_close(smoothstep(0.25), 0.15625)', msg: 'at the start it is slower than a lerp (0.156 < 0.25)' },
+        { check: '_close(smoothstep(-1), 0) and _close(smoothstep(2), 1)', msg: 'clamps values outside [0, 1]' }
       ],
       hints: ['`t = max(0.0, min(1.0, t))`', '`return 3 * t * t - 2 * t * t * t`'],
-      solution: 'def suavizar(t):\n    t = max(0.0, min(1.0, t))\n    return 3 * t * t - 2 * t ** 3\n',
-      explain: 'Combinado con lerp: `lerp(a, b, suavizar(t))` arranca despacio, acelera y frena al final, como una buena curva de cámara.'
+      solution: 'def smoothstep(t):\n    t = max(0.0, min(1.0, t))\n    return 3 * t * t - 2 * t ** 3\n',
+      explain: 'Combined with lerp: `lerp(a, b, smoothstep(t))` starts slow, speeds up and slows down at the end, like a good camera curve.'
     }
   ],
 
   summary: [
-    'lerp(a, b, t) = a + (b − a) · t; se aplica por componente.',
-    'Lerp inversa da el `t` de un valor; remapear = inversa + lerp.',
-    'Para ease in/out, deforma `t` (smoothstep: 3t² − 2t³) y limítalo a [0, 1].'
+    'lerp(a, b, t) = a + (b − a) · t; apply it per component.',
+    'Inverse lerp gives the `t` of a value; remap = inverse + lerp.',
+    'For ease in/out, bend `t` (smoothstep: 3t² − 2t³) and clamp it to [0, 1].'
   ]
 });
 })();

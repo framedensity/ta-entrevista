@@ -1,6 +1,6 @@
-// Simulador sencillo de maya.cmds (solo lo necesario para los ejercicios).
-// Imita algunas "trampas" reales de Maya: listRelatives devuelve None si no hay nada,
-// la escena nueva trae las cámaras persp/top/front/side, los nombres repetidos reciben un número.
+// Simple maya.cmds simulator (only what the exercises need).
+// It copies some real Maya gotchas: listRelatives returns None when empty,
+// a new scene has the persp/top/front/side cameras, and duplicate names get a number.
 window.TA_MAYA_MOCK = String.raw`
 import re as _re
 import fnmatch as _fn
@@ -120,12 +120,12 @@ def _reparent(nd, newp):
 def _split(plug):
     s = str(plug)
     if '.' not in s:
-        raise ValueError('Se esperaba "nodo.atributo": %s' % plug)
+        raise ValueError('Expected "node.attribute": %s' % plug)
     node, attr = s.split('.', 1)
     return _get(node), _SHORT.get(attr, attr)
 
 
-# ---------------------------------------------------------------- escena
+# ---------------------------------------------------------------- scene
 def file(*args, **kw):
     if kw.get('new') or kw.get('n'):
         _reset()
@@ -149,7 +149,7 @@ def undoInfo(openChunk=False, closeChunk=False, chunkName=None, **kw):
     return None
 
 
-# ---------------------------------------------------------------- crear
+# ---------------------------------------------------------------- create
 def createNode(ntype, name=None, n=None, parent=None, p=None, skipSelect=False, ss=False):
     name = name or n
     parent = parent or p
@@ -212,7 +212,7 @@ def group(*objs, **kw):
     return g.name
 
 
-# ---------------------------------------------------------------- jerarquía
+# ---------------------------------------------------------------- hierarchy
 def parent(*args, **kw):
     args = _flatten(args)
     if kw.get('world') or kw.get('w'):
@@ -220,7 +220,7 @@ def parent(*args, **kw):
             _reparent(_get(o), None)
         return [_strip(o) for o in args]
     if len(args) < 2:
-        raise RuntimeError('parent necesita al menos un hijo y un padre.')
+        raise RuntimeError('parent needs at least one child and one parent.')
     kids, par = args[:-1], args[-1]
     p = _get(par)
     for o in kids:
@@ -228,7 +228,7 @@ def parent(*args, **kw):
         x = p
         while x is not None:
             if x is nd:
-                raise RuntimeError('No se puede emparentar un nodo bajo su propio descendiente.')
+                raise RuntimeError('Cannot parent a node under its own descendant.')
             x = x.parent
         _reparent(nd, p)
     return [_strip(o) for o in kids]
@@ -264,7 +264,7 @@ def listRelatives(*objs, **kw):
     return res or None
 
 
-# ---------------------------------------------------------------- consultar
+# ---------------------------------------------------------------- query
 def ls(*names, **kw):
     t = kw.get('type') or kw.get('typ')
     if kw.get('selection') or kw.get('sl'):
@@ -330,7 +330,7 @@ def select(*objs, **kw):
     return None
 
 
-# ---------------------------------------------------------------- renombrar / borrar
+# ---------------------------------------------------------------- rename / delete
 def _ren_plug(plug, old, new):
     node, attr = plug.split('.', 1)
     return (new if node == old else node) + '.' + attr
@@ -373,7 +373,7 @@ def delete(*objs, **kw):
     return None
 
 
-# ---------------------------------------------------------------- atributos
+# ---------------------------------------------------------------- attributes
 def _eval_key(keys, tm):
     ts = sorted(keys)
     if tm <= ts[0]:
@@ -406,7 +406,7 @@ def setAttr(plug, *vals, **kw):
     if a not in nd.attrs:
         raise ValueError('No object matches name: %s' % plug)
     if any(d == nd.name + '.' + a for s, d in _conns):
-        raise RuntimeError("El atributo '%s' está conectado y no se puede cambiar." % plug)
+        raise RuntimeError("setAttr: The attribute '%s' is locked or connected and cannot be modified." % plug)
     if kw.get('type') == 'string':
         nd.attrs[a] = str(vals[0])
         return None
@@ -427,9 +427,9 @@ def addAttr(node, longName=None, ln=None, attributeType=None, at=None, dataType=
     nd = _get(node)
     name = longName or ln
     if not name:
-        raise RuntimeError('addAttr necesita longName.')
+        raise RuntimeError('addAttr needs longName.')
     if name in nd.attrs:
-        raise RuntimeError("Ya existe un atributo llamado '%s' en '%s'." % (name, nd.name))
+        raise RuntimeError("Found an attribute already named '%s' on '%s'." % (name, nd.name))
     typ = attributeType or at or dataType or dt or 'double'
     d = defaultValue if defaultValue is not None else dv
     if typ in ('double', 'float'):
@@ -459,23 +459,23 @@ def listAttr(node, userDefined=False, ud=False, **kw):
     return list(nd.attrs.keys())
 
 
-# ---------------------------------------------------------------- conexiones
+# ---------------------------------------------------------------- connections
 def connectAttr(src, dst, force=False, f=False, **kw):
     sn, sa = _split(src)
     dn, da = _split(dst)
     if sa not in sn.attrs:
-        raise RuntimeError('No existe el atributo: %s' % src)
+        raise RuntimeError('No such attribute: %s' % src)
     if da not in dn.attrs:
-        raise RuntimeError('No existe el atributo: %s' % dst)
+        raise RuntimeError('No such attribute: %s' % dst)
     sp, dp = sn.name + '.' + sa, dn.name + '.' + da
     if (sp, dp) in _conns:
-        raise RuntimeError("'%s' ya está conectado a '%s'." % (sp, dp))
+        raise RuntimeError("'%s' is already connected to '%s'." % (sp, dp))
     existing = [c for c in _conns if c[1] == dp]
     if existing:
         if force or f:
             _conns.remove(existing[0])
         else:
-            raise RuntimeError("'%s' ya tiene una conexión de entrada. Usa force=True." % dp)
+            raise RuntimeError("'%s' already has an incoming connection. Use force=True." % dp)
     _conns.append((sp, dp))
     return None
 
@@ -485,7 +485,7 @@ def disconnectAttr(src, dst, **kw):
     dn, da = _split(dst)
     c = (sn.name + '.' + sa, dn.name + '.' + da)
     if c not in _conns:
-        raise RuntimeError('No hay conexión entre %s y %s.' % c)
+        raise RuntimeError('There is no connection between %s and %s.' % c)
     _conns.remove(c)
     return None
 
@@ -519,7 +519,7 @@ def listConnections(obj, source=None, s=None, destination=None, d=None, plugs=Fa
     return res or None
 
 
-# ---------------------------------------------------------------- tiempo y keyframes
+# ---------------------------------------------------------------- time and keyframes
 def currentTime(t=None, query=False, q=False, **kw):
     if query or q or t is None:
         return _state['time']
@@ -609,7 +609,7 @@ def cutKey(obj=None, attribute=None, at=None, time=None, t=None, **kw):
 def xform(obj, query=False, q=False, worldSpace=False, ws=False, translation=False, t=False, **kw):
     nd = _get(obj)
     if not (query or q):
-        raise RuntimeError('En este simulador, xform solo sirve para consultar (query=True).')
+        raise RuntimeError('In this simulator, xform only supports query=True.')
     tx, ty, tz = nd.attrs['translateX'], nd.attrs['translateY'], nd.attrs['translateZ']
     if worldSpace or ws:
         x = nd.parent

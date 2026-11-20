@@ -1,10 +1,10 @@
-// Área de código pensada para el móvil: sin autocorrección, sangría automática, tecla Tab y una fila de símbolos.
+// Code area built for phones: no autocorrect, auto-indent, Tab key and a row of symbols.
 window.Editor = (function () {
   var IND = '    ';
   var KEYS = ['⇥', '⇤', '(', ')', '[', ']', '{', '}', '"', ':', '=', '_', '.', ',', '#'];
   var DEDENT_AFTER = /^\s*(return|pass|break|continue|raise)\b/;
 
-  // Inserta texto en el cursor. execCommand mantiene el deshacer (Ctrl+Z) del navegador.
+  // Insert text at the cursor. execCommand keeps the browser's undo (Ctrl+Z).
   function insert(ta, text) {
     ta.focus();
     var ok = false;
@@ -21,7 +21,7 @@ window.Editor = (function () {
 
   function lineStart(ta) { return ta.value.lastIndexOf('\n', ta.selectionStart - 1) + 1; }
 
-  // Quita el comentario final de una línea (sin tocar los # dentro de comillas).
+  // Strip a trailing comment (ignoring # inside quotes).
   function code(line) {
     var q = null;
     for (var i = 0; i < line.length; i++) {
@@ -33,7 +33,7 @@ window.Editor = (function () {
     return line;
   }
 
-  // Enter: misma sangría que la línea actual; +4 si termina en «:»; −4 tras return/pass/break…
+  // Enter: same indent as the current line; +4 after «:»; −4 after return/pass/break…
   function newline(ta) {
     var s = ta.selectionStart;
     var before = ta.value.slice(lineStart(ta), s);
@@ -44,7 +44,7 @@ window.Editor = (function () {
     insert(ta, '\n' + ind);
   }
 
-  // Retroceso dentro de la sangría: borra hasta el nivel anterior (4 espacios).
+  // Backspace inside indentation: delete back to the previous level (4 spaces).
   function backspace(ta) {
     var s = ta.selectionStart;
     if (s !== ta.selectionEnd) return false;
@@ -57,7 +57,7 @@ window.Editor = (function () {
     return true;
   }
 
-  // ⇤: quita un nivel de sangría al principio de la línea actual.
+  // ⇤: remove one indent level from the start of the current line.
   function dedent(ta) {
     var ls = lineStart(ta);
     var lead = ta.value.slice(ls).match(/^ */)[0].length;
@@ -78,16 +78,16 @@ window.Editor = (function () {
     ta.setAttribute('autocomplete', 'off');
     ta.setAttribute('autocorrect', 'off');
     ta.setAttribute('spellcheck', 'false');
-    ta.setAttribute('aria-label', 'Tu código');
+    ta.setAttribute('aria-label', 'Your code');
     ta.rows = Math.max(6, (initial || '').split('\n').length + 3);
 
     ta.addEventListener('keydown', function (ev) {
-      if (ev.isComposing || ev.keyCode === 229) return; // teclado japonés u Android: lo gestiona beforeinput
+      if (ev.isComposing || ev.keyCode === 229) return; // Japanese IME or Android: handled in beforeinput
       if (ev.key === 'Tab') { ev.preventDefault(); if (ev.shiftKey) dedent(ta); else insert(ta, IND); }
       else if (ev.key === 'Enter' && !ev.shiftKey && !ev.ctrlKey && !ev.metaKey && !ev.altKey) { ev.preventDefault(); newline(ta); }
       else if (ev.key === 'Backspace' && !ev.ctrlKey && !ev.metaKey && !ev.altKey) { if (backspace(ta)) ev.preventDefault(); }
     });
-    // Teclados de móvil que no envían la tecla real en keydown.
+    // Phone keyboards that do not send the real key in keydown.
     ta.addEventListener('beforeinput', function (ev) {
       if (ev.isComposing || !ev.cancelable) return;
       if (ev.inputType === 'insertLineBreak' || ev.inputType === 'insertParagraph' ||
@@ -100,8 +100,8 @@ window.Editor = (function () {
     KEYS.forEach(function (k) {
       var b = document.createElement('button');
       b.type = 'button'; b.textContent = k;
-      if (k === '⇥') b.title = 'Sangría';
-      if (k === '⇤') b.title = 'Quitar sangría';
+      if (k === '⇥') b.title = 'Indent';
+      if (k === '⇤') b.title = 'Dedent';
       b.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
       b.addEventListener('click', function () {
         if (k === '⇥') insert(ta, IND);

@@ -1,121 +1,120 @@
 (function () {
 var SETUP = [
-  'def _cerca(a, b, tol=1e-6):',
+  'def _close(a, b, tol=1e-6):',
   '    if isinstance(a, (int, float)) and isinstance(b, (int, float)):',
   '        return abs(a - b) < tol',
   '    try:',
   '        a, b = list(a), list(b)',
   '    except TypeError:',
   '        return False',
-  '    return len(a) == len(b) and all(_cerca(x, y, tol) for x, y in zip(a, b))'
+  '    return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))'
 ].join('\n') + '\n';
+var ROT = 'import math\n\ndef rotate(v, degrees):\n    t = math.radians(degrees)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])\n';
 
 TA.add({
   id: 'v06',
-  title: 'Espacio local y mundial',
-  en: 'local vs world space',
+  title: 'Local and world space',
 
   explain: [
-    'Cada objeto tiene su posición en dos «idiomas»: **local** (object/local space, relativa a su padre) y **mundial** (world space, relativa al origen de la escena).',
-    { type: 'analogy', text: 'en un tren, tu asiento es «vagón 3, fila 5» (local). Para alguien en el andén, estás en un punto que cambia cuando el tren se mueve (mundial). Tu asiento local no cambia; tu posición mundial, sí.' },
+    'Every object has its position in two «languages»: **local** (object space, relative to its parent) and **world** (relative to the scene origin).',
+    { type: 'analogy', text: 'on a train, your seat is «car 3, row 5» (local). For someone on the platform, you are at a spot that changes as the train moves (world). Your local seat does not change; your world position does.' },
     { type: 'viz', name: 'space' },
-    '### De local a mundial',
-    'Posición mundial = **matriz del padre** aplicada a la posición local: primero se rota (y escala) con el padre, y luego se suma la posición del padre.',
-    '`mundo = pos_padre + rotar(local, ang_padre)`',
-    '### De mundial a local',
-    'Es el camino inverso: se resta la posición del padre y se rota con el ángulo **contrario**. En matrices: se multiplica por la **inversa** de la matriz del padre.',
-    '### Jerarquías',
-    'Con varios niveles (cadera → muslo → rodilla → pie), cada matriz se multiplica por la de su padre. La matriz mundial del pie es el producto de toda la cadena. Esto es la **cinemática directa** (forward kinematics, FK).',
-    { type: 'cg', text: 'en Maya: `getAttr obj.translate` da la posición **local**; `xform(obj, q=True, ws=True, t=True)` da la **mundial**. Confundirlas es uno de los errores más comunes en herramientas de animación (por ejemplo, al hacer *snap* de un control a un joint).' },
-    { type: 'tip', text: 'si te preguntan por `worldMatrix` y `parentInverseMatrix`: «la matriz mundial es la local por la mundial del padre; para pasar algo de mundial a local, multiplico por la inversa de la mundial del padre».' }
+    '### Local to world',
+    'World position = the **parent\'s matrix** applied to the local position: first rotate (and scale) with the parent, then add the parent\'s position.',
+    '`world = parent_pos + rotate(local, parent_angle)`',
+    '### World to local',
+    'The opposite way: subtract the parent\'s position and rotate by the **opposite** angle. With matrices: multiply by the **inverse** of the parent\'s matrix.',
+    '### Hierarchies',
+    'With several levels (hip → thigh → knee → foot), each matrix is multiplied by its parent\'s. The foot\'s world matrix is the product of the whole chain. That is **forward kinematics** (FK).',
+    { type: 'cg', text: 'in Maya: `getAttr obj.translate` gives the **local** position; `xform(obj, q=True, ws=True, t=True)` gives the **world** one. Mixing them up is one of the most common bugs in animation tools (for example when snapping a control to a joint).' },
+    { type: 'tip', text: 'if they ask about `worldMatrix` and `parentInverseMatrix`: «the world matrix is the local matrix times the parent\'s world matrix; to bring something from world to local, I multiply by the inverse of the parent\'s world matrix».' }
   ],
 
   example: {
-    intro: 'Un hijo en local (2, 0) con un padre en (3, 1) rotado 90°.',
+    intro: 'A child at local (2, 0) under a parent at (3, 1) rotated 90°.',
     lines: [
-      { code: 'import math', note: 'Para la rotación.' },
-      { code: 'def rotar(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])', note: 'Rotación 2D (la matriz de v05, escrita a mano).' },
-      { code: 'padre_pos, padre_ang = (3, 1), 90\nlocal = (2, 0)', note: 'El hijo está 2 unidades «a la derecha» de su padre.' },
-      { code: 'r = rotar(local, padre_ang)', note: 'Primero rota con el padre: (2, 0) → (0, 2).' },
-      { code: 'mundo = (padre_pos[0] + r[0], padre_pos[1] + r[1])', note: 'Luego suma la posición del padre.' },
-      { code: 'print(tuple(round(c, 6) for c in mundo))', note: 'En el mundo, el hijo está encima del padre.' }
+      { code: ROT.replace(/\n$/, ''), note: '2D rotation (the matrix from v05, written by hand).' },
+      { code: 'parent_pos, parent_angle = (3, 1), 90\nlocal = (2, 0)', note: 'The child sits 2 units «to the right» of its parent.' },
+      { code: 'r = rotate(local, parent_angle)', note: 'First rotate with the parent: (2, 0) → (0, 2).' },
+      { code: 'world = (parent_pos[0] + r[0], parent_pos[1] + r[1])', note: 'Then add the parent\'s position.' },
+      { code: 'print(tuple(round(c, 6) for c in world))', note: 'In world space, the child is above the parent.' }
     ],
     output: '(3.0, 3.0)'
   },
 
   mini: [
     {
-      q: 'Mueves el padre 5 unidades en X. ¿Qué pasa con el `translate` (local) del hijo?',
-      options: ['Aumenta 5 en X', 'No cambia', 'Se pone a cero'],
+      q: 'You move the parent 5 units in X. What happens to the child\'s (local) `translate`?',
+      options: ['It goes up by 5 in X', 'It does not change', 'It resets to zero'],
       answer: 1,
-      why: 'El local es relativo al padre: no cambia. Lo que cambia es su posición mundial.'
+      why: 'Local is relative to the parent: it does not change. What changes is its world position.'
     },
     {
-      q: 'Quieres colocar un control exactamente donde está un joint, pero el control tiene un padre rotado. ¿Qué haces?',
-      options: ['Copias el `translate` del joint al control', 'Lees la posición **mundial** del joint y la conviertes al espacio **local** del control (o usas `xform(ws=True)`)', 'Pones el control sin padre siempre'],
+      q: 'You want to put a control exactly where a joint is, but the control has a rotated parent. What do you do?',
+      options: ['Copy the joint\'s `translate` to the control', 'Read the joint\'s **world** position and convert it to the control\'s **local** space (or use `xform(ws=True)`)', 'Never give controls a parent'],
       answer: 1,
-      why: 'Copiar el `translate` solo funciona si los dos tienen el mismo padre.'
+      why: 'Copying `translate` only works if both have the same parent.'
     }
   ],
   extra: [
     {
-      q: '¿Cómo se pasa de espacio mundial a local?',
-      options: ['Multiplicando por la matriz mundial del padre', 'Multiplicando por la **inversa** de la matriz mundial del padre', 'Restando 1'],
+      q: 'How do you go from world space to local space?',
+      options: ['Multiply by the parent\'s world matrix', 'Multiply by the **inverse** of the parent\'s world matrix', 'Subtract 1'],
       answer: 1,
-      why: 'La inversa deshace la transformación del padre.'
+      why: 'The inverse undoes the parent\'s transformation.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'De local a mundial',
-      prompt: 'Escribe `a_mundo(local, padre_pos, padre_ang)` en 2D: rota `local` con el ángulo del padre (en grados) y suma la posición del padre.\n\nYa tienes `rotar(v, grados)`.',
+      title: 'Local to world',
+      prompt: 'Write `to_world(local, parent_pos, parent_angle)` in 2D: rotate `local` by the parent\'s angle (in degrees) and add the parent\'s position.\n\n`rotate(v, degrees)` is already written.',
       setup: SETUP,
-      starter: 'import math\n\ndef rotar(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])\n\ndef a_mundo(local, padre_pos, padre_ang):\n    pass\n',
+      starter: ROT + '\ndef to_world(local, parent_pos, parent_angle):\n    pass\n',
       tests: [
-        { check: '_cerca(a_mundo((1, 0), (2, 3), 90), (2, 4))', msg: 'local (1,0), padre en (2,3) rotado 90° → (2, 4)' },
-        { check: '_cerca(a_mundo((1, 1), (0, 0), 0), (1, 1))', msg: 'padre en el origen sin rotar: no cambia' },
-        { check: '_cerca(a_mundo((2, 0), (5, 0), 180), (3, 0))', msg: 'padre rotado 180°: el hijo queda detrás' }
+        { check: '_close(to_world((1, 0), (2, 3), 90), (2, 4))', msg: 'local (1,0), parent at (2,3) rotated 90° → (2, 4)' },
+        { check: '_close(to_world((1, 1), (0, 0), 0), (1, 1))', msg: 'parent at the origin, not rotated: no change' },
+        { check: '_close(to_world((2, 0), (5, 0), 180), (3, 0))', msg: 'parent rotated 180°: the child ends up behind' }
       ],
-      hints: ['`r = rotar(local, padre_ang)`', '`return (padre_pos[0] + r[0], padre_pos[1] + r[1])`'],
-      solution: 'import math\n\ndef rotar(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])\n\ndef a_mundo(local, padre_pos, padre_ang):\n    r = rotar(local, padre_ang)\n    return (padre_pos[0] + r[0], padre_pos[1] + r[1])\n'
+      hints: ['`r = rotate(local, parent_angle)`', '`return (parent_pos[0] + r[0], parent_pos[1] + r[1])`'],
+      solution: ROT + '\ndef to_world(local, parent_pos, parent_angle):\n    r = rotate(local, parent_angle)\n    return (parent_pos[0] + r[0], parent_pos[1] + r[1])\n'
     },
     {
       id: 'e2',
-      title: 'De mundial a local',
-      prompt: 'Escribe `a_local(mundo, padre_pos, padre_ang)`: el camino inverso. Resta la posición del padre y rota con el ángulo **contrario**.',
+      title: 'World to local',
+      prompt: 'Write `to_local(world, parent_pos, parent_angle)`: the opposite way. Subtract the parent\'s position and rotate by the **opposite** angle.',
       setup: SETUP,
-      starter: 'import math\n\ndef rotar(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])\n\ndef a_local(mundo, padre_pos, padre_ang):\n    pass\n',
+      starter: ROT + '\ndef to_local(world, parent_pos, parent_angle):\n    pass\n',
       tests: [
-        { check: '_cerca(a_local((2, 4), (2, 3), 90), (1, 0))', msg: 'deshace el ejemplo anterior: (2,4) → (1, 0)' },
-        { check: '_cerca(a_local((3, 0), (5, 0), 180), (2, 0))', msg: 'padre rotado 180°' }
+        { check: '_close(to_local((2, 4), (2, 3), 90), (1, 0))', msg: 'undoes the previous example: (2,4) → (1, 0)' },
+        { check: '_close(to_local((3, 0), (5, 0), 180), (2, 0))', msg: 'parent rotated 180°' }
       ],
-      hints: ['Primero resta: `d = (mundo[0] - padre_pos[0], mundo[1] - padre_pos[1])`.', 'Luego `rotar(d, -padre_ang)`.'],
-      solution: 'import math\n\ndef rotar(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    return (c * v[0] - s * v[1], s * v[0] + c * v[1])\n\ndef a_local(mundo, padre_pos, padre_ang):\n    d = (mundo[0] - padre_pos[0], mundo[1] - padre_pos[1])\n    return rotar(d, -padre_ang)\n',
-      explain: 'El orden también se invierte: para ir a mundial se rota y luego se suma; para volver, se resta y luego se rota al revés.'
+      hints: ['Subtract first: `d = (world[0] - parent_pos[0], world[1] - parent_pos[1])`.', 'Then `rotate(d, -parent_angle)`.'],
+      solution: ROT + '\ndef to_local(world, parent_pos, parent_angle):\n    d = (world[0] - parent_pos[0], world[1] - parent_pos[1])\n    return rotate(d, -parent_angle)\n',
+      explain: 'The order flips too: to go to world you rotate then add; to come back you subtract then rotate the other way.'
     },
     {
       id: 'e3',
-      title: 'Cadena FK',
-      prompt: 'Una cadena de huesos en 2D empieza en `(0, 0)`. Cada hueso tiene una longitud y un ángulo **relativo a su padre** (en grados). El primer hueso con ángulo 0 apunta hacia +X.\n\nEscribe `punta(longitudes, angulos)`: la posición mundial del final de la cadena.',
+      title: 'FK chain',
+      prompt: 'A chain of bones in 2D starts at `(0, 0)`. Each bone has a length and an angle **relative to its parent** (in degrees). The first bone with angle 0 points toward +X.\n\nWrite `chain_tip(lengths, angles)`: the world position of the end of the chain.',
       setup: SETUP,
-      starter: 'import math\n\ndef punta(longitudes, angulos):\n    pass\n',
+      starter: 'import math\n\ndef chain_tip(lengths, angles):\n    pass\n',
       tests: [
-        { check: '_cerca(punta([2], [0]), (2, 0))', msg: 'un hueso de 2 sin rotar → (2, 0)' },
-        { check: '_cerca(punta([1, 1], [90, -90]), (1, 1))', msg: 'sube 1 y luego vuelve a +X: (1, 1)' },
-        { check: '_cerca(punta([1, 1, 1], [0, 90, 90]), (0, 1))', msg: 'tres huesos que giran 90° cada uno: (0, 1)' }
+        { check: '_close(chain_tip([2], [0]), (2, 0))', msg: 'one bone of length 2, not rotated → (2, 0)' },
+        { check: '_close(chain_tip([1, 1], [90, -90]), (1, 1))', msg: 'goes up 1 and then back toward +X: (1, 1)' },
+        { check: '_close(chain_tip([1, 1, 1], [0, 90, 90]), (0, 1))', msg: 'three bones turning 90° each: (0, 1)' }
       ],
-      hints: ['Los ángulos se **acumulan**: el segundo hueso gira `angulos[0] + angulos[1]` en mundial.', 'Lleva `x, y, total = 0, 0, 0`. En cada hueso: `total += ang`, y suma `l·cos(total)`, `l·sin(total)`.'],
-      solution: 'import math\n\ndef punta(longitudes, angulos):\n    x = y = total = 0.0\n    for l, ang in zip(longitudes, angulos):\n        total += ang\n        t = math.radians(total)\n        x += l * math.cos(t)\n        y += l * math.sin(t)\n    return (x, y)\n',
-      explain: 'Así calcula Maya la posición de la mano a partir de los joints del brazo: cada rotación local se suma a la de los padres.'
+      hints: ['Angles **accumulate**: the second bone turns `angles[0] + angles[1]` in world space.', 'Keep `x, y, total = 0, 0, 0`. For each bone: `total += angle`, then add `l·cos(total)`, `l·sin(total)`.'],
+      solution: 'import math\n\ndef chain_tip(lengths, angles):\n    x = y = total = 0.0\n    for l, ang in zip(lengths, angles):\n        total += ang\n        t = math.radians(total)\n        x += l * math.cos(t)\n        y += l * math.sin(t)\n    return (x, y)\n',
+      explain: 'This is how Maya computes the hand position from the arm joints: each local rotation adds to its parents\'.'
     }
   ],
 
   summary: [
-    'Local = relativo al padre; mundial = relativo al origen de la escena.',
-    'Local → mundial: rotar con el padre y sumar su posición; al revés, con la inversa.',
-    'En jerarquías, las transformaciones se acumulan (FK); `translate` es local, `xform(ws=True)` es mundial.'
+    'Local = relative to the parent; world = relative to the scene origin.',
+    'Local → world: rotate with the parent and add its position; the other way, use the inverse.',
+    'In hierarchies transformations accumulate (FK); `translate` is local, `xform(ws=True)` is world.'
   ]
 });
 })();

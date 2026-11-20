@@ -1,42 +1,41 @@
 TA.add({
   id: 'd02',
-  title: 'Primero, los requisitos',
-  en: 'requirements',
+  title: 'Requirements first',
 
   explain: [
-    'El error más caro de un TA es construir rápido **la herramienta equivocada**. Antes de escribir una línea, hay que entender qué se necesita de verdad.',
-    { type: 'analogy', text: 'eres un sastre. Si haces el traje sin tomar medidas, quizá sea precioso, pero no le valdrá a nadie. Las preguntas son las medidas.' },
-    '### Las preguntas clave',
-    '- **¿Quién** la va a usar? ¿Animadores, iluminadores, la granja de render?\n- **¿Qué problema** tienen hoy? ¿Cuánto tiempo les cuesta?\n- **¿Con qué datos** trabaja? ¿Cuántos? (10 tomas o 2 000 cambian todo el diseño.)\n- **¿Qué sale** de la herramienta y quién lo recibe después?\n- **¿Qué no puede fallar?** ¿Qué pasa si falla a mitad?\n- **¿Hay plazo?** ¿Hace falta algo pequeño ya, y algo completo después?',
-    '### En la entrevista: pregunta antes de responder',
-    'Si te dan un problema de diseño («haz una herramienta que exporte cámaras»), **no empieces a diseñar enseguida**. Haz 2 o 3 preguntas. Los entrevistadores lo esperan: así se ve cómo trabajas en un equipo real.',
-    { type: 'tip', text: 'una frase útil: «Antes de diseñarlo, me gustaría aclarar tres cosas: cuántas tomas hay, a qué formato y quién recibe el resultado». Después, si no hay respuesta, di qué **supones** y sigue.' },
-    '### Empieza pequeño',
-    'Haz primero una versión mínima que resuelva lo más doloroso. Dásela a uno o dos artistas, mira cómo la usan y mejórala. Es mejor que pasar dos meses en una herramienta enorme que nadie pidió así.',
-    { type: 'cg', text: 'un director pide «una herramienta para revisar las cinemáticas». Tras preguntar, resulta que lo que de verdad quiere es ver todas las tomas seguidas con el nombre y el frame encima. Eso se hace en un día, no en un mes.' }
+    'The most expensive mistake a TA can make is quickly building **the wrong tool**. Before writing a single line, understand what is really needed.',
+    { type: 'analogy', text: 'you are a tailor. If you make the suit without taking measurements, it may be beautiful, but it will fit nobody. The questions are the measurements.' },
+    '### The key questions',
+    '- **Who** will use it? Animators, lighters, the render farm?\n- **What problem** do they have today? How much time does it cost them?\n- **What data** does it work with? How much? (10 shots or 2,000 changes the whole design.)\n- **What comes out** of the tool and who receives it next?\n- **What must not fail?** What happens if it fails halfway?\n- **Is there a deadline?** Do we need something small now and something complete later?',
+    '### In the interview: ask before answering',
+    'If they give you a design problem («make a tool that exports cameras»), **do not start designing right away**. Ask 2 or 3 questions. Interviewers expect it: it shows how you work in a real team.',
+    { type: 'tip', text: 'a useful sentence: «Before designing it, I would like to clarify three things: how many shots there are, which format, and who receives the result». Then, if there is no answer, say what you **assume** and carry on.' },
+    '### Start small',
+    'First build a minimal version that solves the most painful part. Give it to one or two artists, watch how they use it and improve it. That beats spending two months on a huge tool nobody asked for in that form.',
+    { type: 'cg', text: 'a director asks for «a tool to review the cutscenes». After asking, it turns out what they really want is to watch every shot back to back with the name and frame on top. That takes a day, not a month.' }
   ],
 
   example: {
-    intro: 'Petición: «Necesitamos una herramienta para exportar las cámaras».',
+    intro: 'Request: «We need a tool to export the cameras».',
     lines: [
-      { label: 'Respuesta precipitada', code: '«Vale, hago un botón que exporta la cámara seleccionada a FBX.»', note: 'Puede que no sirva: ¿y si son 300 tomas? ¿y si el motor necesita otro formato?' },
-      { label: 'Primero preguntas', code: '¿Cuántas cámaras/tomas por entrega?\n¿Qué formato y qué convención de nombres espera el motor?\n¿Hay que exportar también el rango de frames y la focal?\n¿Quién la usa: el artista o un proceso nocturno?', note: 'Cada respuesta cambia el diseño.' },
-      { label: 'Diseño ajustado', code: 'Lote por secuencia, lee las cámaras por su atributo shotName,\nnombra los archivos según la convención del motor,\nmodo sin interfaz para el proceso nocturno.', note: 'Ahora sí resuelve el problema real.' }
+      { label: 'Rushed answer', code: '«OK, I\'ll make a button that exports the selected camera to FBX.»', note: 'Might be useless: what if there are 300 shots? What if the engine needs another format?' },
+      { label: 'Ask first', code: 'How many cameras/shots per delivery?\nWhich format and naming convention does the engine expect?\nDo we also export the frame range and focal length?\nWho uses it: the artist or a nightly process?', note: 'Every answer changes the design.' },
+      { label: 'Fitted design', code: 'Batch per sequence, finds cameras by their shotName attribute,\nnames files following the engine convention,\nheadless mode for the nightly process.', note: 'Now it solves the real problem.' }
     ]
   },
 
   mini: [
     {
-      q: 'En la entrevista te piden diseñar una herramienta. ¿Qué haces primero?',
-      options: ['Empiezas a escribir código en la pizarra', 'Haces 2-3 preguntas para aclarar el problema (o dices qué supones)', 'Dices que necesitas más tiempo'],
+      q: 'In the interview they ask you to design a tool. What do you do first?',
+      options: ['Start writing code on the whiteboard', 'Ask 2-3 questions to clarify the problem (or say what you assume)', 'Say you need more time'],
       answer: 1,
-      why: 'Muestra que entiendes que el diseño depende de los requisitos.'
+      why: 'It shows you understand that the design depends on the requirements.'
     },
     {
-      q: '¿Por qué es importante saber si son 10 o 2 000 elementos?',
-      options: ['No importa', 'Cambia el diseño: rendimiento, lotes, informes, si hace falta interfaz', 'Solo por la memoria'],
+      q: 'Why does it matter whether there are 10 or 2,000 items?',
+      options: ['It does not', 'It changes the design: performance, batching, reports, whether a UI is needed', 'Only because of memory'],
       answer: 1,
-      why: 'Con 2 000, necesitas lotes, rendimiento, informes y quizá ejecución sin interfaz.'
+      why: 'With 2,000, you need batches, performance, reports and maybe headless runs.'
     }
   ],
 
@@ -44,24 +43,24 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: '¿Qué preguntarías?',
-      prompt: 'Un supervisor te dice: «Quiero una herramienta que compruebe las escenas de animación antes de enviarlas a iluminación».\n\nEscribe las preguntas que harías antes de diseñar nada, y qué supondrías si no te contestan.',
+      title: 'What would you ask?',
+      prompt: 'A supervisor tells you: «I want a tool that checks animation scenes before they go to lighting».\n\nWrite the questions you would ask before designing anything, and what you would assume if nobody answers.',
       checklist: [
-        'Pregunto **qué** hay que comprobar exactamente (nombres, rango de frames, claves fuera de rango, referencias, cámaras…).',
-        'Pregunto **cuántas** escenas y con qué frecuencia (una a una o en lote).',
-        'Pregunto **quién** la usa y en qué momento (al guardar, al publicar, de noche).',
-        'Pregunto qué pasa si algo falla: ¿bloquea el envío o solo avisa?',
-        'Pregunto cómo se entrega el resultado (ventana, informe, mensaje al supervisor).',
-        'Digo qué supongo si no hay respuesta y propongo empezar con una versión pequeña.'
+        'I ask **what** exactly needs checking (names, frame range, keys out of range, references, cameras…).',
+        'I ask **how many** scenes and how often (one at a time or in batches).',
+        'I ask **who** uses it and when (on save, on publish, overnight).',
+        'I ask what happens if something fails: does it block the handoff or just warn?',
+        'I ask how the result is delivered (window, report, message to the supervisor).',
+        'I say what I assume if there is no answer and propose starting with a small version.'
       ],
-      model: '«Antes de diseñarla preguntaría:\n- ¿Qué problemas llegan hoy a iluminación? Así sé qué comprobar primero.\n- ¿Cuántas escenas por día? ¿Se envían una a una o todas al final?\n- ¿La lanza el animador antes de publicar, o se hace automáticamente al publicar?\n- Si hay un error, ¿se bloquea el envío o solo se avisa?\n- ¿Quién necesita ver el resultado?\n\nSi no hay respuesta, supondría: se lanza al publicar, comprueba nombres, rango de frames y cámaras, avisa sin bloquear y genera un informe. Empezaría con las tres comprobaciones que más problemas causan y añadiría más después.»',
-      followups: ['¿Qué comprobación harías primero y por qué?', '¿Cómo decidirías si bloquear o solo avisar?']
+      model: '«Before designing it I would ask:\n- What problems reach lighting today? That tells me what to check first.\n- How many scenes per day? Are they sent one at a time or all at the end?\n- Does the animator run it before publishing, or does it run automatically on publish?\n- If there is an error, is the handoff blocked or just flagged?\n- Who needs to see the result?\n\nWithout answers, I would assume: it runs on publish, checks names, frame range and cameras, warns without blocking and writes a report. I would start with the three checks that cause the most trouble and add more later.»',
+      followups: ['Which check would you build first and why?', 'How would you decide between blocking and just warning?']
     }
   ],
 
   summary: [
-    'Antes de construir: quién, qué problema, cuántos datos, qué sale, qué no puede fallar.',
-    'En la entrevista, pregunta 2-3 cosas o di lo que supones antes de diseñar.',
-    'Empieza con una versión mínima, dásela a pocos artistas y mejora.'
+    'Before building: who, what problem, how much data, what comes out, what must not fail.',
+    'In the interview, ask 2-3 things or state your assumptions before designing.',
+    'Start with a minimal version, give it to a few artists and improve it.'
   ]
 });

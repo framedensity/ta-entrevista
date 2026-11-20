@@ -1,99 +1,98 @@
 TA.add({
   id: 'p16',
-  title: 'Clases',
-  en: 'classes & dataclasses',
+  title: 'Classes',
 
   explain: [
-    'Cuando los datos y las acciones van siempre juntos (una toma tiene inicio, fin, cámara… y sabe calcular su duración), una **clase** los mantiene ordenados.',
-    { type: 'analogy', text: 'una **clase** es el plano de una casa. Un **objeto** (*instance*) es una casa construida con ese plano. Puedes construir muchas casas con el mismo plano, cada una con sus propios muebles.' },
-    '```python\nclass Toma:\n    def __init__(self, nombre, inicio, fin):\n        self.nombre = nombre\n        self.inicio = inicio\n        self.fin = fin\n\n    def duracion(self):\n        return self.fin - self.inicio + 1\n\nt = Toma("sh010", 1001, 1048)\nt.duracion()   # 48\n```',
-    '- `__init__` se ejecuta al crear el objeto: prepara sus datos.\n- `self` es «este objeto en concreto». Por eso cada toma guarda su propio `inicio`.\n- Un **método** es una función dentro de la clase: `t.duracion()`.',
-    '### __repr__: cómo se ve al imprimir',
-    'Sin `__repr__`, imprimir un objeto da algo como `<Toma object at 0x7f...>`. Con él, ves algo útil al depurar.',
-    '### dataclass: menos código para clases de datos',
-    '`@dataclass` escribe por ti el `__init__`, el `__repr__` y la comparación con `==`.',
+    'When data and actions always go together (a shot has a start, an end, a camera… and knows how to compute its duration), a **class** keeps them organized.',
+    { type: 'analogy', text: 'a **class** is the blueprint of a house. An **object** (instance) is a house built from that blueprint. You can build many houses from the same blueprint, each with its own furniture.' },
+    '```python\nclass Shot:\n    def __init__(self, name, start, end):\n        self.name = name\n        self.start = start\n        self.end = end\n\n    def duration(self):\n        return self.end - self.start + 1\n\ns = Shot("sh010", 1001, 1048)\ns.duration()   # 48\n```',
+    '- `__init__` runs when the object is created: it sets up its data.\n- `self` is «this particular object». That is why each shot keeps its own `start`.\n- A **method** is a function inside the class: `s.duration()`.',
+    '### __repr__: how it looks when printed',
+    'Without `__repr__`, printing an object gives something like `<Shot object at 0x7f...>`. With it, you see something useful while debugging.',
+    '### dataclass: less code for data classes',
+    '`@dataclass` writes the `__init__`, the `__repr__` and `==` comparison for you.',
     { type: 'compare',
-      badTitle: 'Todo a mano',
-      bad: 'class Toma:\n    def __init__(self, nombre, inicio, fin):\n        self.nombre = nombre\n        self.inicio = inicio\n        self.fin = fin\n    def __repr__(self):\n        return f"Toma({self.nombre!r}, ...)"',
-      goodTitle: 'Con dataclass',
-      good: 'from dataclasses import dataclass\n\n@dataclass\nclass Toma:\n    nombre: str\n    inicio: int\n    fin: int' },
-    { type: 'cg', text: 'una herramienta de exportación tiene una clase `Exportador` que guarda la configuración en `self` y tiene métodos `validar()` y `exportar()`. La interfaz (PySide) solo llama a esos métodos.' },
-    { type: 'tip', text: 'separar la **lógica** (clases y funciones sin interfaz) de la **interfaz** (PySide) es algo que los entrevistadores de TA valoran mucho: se puede probar y reutilizar en lotes sin abrir ventanas.' }
+      badTitle: 'Everything by hand',
+      bad: 'class Shot:\n    def __init__(self, name, start, end):\n        self.name = name\n        self.start = start\n        self.end = end\n    def __repr__(self):\n        return f"Shot({self.name!r}, ...)"',
+      goodTitle: 'With dataclass',
+      good: 'from dataclasses import dataclass\n\n@dataclass\nclass Shot:\n    name: str\n    start: int\n    end: int' },
+    { type: 'cg', text: 'an export tool has an `Exporter` class that keeps the config in `self` and has `validate()` and `export()` methods. The UI (PySide) only calls those methods.' },
+    { type: 'tip', text: 'separating the **logic** (classes and functions with no UI) from the **UI** (PySide) is something TA interviewers value a lot: it can be tested and reused in batches without opening windows.' }
   ],
 
   example: {
-    intro: 'Una clase de datos para las tomas.',
+    intro: 'A data class for shots.',
     lines: [
-      { code: 'from dataclasses import dataclass, field', note: 'Importamos `dataclass`.' },
-      { code: '@dataclass\nclass Toma:\n    nombre: str\n    inicio: int\n    fin: int\n    camaras: list = field(default_factory=list)', note: 'Cada campo con su tipo. Para listas por defecto se usa `field(default_factory=list)` (la misma trampa de la lección 10).' },
-      { code: '    def duracion(self):\n        return self.fin - self.inicio + 1', note: 'Un método normal dentro de la clase.' },
-      { code: 't = Toma("sh010", 1001, 1048)\nt.camaras.append("cam_A")', note: 'Creamos un objeto y usamos su lista.' },
-      { code: 'print(t)\nprint(t.duracion())', note: 'El `__repr__` automático muestra todos los campos.' }
+      { code: 'from dataclasses import dataclass, field', note: 'We import `dataclass`.' },
+      { code: '@dataclass\nclass Shot:\n    name: str\n    start: int\n    end: int\n    cameras: list = field(default_factory=list)', note: 'Each field with its type. For default lists use `field(default_factory=list)` (the same trap as lesson 10).' },
+      { code: '    def duration(self):\n        return self.end - self.start + 1', note: 'A normal method inside the class.' },
+      { code: 's = Shot("sh010", 1001, 1048)\ns.cameras.append("cam_A")', note: 'We create an object and use its list.' },
+      { code: 'print(s)\nprint(s.duration())', note: 'The automatic `__repr__` shows every field.' }
     ],
-    output: "Toma(nombre='sh010', inicio=1001, fin=1048, camaras=['cam_A'])\n48"
+    output: "Shot(name='sh010', start=1001, end=1048, cameras=['cam_A'])\n48"
   },
 
   mini: [
     {
-      q: '¿Qué es `self` dentro de un método?',
-      options: ['La clase', 'El objeto concreto con el que se llama al método', 'Una variable global'],
+      q: 'What is `self` inside a method?',
+      options: ['The class', 'The particular object the method was called on', 'A global variable'],
       answer: 1,
-      why: 'En `t.duracion()`, `self` es `t`. Así cada objeto usa sus propios datos.'
+      why: 'In `s.duration()`, `self` is `s`. That way each object uses its own data.'
     },
     {
-      q: '¿Qué escribe automáticamente `@dataclass`?',
-      options: ['`__init__`, `__repr__` y `__eq__`', 'Solo el `__init__`', 'Una interfaz gráfica'],
+      q: 'What does `@dataclass` write for you?',
+      options: ['`__init__`, `__repr__` and `__eq__`', 'Only `__init__`', 'A graphical UI'],
       answer: 0,
-      why: 'Por eso es ideal para clases que son, sobre todo, datos.'
+      why: 'That is why it is ideal for classes that are mostly data.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'La clase Toma',
-      prompt: 'Crea la clase `Toma` con `nombre`, `inicio` y `fin`, y estos métodos:\n\n- `duracion()` → frames, contando inicio y fin.\n- `contiene(frame)` → `True` si el frame está entre inicio y fin (incluidos).',
-      starter: 'class Toma:\n    def __init__(self, nombre, inicio, fin):\n        pass\n',
+      title: 'The Shot class',
+      prompt: 'Create the class `Shot` with `name`, `start` and `end`, and these methods:\n\n- `duration()` → frames, counting start and end.\n- `contains(frame)` → `True` if the frame is between start and end (inclusive).',
+      starter: 'class Shot:\n    def __init__(self, name, start, end):\n        pass\n',
       tests: [
-        { check: "Toma('sh010', 1001, 1048).duracion() == 48", msg: 'duracion() da 48' },
-        { check: "Toma('sh010', 1001, 1048).contiene(1048) is True", msg: 'contiene(1048) es True' },
-        { check: "Toma('sh010', 1001, 1048).contiene(1000) is False", msg: 'contiene(1000) es False' },
-        { check: "Toma('x', 1, 2).nombre == 'x'", msg: 'guarda el nombre en self.nombre' }
+        { check: "Shot('sh010', 1001, 1048).duration() == 48", msg: 'duration() gives 48' },
+        { check: "Shot('sh010', 1001, 1048).contains(1048) is True", msg: 'contains(1048) is True' },
+        { check: "Shot('sh010', 1001, 1048).contains(1000) is False", msg: 'contains(1000) is False' },
+        { check: "Shot('x', 1, 2).name == 'x'", msg: 'stores the name in self.name' }
       ],
-      hints: ['En `__init__`: `self.nombre = nombre`, etc.', '`return self.inicio <= frame <= self.fin`'],
-      solution: 'class Toma:\n    def __init__(self, nombre, inicio, fin):\n        self.nombre = nombre\n        self.inicio = inicio\n        self.fin = fin\n\n    def duracion(self):\n        return self.fin - self.inicio + 1\n\n    def contiene(self, frame):\n        return self.inicio <= frame <= self.fin\n'
+      hints: ['In `__init__`: `self.name = name`, and so on.', '`return self.start <= frame <= self.end`'],
+      solution: 'class Shot:\n    def __init__(self, name, start, end):\n        self.name = name\n        self.start = start\n        self.end = end\n\n    def duration(self):\n        return self.end - self.start + 1\n\n    def contains(self, frame):\n        return self.start <= frame <= self.end\n'
     },
     {
       id: 'e2',
-      title: 'Con dataclass',
-      prompt: 'Reescribe `Toma` como `@dataclass` con `nombre: str`, `inicio: int`, `fin: int`, y el método `duracion()`.\n\nLuego crea `tomas` con tres objetos (`sh010` 1001–1048, `sh020` 1049–1144, `sh030` 1145–1168) y `total` con la suma de sus duraciones.',
+      title: 'With dataclass',
+      prompt: 'Rewrite `Shot` as a `@dataclass` with `name: str`, `start: int`, `end: int`, and the `duration()` method.\n\nThen create `shots` with three objects (`sh010` 1001–1048, `sh020` 1049–1144, `sh030` 1145–1168) and `total` with the sum of their durations.',
       starter: 'from dataclasses import dataclass\n\n',
       tests: [
-        { check: "Toma('a', 1, 10) == Toma('a', 1, 10)", msg: 'dos tomas iguales son == (lo da dataclass)' },
-        { check: 'len(tomas) == 3 and total == 168', msg: '`total` vale 168 (48 + 96 + 24)' },
-        { check: "'sh010' in repr(tomas[0])", msg: 'el repr muestra el nombre' }
+        { check: "Shot('a', 1, 10) == Shot('a', 1, 10)", msg: 'two equal shots are == (dataclass gives you that)' },
+        { check: 'len(shots) == 3 and total == 168', msg: '`total` is 168 (48 + 96 + 24)' },
+        { check: "'sh010' in repr(shots[0])", msg: 'the repr shows the name' }
       ],
-      hints: ['`@dataclass` encima de `class Toma:` y los campos con su tipo.', '`total = sum(t.duracion() for t in tomas)`'],
-      solution: 'from dataclasses import dataclass\n\n@dataclass\nclass Toma:\n    nombre: str\n    inicio: int\n    fin: int\n\n    def duracion(self):\n        return self.fin - self.inicio + 1\n\ntomas = [Toma("sh010", 1001, 1048), Toma("sh020", 1049, 1144), Toma("sh030", 1145, 1168)]\ntotal = sum(t.duracion() for t in tomas)\n'
+      hints: ['`@dataclass` above `class Shot:` and the fields with their types.', '`total = sum(s.duration() for s in shots)`'],
+      solution: 'from dataclasses import dataclass\n\n@dataclass\nclass Shot:\n    name: str\n    start: int\n    end: int\n\n    def duration(self):\n        return self.end - self.start + 1\n\nshots = [Shot("sh010", 1001, 1048), Shot("sh020", 1049, 1144), Shot("sh030", 1145, 1168)]\ntotal = sum(s.duration() for s in shots)\n'
     },
     {
       id: 'e3',
-      title: '¿Se solapan?',
-      prompt: 'Añade a tu `Toma` (puede ser dataclass) el método `solapa(otra)`: `True` si comparten algún frame.\n\nPista: dos rangos **no** se solapan si uno termina antes de que empiece el otro.',
-      starter: 'from dataclasses import dataclass\n\n@dataclass\nclass Toma:\n    nombre: str\n    inicio: int\n    fin: int\n\n    def solapa(self, otra):\n        pass\n',
+      title: 'Do they overlap?',
+      prompt: 'Add to your `Shot` (it can be a dataclass) the method `overlaps(other)`: `True` if they share any frame.\n\nHint: two ranges do **not** overlap if one ends before the other starts.',
+      starter: 'from dataclasses import dataclass\n\n@dataclass\nclass Shot:\n    name: str\n    start: int\n    end: int\n\n    def overlaps(self, other):\n        pass\n',
       tests: [
-        { check: "Toma('a', 1, 10).solapa(Toma('b', 10, 20)) is True", msg: '1–10 y 10–20 se solapan (comparten el 10)' },
-        { check: "Toma('a', 1, 10).solapa(Toma('b', 11, 20)) is False", msg: '1–10 y 11–20 no se solapan' },
-        { check: "Toma('a', 5, 6).solapa(Toma('b', 1, 20)) is True", msg: 'una dentro de otra se solapa' }
+        { check: "Shot('a', 1, 10).overlaps(Shot('b', 10, 20)) is True", msg: '1–10 and 10–20 overlap (they share frame 10)' },
+        { check: "Shot('a', 1, 10).overlaps(Shot('b', 11, 20)) is False", msg: '1–10 and 11–20 do not overlap' },
+        { check: "Shot('a', 5, 6).overlaps(Shot('b', 1, 20)) is True", msg: 'one inside the other overlaps' }
       ],
-      hints: ['No se solapan si `self.fin < otra.inicio` o `otra.fin < self.inicio`.', '`return not (self.fin < otra.inicio or otra.fin < self.inicio)`'],
-      solution: 'from dataclasses import dataclass\n\n@dataclass\nclass Toma:\n    nombre: str\n    inicio: int\n    fin: int\n\n    def solapa(self, otra):\n        return not (self.fin < otra.inicio or otra.fin < self.inicio)\n'
+      hints: ['They do not overlap if `self.end < other.start` or `other.end < self.start`.', '`return not (self.end < other.start or other.end < self.start)`'],
+      solution: 'from dataclasses import dataclass\n\n@dataclass\nclass Shot:\n    name: str\n    start: int\n    end: int\n\n    def overlaps(self, other):\n        return not (self.end < other.start or other.end < self.start)\n'
     }
   ],
 
   summary: [
-    'Clase = plano; objeto = casa construida. `self` es el objeto concreto.',
-    '`__init__` prepara los datos; los métodos son funciones del objeto.',
-    '`@dataclass` ahorra `__init__`, `__repr__` y `__eq__` en clases de datos.'
+    'Class = blueprint; object = a built house. `self` is the particular object.',
+    '`__init__` sets up the data; methods are the object\'s functions.',
+    '`@dataclass` saves you `__init__`, `__repr__` and `__eq__` in data classes.'
   ]
 });

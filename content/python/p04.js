@@ -1,106 +1,105 @@
 TA.add({
   id: 'p04',
-  title: 'Recorrer diccionarios',
-  en: 'items(), comprehensions, sorting',
+  title: 'Looping over dictionaries',
 
   explain: [
-    'Ya sabes crear un diccionario y leer una clave. Ahora vamos a **recorrerlo entero**: pasar por todas sus parejas una por una.',
-    { type: 'analogy', text: 'recorrer un diccionario es como leer la agenda del móvil de arriba abajo: en cada línea ves el nombre **y** el teléfono a la vez.' },
-    '### Tres formas de recorrer',
-    '- `for clave in d:` → solo las claves.\n- `for valor in d.values():` → solo los valores.\n- `for clave, valor in d.items():` → las dos cosas a la vez. **Es la que más vas a usar.**',
-    '```python\nfor toma, frames in tomas.items():\n    print(toma, frames)\n```',
+    'You already know how to create a dictionary and read a key. Now let\'s **loop over all of it**: visit every pair, one by one.',
+    { type: 'analogy', text: 'looping over a dictionary is like reading your phone contacts top to bottom: on each line you see the name **and** the number at the same time.' },
+    '### Three ways to loop',
+    '- `for key in d:` → keys only.\n- `for value in d.values():` → values only.\n- `for key, value in d.items():` → both at once. **This is the one you will use most.**',
+    '```python\nfor shot, frames in shots.items():\n    print(shot, frames)\n```',
     { type: 'compare',
-      badTitle: 'Funciona, pero busca dos veces',
-      bad: 'for toma in tomas:\n    frames = tomas[toma]\n    print(toma, frames)',
-      goodTitle: 'Más claro con items()',
-      good: 'for toma, frames in tomas.items():\n    print(toma, frames)' },
-    '### Comprensión de diccionario (dict comprehension)',
-    'Una **comprensión** crea un diccionario nuevo en una sola línea. Sirve para **filtrar** o **transformar**.',
-    '```python\nlargas = {t: f for t, f in tomas.items() if f > 60}\n```',
-    'Se lee así: «para cada toma `t` con frames `f`, guarda `t: f`, solo si `f > 60`».',
-    '### Ordenar y buscar el máximo',
-    'Un diccionario no se ordena solo. Pero puedes pedir sus claves ordenadas según el valor con `key=`.',
-    '- `sorted(tomas, key=tomas.get)` → claves ordenadas de menor a mayor valor.\n- `max(tomas, key=tomas.get)` → la clave con el valor más grande.\n- `sum(tomas.values())` → suma de todos los valores.',
-    { type: 'cg', text: 'una herramienta de cinemáticas recibe un diccionario `{toma: frames}` y tiene que decir cuánto dura la secuencia, qué tomas son largas y cuál es la más larga.' },
-    { type: 'tip', text: 'si te piden «la clave con el valor más alto», la respuesta corta es `max(d, key=d.get)`. Saberla demuestra que conoces Python, no solo bucles.' }
+      badTitle: 'Works, but looks things up twice',
+      bad: 'for shot in shots:\n    frames = shots[shot]\n    print(shot, frames)',
+      goodTitle: 'Clearer with items()',
+      good: 'for shot, frames in shots.items():\n    print(shot, frames)' },
+    '### Dict comprehension',
+    'A **comprehension** builds a new dictionary in a single line. Use it to **filter** or **transform**.',
+    '```python\nlong_shots = {s: f for s, f in shots.items() if f > 60}\n```',
+    'Read it as: «for each shot `s` with frames `f`, keep `s: f`, only if `f > 60`».',
+    '### Sorting and finding the max',
+    'A dictionary does not sort itself. But you can get its keys sorted by value with `key=`.',
+    '- `sorted(shots, key=shots.get)` → keys sorted from lowest to highest value.\n- `max(shots, key=shots.get)` → the key with the biggest value.\n- `sum(shots.values())` → the sum of all values.',
+    { type: 'cg', text: 'a cinematics tool receives a `{shot: frames}` dictionary and has to say how long the sequence is, which shots are long and which is the longest.' },
+    { type: 'tip', text: 'if they ask for «the key with the highest value», the short answer is `max(d, key=d.get)`. Knowing it shows you know Python, not just loops.' }
   ],
 
   example: {
-    intro: 'Tenemos la duración de cada toma de una secuencia.',
+    intro: 'We have the duration of each shot in a sequence.',
     lines: [
-      { code: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72}', note: 'Clave = nombre de la toma. Valor = frames.' },
-      { code: 'for toma, frames in tomas.items():\n    print(f"{toma}: {frames} frames")', note: '`.items()` da parejas. En cada vuelta, `toma` y `frames` reciben una pareja.' },
-      { code: 'total = sum(tomas.values())', note: 'Sumamos solo los valores: 48 + 96 + 72 = 216.' },
-      { code: 'largas = {t: f for t, f in tomas.items() if f > 60}', note: 'Comprensión: un diccionario nuevo solo con las tomas de más de 60 frames.' },
-      { code: 'mas_larga = max(tomas, key=tomas.get)', note: '`key=tomas.get` le dice a `max` que compare los **valores**, no los nombres.' },
-      { code: 'print(total, largas, mas_larga)', note: 'Mostramos los resultados.' }
+      { code: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72}', note: 'Key = shot name. Value = frames.' },
+      { code: 'for shot, frames in shots.items():\n    print(f"{shot}: {frames} frames")', note: '`.items()` gives pairs. On each pass, `shot` and `frames` receive one pair.' },
+      { code: 'total = sum(shots.values())', note: 'We add up only the values: 48 + 96 + 72 = 216.' },
+      { code: 'long_shots = {s: f for s, f in shots.items() if f > 60}', note: 'Comprehension: a new dictionary with only the shots over 60 frames.' },
+      { code: 'longest = max(shots, key=shots.get)', note: '`key=shots.get` tells `max` to compare the **values**, not the names.' },
+      { code: 'print(total, long_shots, longest)', note: 'We show the results.' }
     ],
     output: "sh010: 48 frames\nsh020: 96 frames\nsh030: 72 frames\n216 {'sh020': 96, 'sh030': 72} sh020",
-    outro: 'Sin `key=`, `max(tomas)` compararía los **textos** de las claves y devolvería `"sh030"` (la última en orden alfabético). Error muy común.'
+    outro: 'Without `key=`, `max(shots)` would compare the key **strings** and return `"sh030"` (last alphabetically). A very common mistake.'
   },
 
   mini: [
     {
-      q: '¿Qué da `for k, v in d.items():` en cada vuelta?',
-      options: ['Solo la clave', 'Solo el valor', 'La clave y el valor a la vez'],
+      q: 'What does `for k, v in d.items():` give on each pass?',
+      options: ['Only the key', 'Only the value', 'The key and the value together'],
       answer: 2,
-      why: '`.items()` da parejas (clave, valor). Las «desempaquetamos» en `k` y `v`.'
+      why: '`.items()` gives (key, value) pairs. We «unpack» them into `k` and `v`.'
     },
     {
-      q: 'Con `d = {"a": 5, "b": 9, "c": 1}`, ¿qué devuelve `max(d, key=d.get)`?',
+      q: 'With `d = {"a": 5, "b": 9, "c": 1}`, what does `max(d, key=d.get)` return?',
       options: ['`9`', '`"b"`', '`"c"`'],
       answer: 1,
-      why: 'Devuelve la **clave** cuyo valor es el mayor. El valor mayor es 9, y su clave es `"b"`.'
+      why: 'It returns the **key** whose value is the largest. The largest value is 9, and its key is `"b"`.'
     }
   ],
   extra: [
     {
-      q: '¿Qué devuelve `max({"sh010": 90, "sh030": 10})` (sin `key`)?',
+      q: 'What does `max({"sh010": 90, "sh030": 10})` (without `key`) return?',
       options: ['`"sh010"`', '`"sh030"`', '`90`'],
       answer: 1,
-      why: 'Sin `key`, compara las claves como texto. `"sh030"` > `"sh010"` alfabéticamente.'
+      why: 'Without `key`, it compares the keys as text. `"sh030"` > `"sh010"` alphabetically.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Duración total',
-      prompt: 'Crea `total` con la suma de los frames de todas las tomas. Usa `.values()`.',
-      starter: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
-      tests: [{ check: 'total == 240', msg: '`total` vale 240' }],
-      hints: ['`sum()` suma todo lo que le des.', '`total = sum(tomas.values())`'],
-      solution: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\ntotal = sum(tomas.values())\n'
+      title: 'Total duration',
+      prompt: 'Create `total` with the sum of the frames of every shot. Use `.values()`.',
+      starter: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
+      tests: [{ check: 'total == 240', msg: '`total` is 240' }],
+      hints: ['`sum()` adds up whatever you give it.', '`total = sum(shots.values())`'],
+      solution: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\ntotal = sum(shots.values())\n'
     },
     {
       id: 'e2',
-      title: 'Solo las tomas cortas',
-      prompt: 'Crea un diccionario `cortas` con las tomas de **menos de 50** frames. Usa una comprensión de diccionario.',
-      starter: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
+      title: 'Only the short shots',
+      prompt: 'Create a dictionary `short_shots` with the shots of **fewer than 50** frames. Use a dict comprehension.',
+      starter: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
       tests: [
-        { check: "cortas == {'sh010': 48, 'sh040': 24}", msg: '`cortas` tiene sh010 y sh040 con sus frames' },
-        { check: "tomas == {'sh010': 48, 'sh020': 96, 'sh030': 72, 'sh040': 24}", msg: 'no has modificado `tomas`' }
+        { check: "short_shots == {'sh010': 48, 'sh040': 24}", msg: '`short_shots` has sh010 and sh040 with their frames' },
+        { check: "shots == {'sh010': 48, 'sh020': 96, 'sh030': 72, 'sh040': 24}", msg: 'you did not change `shots`' }
       ],
-      hints: ['La forma es `{k: v for k, v in d.items() if condición}`.', '`cortas = {t: f for t, f in tomas.items() if f < 50}`'],
-      solution: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\ncortas = {t: f for t, f in tomas.items() if f < 50}\n'
+      hints: ['The shape is `{k: v for k, v in d.items() if condition}`.', '`short_shots = {s: f for s, f in shots.items() if f < 50}`'],
+      solution: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\nshort_shots = {s: f for s, f in shots.items() if f < 50}\n'
     },
     {
       id: 'e3',
-      title: 'La más larga y el orden',
-      prompt: 'Crea `mas_larga` con el **nombre** de la toma con más frames.\n\nCrea `orden` con la lista de nombres ordenada de **más larga a más corta**. (Pista: `sorted` tiene `reverse=True`.)',
-      starter: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
+      title: 'The longest one and the order',
+      prompt: 'Create `longest` with the **name** of the shot with the most frames.\n\nCreate `order` with the list of names sorted from **longest to shortest**. (Hint: `sorted` has `reverse=True`.)',
+      starter: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\n',
       tests: [
-        { check: "mas_larga == 'sh020'", msg: '`mas_larga` es "sh020"' },
-        { check: "orden == ['sh020', 'sh030', 'sh010', 'sh040']", msg: '`orden` va de la más larga a la más corta' }
+        { check: "longest == 'sh020'", msg: '`longest` is "sh020"' },
+        { check: "order == ['sh020', 'sh030', 'sh010', 'sh040']", msg: '`order` goes from longest to shortest' }
       ],
-      hints: ['`max(tomas, key=tomas.get)`', '`sorted(tomas, key=tomas.get, reverse=True)`'],
-      solution: 'tomas = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\nmas_larga = max(tomas, key=tomas.get)\norden = sorted(tomas, key=tomas.get, reverse=True)\n'
+      hints: ['`max(shots, key=shots.get)`', '`sorted(shots, key=shots.get, reverse=True)`'],
+      solution: 'shots = {"sh010": 48, "sh020": 96, "sh030": 72, "sh040": 24}\n\nlongest = max(shots, key=shots.get)\norder = sorted(shots, key=shots.get, reverse=True)\n'
     }
   ],
 
   summary: [
-    '`for k, v in d.items():` recorre claves y valores a la vez.',
-    '`{k: v for k, v in d.items() if ...}` filtra o transforma en una línea.',
-    '`max(d, key=d.get)` y `sorted(d, key=d.get)` comparan por el **valor**.'
+    '`for k, v in d.items():` loops over keys and values together.',
+    '`{k: v for k, v in d.items() if ...}` filters or transforms in one line.',
+    '`max(d, key=d.get)` and `sorted(d, key=d.get)` compare by **value**.'
   ]
 });

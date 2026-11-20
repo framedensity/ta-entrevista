@@ -1,107 +1,106 @@
 (function () {
 var SETUP = [
   'import os',
-  'os.makedirs("escenas")',
-  'for _n in ["sh010_v001.ma", "sh010_v002.ma", "sh020_v001.ma", "notas.txt", "sh030_v001.mb"]:',
-  '    open(os.path.join("escenas", _n), "w").close()',
+  'os.makedirs("scenes")',
+  'for _n in ["sh010_v001.ma", "sh010_v002.ma", "sh020_v001.ma", "notes.txt", "sh030_v001.mb"]:',
+  '    open(os.path.join("scenes", _n), "w").close()',
   'del _n'
 ].join('\n') + '\n';
-var FILES = 'escenas/\n  sh010_v001.ma\n  sh010_v002.ma\n  sh020_v001.ma\n  sh030_v001.mb\n  notas.txt';
+var FILES = 'scenes/\n  sh010_v001.ma\n  sh010_v002.ma\n  sh020_v001.ma\n  sh030_v001.mb\n  notes.txt';
 
 TA.add({
   id: 'p13',
-  title: 'os y os.path',
-  en: 'files & paths',
+  title: 'os and os.path',
 
   explain: [
-    'Las herramientas de TA trabajan con **archivos**: buscan escenas, crean carpetas de exportación, renombran versiones. El módulo `os` es la puerta al sistema de archivos.',
-    { type: 'analogy', text: 'una **ruta** (*path*) es la dirección de un archivo, como una dirección postal: país / ciudad / calle / número. `proyecto/sq010/sh010/anim.ma`.' },
-    '### Nunca pegues rutas con +',
+    'TA tools work with **files**: they find scenes, create export folders, rename versions. The `os` module is the door to the file system.',
+    { type: 'analogy', text: 'a **path** is a file\'s address, like a postal address: country / city / street / number. `project/sq010/sh010/anim.ma`.' },
+    '### Never glue paths with +',
     { type: 'compare',
-      badTitle: 'Se rompe entre Windows y Mac',
-      bad: 'ruta = carpeta + "/" + archivo',
-      goodTitle: 'os.path.join pone el separador correcto',
-      good: 'ruta = os.path.join(carpeta, archivo)' },
-    '### Lo más usado de os y os.path',
-    '- `os.listdir(carpeta)` → lista de nombres dentro de la carpeta (sin la ruta).\n- `os.path.join(a, b)` → une partes de una ruta.\n- `os.path.exists(r)`, `os.path.isfile(r)`, `os.path.isdir(r)` → ¿existe?, ¿es archivo?, ¿es carpeta?\n- `os.path.basename(r)` → el nombre final. `os.path.dirname(r)` → la carpeta.\n- `os.path.splitext(nombre)` → separa `("sh010_v001", ".ma")`.\n- `os.makedirs(r, exist_ok=True)` → crea carpetas (y las de en medio). Sin error si ya existe.\n- `os.rename(viejo, nuevo)`, `os.remove(r)` → renombrar y borrar.',
-    { type: 'warn', text: '`os.listdir` devuelve los nombres en **cualquier orden**. Si el orden importa, usa `sorted()`.' },
-    { type: 'cg', text: 'antes de exportar una toma, la herramienta crea `export/sq010/sh010/` con `makedirs(..., exist_ok=True)`. Así no falla si la carpeta ya existía de una exportación anterior.' },
-    'En estos ejercicios, cada vez que pulsas «Ejecutar», aparece una carpeta de trabajo nueva con archivos de prueba.'
+      badTitle: 'Breaks between Windows and Mac',
+      bad: 'path = folder + "/" + filename',
+      goodTitle: 'os.path.join uses the right separator',
+      good: 'path = os.path.join(folder, filename)' },
+    '### The most used parts of os and os.path',
+    '- `os.listdir(folder)` → list of names inside the folder (without the path).\n- `os.path.join(a, b)` → joins parts of a path.\n- `os.path.exists(p)`, `os.path.isfile(p)`, `os.path.isdir(p)` → does it exist? is it a file? a folder?\n- `os.path.basename(p)` → the final name. `os.path.dirname(p)` → the folder.\n- `os.path.splitext(name)` → splits into `("sh010_v001", ".ma")`.\n- `os.makedirs(p, exist_ok=True)` → creates folders (and the ones in between). No error if it already exists.\n- `os.rename(old, new)`, `os.remove(p)` → rename and delete.',
+    { type: 'warn', text: '`os.listdir` returns the names in **any order**. If order matters, use `sorted()`.' },
+    { type: 'cg', text: 'before exporting a shot, the tool creates `export/sq010/sh010/` with `makedirs(..., exist_ok=True)`. That way it does not fail if the folder already existed from a previous export.' },
+    'In these exercises, every time you tap «Run», a fresh working folder with test files appears.'
   ],
 
   example: {
-    intro: 'Miramos qué escenas hay en una carpeta.',
+    intro: 'We look at which scenes are in a folder.',
     lines: [
-      { code: 'import os', note: 'Importamos el módulo.' },
-      { code: 'nombres = sorted(os.listdir("escenas"))', note: 'Todos los nombres de la carpeta, ordenados.' },
-      { code: 'mayas = [n for n in nombres if n.endswith((".ma", ".mb"))]', note: '`endswith` acepta una **tupla** de terminaciones.' },
-      { code: 'base, ext = os.path.splitext(mayas[0])', note: 'Separa nombre y extensión: `"sh010_v001"`, `".ma"`.' },
-      { code: 'destino = os.path.join("export", base)\nos.makedirs(destino, exist_ok=True)', note: 'Crea `export/sh010_v001`.' },
-      { code: 'print(mayas, ext, os.path.isdir(destino))', note: 'Resultado.' }
+      { code: 'import os', note: 'We import the module.' },
+      { code: 'names = sorted(os.listdir("scenes"))', note: 'Every name in the folder, sorted.' },
+      { code: 'maya_files = [n for n in names if n.endswith((".ma", ".mb"))]', note: '`endswith` accepts a **tuple** of endings.' },
+      { code: 'base, ext = os.path.splitext(maya_files[0])', note: 'Splits name and extension: `"sh010_v001"`, `".ma"`.' },
+      { code: 'target = os.path.join("export", base)\nos.makedirs(target, exist_ok=True)', note: 'Creates `export/sh010_v001`.' },
+      { code: 'print(maya_files, ext, os.path.isdir(target))', note: 'Result.' }
     ],
     output: "['sh010_v001.ma', 'sh010_v002.ma', 'sh020_v001.ma', 'sh030_v001.mb'] .ma True"
   },
 
   mini: [
     {
-      q: '¿Qué devuelve `os.path.splitext("cam.v2.fbx")`?',
+      q: 'What does `os.path.splitext("cam.v2.fbx")` return?',
       options: ['`("cam", ".v2.fbx")`', '`("cam.v2", ".fbx")`', '`["cam", "v2", "fbx"]`'],
       answer: 1,
-      why: '`splitext` separa solo la **última** extensión.'
+      why: '`splitext` splits off only the **last** extension.'
     },
     {
-      q: '¿Para qué sirve `exist_ok=True` en `os.makedirs`?',
-      options: ['Para borrar la carpeta si existe', 'Para no dar error si la carpeta ya existe', 'Para crear solo la última carpeta'],
+      q: 'What is `exist_ok=True` for in `os.makedirs`?',
+      options: ['To delete the folder if it exists', 'To not raise an error if the folder already exists', 'To create only the last folder'],
       answer: 1,
-      why: 'Sin `exist_ok=True`, si la carpeta ya existe, lanza `FileExistsError`.'
+      why: 'Without `exist_ok=True`, if the folder already exists it raises `FileExistsError`.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Solo las escenas .ma',
-      prompt: 'Crea `escenas_ma`: lista **ordenada** con los nombres de archivo que terminan en `.ma` dentro de la carpeta `escenas`.',
+      title: 'Only the .ma scenes',
+      prompt: 'Create `ma_scenes`: a **sorted** list of the file names ending in `.ma` inside the `scenes` folder.',
       files: FILES,
       setup: SETUP,
       starter: 'import os\n\n',
-      tests: [{ check: "escenas_ma == ['sh010_v001.ma', 'sh010_v002.ma', 'sh020_v001.ma']", msg: '`escenas_ma` tiene las tres .ma, ordenadas' }],
-      hints: ['`os.listdir("escenas")` da los nombres.', '`sorted(n for n in os.listdir("escenas") if n.endswith(".ma"))`'],
-      solution: 'import os\n\nescenas_ma = sorted(n for n in os.listdir("escenas") if n.endswith(".ma"))\n'
+      tests: [{ check: "ma_scenes == ['sh010_v001.ma', 'sh010_v002.ma', 'sh020_v001.ma']", msg: '`ma_scenes` has the three .ma files, sorted' }],
+      hints: ['`os.listdir("scenes")` gives the names.', '`sorted(n for n in os.listdir("scenes") if n.endswith(".ma"))`'],
+      solution: 'import os\n\nma_scenes = sorted(n for n in os.listdir("scenes") if n.endswith(".ma"))\n'
     },
     {
       id: 'e2',
-      title: 'Preparar la carpeta de exportación',
-      prompt: 'Escribe `preparar(sq, sh)`: crea la carpeta `export/<sq>/<sh>` (con todas las de en medio) y devuelve su ruta. Si ya existe, **no** debe dar error.',
+      title: 'Preparing the export folder',
+      prompt: 'Write `prepare(sq, sh)`: create the folder `export/<sq>/<sh>` (with every folder in between) and return its path. If it already exists, it must **not** raise an error.',
       setup: SETUP,
       files: FILES,
-      starter: 'import os\n\ndef preparar(sq, sh):\n    # tu código\n    pass\n',
+      starter: 'import os\n\ndef prepare(sq, sh):\n    # your code\n    pass\n',
       tests: [
-        { check: "preparar('sq010', 'sh010') == __import__('os').path.join('export', 'sq010', 'sh010')", msg: 'devuelve export/sq010/sh010' },
-        { check: "__import__('os').path.isdir('export/sq010/sh010')", msg: 'la carpeta existe de verdad' },
-        { check: "preparar('sq010', 'sh010') is not None", msg: 'llamarla dos veces no da error' }
+        { check: "prepare('sq010', 'sh010') == __import__('os').path.join('export', 'sq010', 'sh010')", msg: 'returns export/sq010/sh010' },
+        { check: "__import__('os').path.isdir('export/sq010/sh010')", msg: 'the folder really exists' },
+        { check: "prepare('sq010', 'sh010') is not None", msg: 'calling it twice does not raise' }
       ],
-      hints: ['`ruta = os.path.join("export", sq, sh)`', '`os.makedirs(ruta, exist_ok=True)` y luego `return ruta`.'],
-      solution: 'import os\n\ndef preparar(sq, sh):\n    ruta = os.path.join("export", sq, sh)\n    os.makedirs(ruta, exist_ok=True)\n    return ruta\n'
+      hints: ['`path = os.path.join("export", sq, sh)`', '`os.makedirs(path, exist_ok=True)` and then `return path`.'],
+      solution: 'import os\n\ndef prepare(sq, sh):\n    path = os.path.join("export", sq, sh)\n    os.makedirs(path, exist_ok=True)\n    return path\n'
     },
     {
       id: 'e3',
-      title: 'Última versión de cada toma',
-      prompt: 'En `escenas` hay varias versiones por toma (`sh010_v001.ma`, `sh010_v002.ma`…). Crea `ultimas`: un dict `{toma: nombre_de_archivo}` con la versión **más alta** de cada toma. Considera `.ma` y `.mb`.',
+      title: 'Latest version of each shot',
+      prompt: 'In `scenes` there are several versions per shot (`sh010_v001.ma`, `sh010_v002.ma`…). Create `latest`: a dict `{shot: file_name}` with the **highest** version of each shot. Consider `.ma` and `.mb`.',
       setup: SETUP,
       files: FILES,
       starter: 'import os\n\n',
-      tests: [{ check: "ultimas == {'sh010': 'sh010_v002.ma', 'sh020': 'sh020_v001.ma', 'sh030': 'sh030_v001.mb'}", msg: 'una entrada por toma, con su última versión' }],
-      hints: ['Para cada archivo: `base, ext = os.path.splitext(n)` y `toma, ver = base.split("_v")`.', 'Guarda el archivo si la toma no está en `ultimas` o si su versión es mayor que la guardada.'],
-      solution: 'import os\n\nultimas = {}\nfor n in sorted(os.listdir("escenas")):\n    base, ext = os.path.splitext(n)\n    if ext not in (".ma", ".mb"):\n        continue\n    toma, ver = base.split("_v")\n    actual = ultimas.get(toma)\n    if actual is None or int(ver) > int(os.path.splitext(actual)[0].split("_v")[1]):\n        ultimas[toma] = n\n',
-      explain: 'Otra forma muy clara: agrupar con `defaultdict(list)` y después `max(archivos, key=version)` en cada grupo (lecciones 8 y 9).'
+      tests: [{ check: "latest == {'sh010': 'sh010_v002.ma', 'sh020': 'sh020_v001.ma', 'sh030': 'sh030_v001.mb'}", msg: 'one entry per shot, with its latest version' }],
+      hints: ['For each file: `base, ext = os.path.splitext(n)` and `shot, ver = base.split("_v")`.', 'Store the file if the shot is not in `latest` yet, or if its version is higher than the stored one.'],
+      solution: 'import os\n\nlatest = {}\nfor n in sorted(os.listdir("scenes")):\n    base, ext = os.path.splitext(n)\n    if ext not in (".ma", ".mb"):\n        continue\n    shot, ver = base.split("_v")\n    current = latest.get(shot)\n    if current is None or int(ver) > int(os.path.splitext(current)[0].split("_v")[1]):\n        latest[shot] = n\n',
+      explain: 'Another very clear way: group with `defaultdict(list)` and then `max(files, key=version)` in each group (lessons 8 and 9).'
     }
   ],
 
   summary: [
-    'Une rutas con `os.path.join`, nunca con `+`.',
-    '`listdir` (desordenado: usa `sorted`), `splitext`, `basename`, `exists`, `isdir`.',
-    '`os.makedirs(ruta, exist_ok=True)` crea toda la ruta sin fallar si ya existe.'
+    'Join paths with `os.path.join`, never with `+`.',
+    '`listdir` (unordered: use `sorted`), `splitext`, `basename`, `exists`, `isdir`.',
+    '`os.makedirs(path, exist_ok=True)` creates the whole path without failing if it exists.'
   ]
 });
 })();

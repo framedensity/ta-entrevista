@@ -1,49 +1,50 @@
-# Entrevista TA
+# TA Interview
 
-Sitio estático para preparar la entrevista técnica de Technical Artist (equipo de cinemáticas):
-Python, Maya (`maya.cmds` / OpenMaya), matemáticas 3D y diseño de herramientas.
+A static site for preparing the Technical Artist technical interview (cinematics team):
+Python, Maya (`maya.cmds` / OpenMaya), 3D math and tool design.
 
-Pensado para leer en el móvil. No necesita servidor: funciona en GitHub Pages.
+Built to read on a phone. No server needed: it runs on GitHub Pages.
 
-## Cómo abrirlo
+## Opening it
 
-- En línea: GitHub Pages.
-- En local: abre `index.html` con doble clic. Python (Pyodide) se descarga de internet la primera vez que pulsas «Ejecutar».
+- Online: GitHub Pages.
+- Locally: double-click `index.html`. Python (Pyodide) downloads from the internet the first time you tap «Run».
 
-## Estructura
+## Structure
 
 ```
 index.html
 css/style.css
 js/
-  app.js        rutas: ruta de estudio, lección, repaso, simulacro
-  lesson.js     los 5 pasos de cada lección
-  pyrunner.js   Python en el navegador (Pyodide 0.26.4) y corrección automática
-  editor.js     área de código para el móvil (sin autocorrección, fila de símbolos)
-  md.js         Markdown mínimo
-  store.js      progreso y errores en localStorage
+  app.js        routes: study path, lesson, review, mock exam
+  lesson.js     the 5 steps of every lesson
+  pyrunner.js   Python in the browser (Pyodide 0.26.4) and auto-grading
+  maya_mock.js  small maya.cmds simulator for the Maya exercises
+  viz.js        interactive 3D math figures
+  editor.js     phone-friendly code area (no autocorrect, auto-indent, symbol row)
+  md.js         minimal Markdown
+  store.js      progress and mistakes in localStorage
 content/
-  ta.js           registro global (TA.add)
-  curriculum.js   orden de la ruta
-  python/p01.js … lecciones
+  ta.js           global registry (TA.add)
+  curriculum.js   path order
+  python/ maya/ math/ design/   one file per lesson
 ```
 
-## Añadir una lección
+## Adding a lesson
 
-1. Crea `content/<tema>/<id>.js` con `TA.add({ ... })`, copiando la forma de `content/python/p01.js`.
-2. Añade la lección a `content/curriculum.js` (si no estaba).
-3. Añade su `<script>` en `index.html`.
+1. Create `content/<module>/<id>.js` with `TA.add({ ... })`, copying the shape of an existing lesson.
+2. Add the lesson to `content/curriculum.js`. Lessons load automatically from there.
 
-Los archivos son `.js` (no `.json` ni `.md`) para que el sitio también funcione al abrirlo con doble clic: el navegador no deja cargar `.json` desde `file://`. Los textos se escriben en Markdown dentro del archivo.
+The files are `.js` (not `.json` or `.md`) so the site also works when opened by double-click: browsers do not load `.json` from `file://`. Texts are Markdown inside the file.
 
-### Forma de una lección
+### Lesson shape
 
-- `explain`: textos en Markdown, o bloques `{type:'analogy'|'cg', text}` y `{type:'figure', html}`.
+- `explain`: Markdown strings, or blocks `{type:'analogy'|'cg'|'tip'|'warn', text}`, `{type:'figure', html}`, `{type:'viz', name}`, `{type:'compare', bad, good}`.
 - `example`: `intro`, `lines` (`code` + `note`), `output`, `outro`.
-- `mini`: preguntas de opción múltiple (`q`, `options`, `answer`, `why`).
-- `exercises`: `prompt`, `starter`, `tests` (`check` es una expresión de Python; `_out` es lo que se imprimió), `hints`, `solution`.
-- `summary`: 3 líneas.
+- `mini` / `extra`: multiple-choice questions (`q`, `options`, `answer`, `why`).
+- `exercises`: `prompt`, `setup`, `starter`, `tests` (`check` is a Python expression; `_out` is what was printed, `_log` is stderr, `_code` is the user's code), `hints`, `solution`. Free-answer exercises use `kind:'free'` with `checklist`, `model` and `followups`.
+- `summary`: 3 lines.
 
-## Progreso
+## Progress
 
-Se guarda en el navegador (localStorage). Cada navegador tiene su propio progreso.
+Saved in the browser (localStorage). Each browser keeps its own progress.

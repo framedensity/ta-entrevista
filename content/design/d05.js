@@ -1,40 +1,39 @@
 TA.add({
   id: 'd05',
-  title: 'Extensibilidad',
-  en: 'extensibility',
+  title: 'Extensibility',
 
   explain: [
-    'Una herramienta de estudio vive años. Cambian los proyectos, las versiones de Maya, el motor del juego y la persona que la mantiene. Diseñarla para que **cambie fácil** es parte del trabajo.',
-    { type: 'analogy', text: 'una herramienta extensible es como una regleta de enchufes: cuando llega un aparato nuevo, lo enchufas. Una herramienta rígida es como tener el cable soldado: para cada aparato nuevo hay que abrir la pared.' },
-    '### Técnicas',
-    '- **Configuración fuera del código** (JSON por proyecto, lecciones p15 y p20): cambiar fps o formato no requiere programar.\n- **Reglas como datos** (lección p18): añadir una comprobación es añadir una línea a una lista.\n- **Lógica separada de la interfaz** (lección m10): la misma lógica sirve en la ventana, en un lote y en la granja.\n- **Funciones pequeñas con una sola tarea**: se prueban y se reutilizan.\n- **Registro de «plugins»**: una lista de comprobaciones o exportadores que se pueden añadir sin tocar el núcleo.',
-    '```python\nCOMPROBACIONES = []\n\ndef comprobacion(func):\n    COMPROBACIONES.append(func)\n    return func\n\n@comprobacion\ndef rango_valido(escena): ...\n\n@comprobacion\ndef camaras_con_nombre(escena): ...\n\n# el núcleo solo recorre la lista\nfor c in COMPROBACIONES:\n    problemas += c(escena)\n```',
-    '### Versiones y cambios de Maya',
-    'Evita depender de detalles frágiles: identificadores internos que cambian entre versiones, rutas fijas, nombres «mágicos». Guarda la **versión** de la herramienta en los logs y en los archivos que genera.',
-    { type: 'cg', text: 'tu caso de MotionBuilder: los identificadores de componentes cambiaban con cada versión y las herramientas se rompían. Pasaste a buscar por **nombre de tipo**, y las herramientas siguieron funcionando en varias versiones. Eso es diseño extensible.' },
-    { type: 'tip', text: 'cuenta ese caso en la entrevista: es un ejemplo real y concreto de pensar en el mantenimiento a largo plazo.' }
+    'A studio tool lives for years. Projects change, Maya versions change, the game engine changes, and so does the person maintaining it. Designing it so it is **easy to change** is part of the job.',
+    { type: 'analogy', text: 'an extensible tool is like a power strip: when a new device arrives, you plug it in. A rigid tool is like having the cable soldered in: for every new device you have to open the wall.' },
+    '### Techniques',
+    '- **Config outside the code** (per-project JSON, lessons p15 and p20): changing fps or format needs no programming.\n- **Rules as data** (lesson p18): adding a check is adding a line to a list.\n- **Logic separate from the UI** (lesson m10): the same logic works in the window, in a batch and on the farm.\n- **Small single-purpose functions**: easy to test and reuse.\n- **A «plugin» registry**: a list of checks or exporters you can add to without touching the core.',
+    '```python\nCHECKS = []\n\ndef check(func):\n    CHECKS.append(func)\n    return func\n\n@check\ndef valid_range(scene): ...\n\n@check\ndef cameras_named(scene): ...\n\n# the core just loops over the list\nfor c in CHECKS:\n    problems += c(scene)\n```',
+    '### Versions and Maya changes',
+    'Avoid depending on fragile details: internal IDs that change between versions, hard-coded paths, «magic» names. Store the tool **version** in the logs and in the files it creates.',
+    { type: 'cg', text: 'your MotionBuilder case: component IDs changed with every version and the tools broke. You switched to looking things up by **type name**, and the tools kept working across several versions. That is extensible design.' },
+    { type: 'tip', text: 'tell that story in the interview: it is a real, concrete example of thinking about long-term maintenance.' }
   ],
 
   example: {
-    intro: 'Añadir un formato de exportación nuevo.',
+    intro: 'Adding a new export format.',
     lines: [
-      { label: 'Rígido', code: 'def exportar(toma, formato):\n    if formato == "fbx":\n        ...\n    elif formato == "abc":\n        ...\n    # nuevo formato = tocar esta función', note: 'Cada formato nuevo obliga a modificar (y volver a probar) la función central.' },
-      { label: 'Extensible', code: 'EXPORTADORES = {"fbx": exportar_fbx, "abc": exportar_abc}\n\ndef exportar(toma, formato):\n    try:\n        funcion = EXPORTADORES[formato]\n    except KeyError:\n        raise ValueError(f"Formato desconocido: {formato}")\n    return funcion(toma)\n\nEXPORTADORES["usd"] = exportar_usd  # nuevo formato: una línea', note: 'Un diccionario de funciones. El núcleo no cambia.' }
+      { label: 'Rigid', code: 'def export(shot, fmt):\n    if fmt == "fbx":\n        ...\n    elif fmt == "abc":\n        ...\n    # new format = edit this function', note: 'Every new format means changing (and re-testing) the central function.' },
+      { label: 'Extensible', code: 'EXPORTERS = {"fbx": export_fbx, "abc": export_abc}\n\ndef export(shot, fmt):\n    try:\n        func = EXPORTERS[fmt]\n    except KeyError:\n        raise ValueError(f"Unknown format: {fmt}")\n    return func(shot)\n\nEXPORTERS["usd"] = export_usd  # new format: one line', note: 'A dict of functions. The core does not change.' }
     ]
   },
 
   mini: [
     {
-      q: '¿Qué hace más fácil añadir una comprobación nueva a un verificador?',
-      options: ['Un `if` largo con todas las reglas', 'Una lista (o registro) de funciones de comprobación que el núcleo recorre', 'Copiar el verificador entero'],
+      q: 'What makes adding a new check to a validator easier?',
+      options: ['One long `if` with every rule', 'A list (or registry) of check functions that the core loops over', 'Copying the whole validator'],
       answer: 1,
-      why: 'Añadir es poner una función más en la lista, sin tocar el bucle principal.'
+      why: 'Adding is just one more function in the list, without touching the main loop.'
     },
     {
-      q: '¿Por qué guardar la versión de la herramienta en los logs?',
-      options: ['Por estética', 'Para saber con qué versión se generó un archivo o un error', 'Lo exige Python'],
+      q: 'Why store the tool version in the logs?',
+      options: ['For looks', 'To know which version produced a file or an error', 'Python requires it'],
       answer: 1,
-      why: 'Cuando algo falla semanas después, saber la versión acelera mucho la investigación.'
+      why: 'When something fails weeks later, knowing the version speeds up the investigation a lot.'
     }
   ],
 
@@ -42,24 +41,24 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: 'Preparada para el futuro',
-      prompt: 'Tu exportador de cámaras funciona para el proyecto actual (FBX, 30 fps). El año que viene habrá otro proyecto con otro motor (USD, 60 fps) y otra convención de nombres.\n\n¿Cómo lo diseñarías desde ahora para que ese cambio sea fácil?',
+      title: 'Ready for the future',
+      prompt: 'Your camera exporter works for the current project (FBX, 30 fps). Next year there will be another project with another engine (USD, 60 fps) and a different naming convention.\n\nHow would you design it now so that change is easy?',
       checklist: [
-        'Configuración por proyecto en un archivo (fps, formato, convención) con valores por defecto.',
-        'Exportadores por formato en un registro/diccionario: añadir USD sin tocar el núcleo.',
-        'La convención de nombres como datos o como una función intercambiable.',
-        'Lógica separada de la interfaz y funciones pequeñas.',
-        'Versión de la herramienta en los logs y en los archivos generados.',
-        'Pruebas sencillas de la lógica para cambiar con confianza.'
+        'Per-project config in a file (fps, format, convention) with defaults.',
+        'Exporters per format in a registry/dict: add USD without touching the core.',
+        'The naming convention as data or as a swappable function.',
+        'Logic separate from the UI, and small functions.',
+        'Tool version in the logs and in the generated files.',
+        'Simple tests of the logic so changes are safe.'
       ],
-      model: '- Todo lo que cambia entre proyectos (fps, formato, convención, rutas) va en un **JSON del proyecto**, combinado con valores por defecto.\n- Cada formato es una función registrada en un diccionario `EXPORTADORES`. USD es una entrada nueva, no un cambio en el núcleo.\n- La convención de nombres es una función por proyecto que recibe la toma y devuelve el nombre.\n- La ventana solo llama a la lógica, así que la misma lógica sirve en lotes.\n- Guardo la versión de la herramienta en el log y en los metadatos de cada archivo exportado.\n- Algunas pruebas automáticas de la lógica (nombres, rangos) para no romper lo que ya funciona.',
-      followups: ['¿Qué parte sería más difícil de cambiar y cómo la aislarías?', '¿Cómo probarías el exportador sin abrir Maya?']
+      model: '- Everything that changes between projects (fps, format, convention, paths) goes in a **project JSON**, merged with defaults.\n- Each format is a function registered in an `EXPORTERS` dict. USD is a new entry, not a change to the core.\n- The naming convention is a per-project function that takes the shot and returns the name.\n- The window only calls the logic, so the same logic works in batches.\n- I store the tool version in the log and in the metadata of every exported file.\n- A few automated tests of the logic (names, ranges) so I do not break what already works.',
+      followups: ['Which part would be hardest to change, and how would you isolate it?', 'How would you test the exporter without opening Maya?']
     }
   ],
 
   summary: [
-    'Configuración y reglas como datos; lógica separada de la interfaz.',
-    'Registros (dicts o listas de funciones) para añadir sin tocar el núcleo.',
-    'Evita detalles frágiles entre versiones y registra la versión de la herramienta.'
+    'Config and rules as data; logic separate from the UI.',
+    'Registries (dicts or lists of functions) to add things without touching the core.',
+    'Avoid fragile details between versions and record the tool version.'
   ]
 });

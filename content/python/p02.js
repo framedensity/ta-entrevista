@@ -1,19 +1,18 @@
 TA.add({
   id: 'p02',
-  title: 'Listas',
-  en: 'lists',
+  title: 'Lists',
 
   explain: [
-    'Una cinemática no tiene una sola toma. Tiene muchas. Crear una variable para cada una (`toma1`, `toma2`…) sería un lío.',
-    'Para guardar muchos datos juntos, usamos una **lista** (*list*).',
-    { type: 'analogy', text: 'una lista es como un tren. Cada vagón lleva un dato. Los vagones van siempre en el mismo orden.' },
-    'Escribes una lista con corchetes `[ ]`. Separas los datos con comas.',
-    '```python\ntomas = ["sh010", "sh020", "sh030"]\n```',
-    '### El índice: el número de cada vagón',
-    'Cada vagón tiene un número: el **índice** (*index*). Con el índice sacas un dato de la lista.',
-    '¡Ojo! El primer vagón es el **0**, no el 1. Python empieza a contar desde cero.',
+    'A cutscene does not have a single shot. It has many. Creating one variable for each (`shot1`, `shot2`…) would be a mess.',
+    'To keep lots of data together, we use a **list**.',
+    { type: 'analogy', text: 'a list is like a train. Each car carries one piece of data. The cars always stay in the same order.' },
+    'You write a list with square brackets `[ ]`. Separate the items with commas.',
+    '```python\nshots = ["sh010", "sh020", "sh030"]\n```',
+    '### The index: the number of each car',
+    'Every car has a number: the **index**. With the index you take an item out of the list.',
+    'Careful! The first car is **0**, not 1. Python starts counting at zero.',
     { type: 'figure', html:
-      '<svg viewBox="0 0 330 112" role="img" aria-label="Un tren de tres vagones con índices 0, 1 y 2, y también -3, -2 y -1">' +
+      '<svg viewBox="0 0 330 112" role="img" aria-label="A train of three cars with indexes 0, 1 and 2, and also -3, -2 and -1">' +
       '<g font-family="ui-monospace,Menlo,monospace" font-size="13">' +
       '<rect x="8" y="30" width="96" height="44" rx="8" style="fill:var(--accbg);stroke:var(--acc)"/><text x="56" y="57" text-anchor="middle" style="fill:var(--ink)">"sh010"</text>' +
       '<rect x="117" y="30" width="96" height="44" rx="8" style="fill:var(--accbg);stroke:var(--acc)"/><text x="165" y="57" text-anchor="middle" style="fill:var(--ink)">"sh020"</text>' +
@@ -22,85 +21,85 @@ TA.add({
       '<text x="56" y="20" text-anchor="middle" font-weight="700" style="fill:var(--acc)">[0]</text><text x="165" y="20" text-anchor="middle" font-weight="700" style="fill:var(--acc)">[1]</text><text x="274" y="20" text-anchor="middle" font-weight="700" style="fill:var(--acc)">[2]</text>' +
       '<text x="56" y="96" text-anchor="middle" style="fill:var(--mute)">[-3]</text><text x="165" y="96" text-anchor="middle" style="fill:var(--mute)">[-2]</text><text x="274" y="96" text-anchor="middle" style="fill:var(--mute)">[-1]</text>' +
       '</g></svg>' },
-    'Con un índice **negativo** cuentas desde el final. `-1` siempre es el último vagón, aunque no sepas cuántos hay.',
-    '### Tres herramientas útiles',
-    '- `len(lista)`: cuenta cuántos datos hay (*length*, longitud).\n- `lista.append(dato)`: engancha un vagón nuevo al final.\n- `dato in lista`: pregunta si el dato está en la lista. Da `True` o `False`.',
-    { type: 'cg', text: 'una herramienta de TA recibe la lista de tomas de una secuencia y las exporta una por una, en orden. Si llega una toma nueva, se añade con `append()`.' }
+    'With a **negative** index you count from the end. `-1` is always the last car, even if you do not know how many there are.',
+    '### Three handy tools',
+    '- `len(list)`: counts how many items there are (length).\n- `list.append(item)`: hooks a new car onto the end.\n- `item in list`: asks whether the item is in the list. Gives `True` or `False`.',
+    { type: 'cg', text: 'a TA tool receives the list of shots in a sequence and exports them one by one, in order. If a new shot arrives, it is added with `append()`.' }
   ],
 
   example: {
-    intro: 'Vamos a manejar la lista de tomas de una secuencia.',
+    intro: 'Let\'s handle the shot list of a sequence.',
     lines: [
-      { code: 'tomas = ["sh010", "sh020", "sh030"]', note: 'Creamos una lista con tres textos. Van entre `[ ]` y separados por comas.' },
-      { code: 'primera = tomas[0]', note: 'El índice `0` es el primer vagón: `"sh010"`.' },
-      { code: 'ultima = tomas[-1]', note: 'El índice `-1` es el último vagón: `"sh030"`.' },
-      { code: 'tomas.append("sh040")', note: 'Añadimos una toma nueva al final. Ahora hay cuatro.' },
-      { code: 'total = len(tomas)', note: '`len()` cuenta los datos: `4`.' },
-      { code: 'print(primera, ultima, total)', note: 'Mostramos los tres resultados.' },
-      { code: 'print("sh020" in tomas)', note: '¿Está "sh020" en la lista? Sí, así que muestra `True`.' }
+      { code: 'shots = ["sh010", "sh020", "sh030"]', note: 'We create a list with three strings. They go inside `[ ]`, separated by commas.' },
+      { code: 'first = shots[0]', note: 'Index `0` is the first car: `"sh010"`.' },
+      { code: 'last = shots[-1]', note: 'Index `-1` is the last car: `"sh030"`.' },
+      { code: 'shots.append("sh040")', note: 'We add a new shot at the end. Now there are four.' },
+      { code: 'total = len(shots)', note: '`len()` counts the items: `4`.' },
+      { code: 'print(first, last, total)', note: 'We show the three results.' },
+      { code: 'print("sh020" in shots)', note: 'Is "sh020" in the list? Yes, so it shows `True`.' }
     ],
     output: 'sh010 sh030 4\nTrue',
-    outro: 'Fíjate: `ultima` vale `"sh030"` porque la guardamos **antes** de añadir `"sh040"`. Python ejecuta las líneas en orden, de arriba abajo.'
+    outro: 'Notice: `last` is `"sh030"` because we stored it **before** adding `"sh040"`. Python runs lines in order, top to bottom.'
   },
 
   mini: [
     {
-      q: 'Si `tomas = ["sh010", "sh020", "sh030"]`, ¿qué es `tomas[1]`?',
+      q: 'If `shots = ["sh010", "sh020", "sh030"]`, what is `shots[1]`?',
       options: ['`"sh010"`', '`"sh020"`', '`"sh030"`'],
       answer: 1,
-      why: 'Python cuenta desde 0. El índice 0 es "sh010", y el índice 1 es "sh020".'
+      why: 'Python counts from 0. Index 0 is "sh010", and index 1 is "sh020".'
     },
     {
-      q: '¿Qué hace `tomas.append("sh040")`?',
-      options: ['Añade "sh040" al principio', 'Añade "sh040" al final', 'Borra "sh040" de la lista'],
+      q: 'What does `shots.append("sh040")` do?',
+      options: ['Adds "sh040" at the start', 'Adds "sh040" at the end', 'Removes "sh040" from the list'],
       answer: 1,
-      why: '`append()` siempre engancha el dato nuevo al final, como un vagón más.'
+      why: '`append()` always hooks the new item onto the end, like one more car.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'La lista de cámaras',
-      prompt: 'Crea una lista `camaras` con estos tres textos, en este orden: `"cam_A"`, `"cam_B"`, `"cam_C"`.\n\nLuego crea `primera` con la primera cámara y `ultima` con la última. Usa índices.',
-      starter: '# Escribe tu código aquí\n',
+      title: 'The camera list',
+      prompt: 'Create a list `cameras` with these three strings, in this order: `"cam_A"`, `"cam_B"`, `"cam_C"`.\n\nThen create `first` with the first camera and `last` with the last one. Use indexes.',
+      starter: '# Write your code here\n',
       tests: [
-        { check: "camaras == ['cam_A', 'cam_B', 'cam_C']", msg: '`camaras` tiene las tres cámaras en orden' },
-        { check: "primera == 'cam_A'", msg: '`primera` es "cam_A"' },
-        { check: "ultima == 'cam_C'", msg: '`ultima` es "cam_C"' }
+        { check: "cameras == ['cam_A', 'cam_B', 'cam_C']", msg: '`cameras` has the three cameras in order' },
+        { check: "first == 'cam_A'", msg: '`first` is "cam_A"' },
+        { check: "last == 'cam_C'", msg: '`last` is "cam_C"' }
       ],
-      hints: ['La lista va entre corchetes: `["cam_A", "cam_B", "cam_C"]`.', 'La primera es el índice `0`. La última puede ser `-1`.'],
-      solution: 'camaras = ["cam_A", "cam_B", "cam_C"]\nprimera = camaras[0]\nultima = camaras[-1]\n'
+      hints: ['The list goes in square brackets: `["cam_A", "cam_B", "cam_C"]`.', 'The first is index `0`. The last can be `-1`.'],
+      solution: 'cameras = ["cam_A", "cam_B", "cam_C"]\nfirst = cameras[0]\nlast = cameras[-1]\n'
     },
     {
       id: 'e2',
-      title: 'Llega una cámara nueva',
-      prompt: 'Añade `"cam_D"` al final de la lista con `append()`.\n\nDespués crea `total` con el número de cámaras.',
-      starter: 'camaras = ["cam_A", "cam_B", "cam_C"]\n\n',
+      title: 'A new camera arrives',
+      prompt: 'Add `"cam_D"` to the end of the list with `append()`.\n\nThen create `total` with the number of cameras.',
+      starter: 'cameras = ["cam_A", "cam_B", "cam_C"]\n\n',
       tests: [
-        { check: "camaras[-1] == 'cam_D'", msg: '"cam_D" está al final de la lista' },
-        { check: 'total == 4', msg: '`total` vale 4' }
+        { check: "cameras[-1] == 'cam_D'", msg: '"cam_D" is at the end of the list' },
+        { check: 'total == 4', msg: '`total` is 4' }
       ],
-      hints: ['`camaras.append("cam_D")`', 'Para contar, usa `len(camaras)`.'],
-      solution: 'camaras = ["cam_A", "cam_B", "cam_C"]\n\ncamaras.append("cam_D")\ntotal = len(camaras)\n'
+      hints: ['`cameras.append("cam_D")`', 'To count, use `len(cameras)`.'],
+      solution: 'cameras = ["cam_A", "cam_B", "cam_C"]\n\ncameras.append("cam_D")\ntotal = len(cameras)\n'
     },
     {
       id: 'e3',
-      title: '¿Está esta cámara?',
-      prompt: 'Antes de exportar, una herramienta comprueba si una cámara existe.\n\nCrea `hay_b` con el resultado de preguntar si `"cam_B"` está en la lista. Crea también `hay_z` para `"cam_Z"`.',
-      starter: 'camaras = ["cam_A", "cam_B", "cam_C"]\n\n',
+      title: 'Is this camera there?',
+      prompt: 'Before exporting, a tool checks whether a camera exists.\n\nCreate `has_b` with the result of asking whether `"cam_B"` is in the list. Also create `has_z` for `"cam_Z"`.',
+      starter: 'cameras = ["cam_A", "cam_B", "cam_C"]\n\n',
       tests: [
-        { check: 'hay_b is True', msg: '`hay_b` es `True`' },
-        { check: 'hay_z is False', msg: '`hay_z` es `False`' }
+        { check: 'has_b is True', msg: '`has_b` is `True`' },
+        { check: 'has_z is False', msg: '`has_z` is `False`' }
       ],
-      hints: ['Usa la palabra `in`: `"cam_B" in camaras`.', '`hay_z = "cam_Z" in camaras`'],
-      solution: 'camaras = ["cam_A", "cam_B", "cam_C"]\n\nhay_b = "cam_B" in camaras\nhay_z = "cam_Z" in camaras\n'
+      hints: ['Use the word `in`: `"cam_B" in cameras`.', '`has_z = "cam_Z" in cameras`'],
+      solution: 'cameras = ["cam_A", "cam_B", "cam_C"]\n\nhas_b = "cam_B" in cameras\nhas_z = "cam_Z" in cameras\n'
     }
   ],
 
   summary: [
-    'Una **lista** guarda muchos datos en orden: `[a, b, c]`.',
-    'El **índice** empieza en 0. El `-1` es el último.',
-    '`len()` cuenta, `append()` añade al final e `in` pregunta si un dato está.'
+    'A **list** keeps many items in order: `[a, b, c]`.',
+    'The **index** starts at 0. `-1` is the last one.',
+    '`len()` counts, `append()` adds to the end and `in` asks whether an item is there.'
   ]
 });

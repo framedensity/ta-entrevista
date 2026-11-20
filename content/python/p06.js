@@ -1,102 +1,101 @@
 TA.add({
   id: 'p06',
-  title: 'Patrón: comparar listas y diccionarios',
-  en: 'diffing collections',
+  title: 'Pattern: comparing lists and dicts',
 
   explain: [
-    'Comparar dos colecciones es **la tarea más común** de una herramienta de TA. ¿Qué falta? ¿Qué sobra? ¿Qué ha cambiado entre la versión 1 y la 2?',
-    { type: 'analogy', text: 'es como comparar la lista de la compra con lo que hay en la nevera. Lo que está en la lista y no en la nevera, falta. Lo que está en la nevera y no en la lista, sobra.' },
-    '### La forma lenta (y la que no debes dar en la entrevista)',
+    'Comparing two collections is **the most common task** in a TA tool. What is missing? What is extra? What changed between version 1 and version 2?',
+    { type: 'analogy', text: 'it is like comparing your shopping list with what is in the fridge. What is on the list but not in the fridge is missing. What is in the fridge but not on the list is extra.' },
+    '### The slow way (and the one you should not give in an interview)',
     { type: 'compare',
-      badTitle: 'Bucle dentro de bucle: n × m comparaciones',
-      bad: 'faltan = []\nfor x in esperados:\n    encontrado = False\n    for y in encontrados:\n        if x == y:\n            encontrado = True\n    if not encontrado:\n        faltan.append(x)',
-      goodTitle: 'Con un set: n + m pasos',
-      good: 'encontrados_set = set(encontrados)\nfaltan = [x for x in esperados if x not in encontrados_set]',
-      note: 'Con 10 000 elementos en cada lista, la forma lenta hace 100 millones de comparaciones. La rápida, unas 20 000.' },
-    'Fíjate en la versión rápida: usamos una **comprensión de lista** con `if x not in ...`. Así se **mantiene el orden** de `esperados`. Con `set(a) - set(b)` el orden se pierde.',
-    '### Comparar diccionarios',
-    'Las claves de un diccionario se comportan como un conjunto. Puedes hacer `d1.keys() & d2.keys()` directamente.',
-    '- Claves **nuevas**: `d2.keys() - d1.keys()`\n- Claves **borradas**: `d1.keys() - d2.keys()`\n- Claves con valor **cambiado**: las comunes donde `d1[k] != d2[k]`',
-    { type: 'cg', text: 'comparar los atributos de un rig entre dos versiones: `{"ikFk": 1, "stretch": 0}` contra `{"ikFk": 0, "stretch": 0, "twist": 1}`. Cambió `ikFk` y apareció `twist`.' },
-    { type: 'tip', text: 'menciona siempre la complejidad: «Convierto la segunda lista en set para que la búsqueda sea O(1), así todo el proceso es O(n + m) en vez de O(n × m)».' }
+      badTitle: 'Loop inside a loop: n × m comparisons',
+      bad: 'missing = []\nfor x in expected:\n    found = False\n    for y in actual:\n        if x == y:\n            found = True\n    if not found:\n        missing.append(x)',
+      goodTitle: 'With a set: n + m steps',
+      good: 'actual_set = set(actual)\nmissing = [x for x in expected if x not in actual_set]',
+      note: 'With 10,000 items in each list, the slow way does 100 million comparisons. The fast one, about 20,000.' },
+    'Look at the fast version: we use a **list comprehension** with `if x not in ...`. That **keeps the order** of `expected`. With `set(a) - set(b)` the order is lost.',
+    '### Comparing dictionaries',
+    'Dictionary keys behave like a set. You can do `d1.keys() & d2.keys()` directly.',
+    '- **New** keys: `d2.keys() - d1.keys()`\n- **Removed** keys: `d1.keys() - d2.keys()`\n- Keys whose value **changed**: the shared ones where `d1[k] != d2[k]`',
+    { type: 'cg', text: 'comparing a rig\'s attributes between two versions: `{"ikFk": 1, "stretch": 0}` vs `{"ikFk": 0, "stretch": 0, "twist": 1}`. `ikFk` changed and `twist` appeared.' },
+    { type: 'tip', text: 'always mention complexity: «I turn the second list into a set so lookups are O(1), which makes the whole thing O(n + m) instead of O(n × m)».' }
   ],
 
   example: {
-    intro: 'Comparamos los atributos de un control entre dos versiones del rig.',
+    intro: 'We compare a control\'s attributes between two versions of the rig.',
     lines: [
-      { code: 'v1 = {"ikFk": 1, "stretch": 0, "space": "world"}', note: 'Versión anterior.' },
-      { code: 'v2 = {"ikFk": 0, "stretch": 0, "twist": 1}', note: 'Versión nueva.' },
-      { code: 'nuevas = sorted(v2.keys() - v1.keys())', note: 'Claves que solo están en v2 → `["twist"]`.' },
-      { code: 'borradas = sorted(v1.keys() - v2.keys())', note: 'Claves que solo están en v1 → `["space"]`.' },
-      { code: 'cambiadas = {k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}', note: 'Recorremos solo las claves comunes y guardamos (antes, después) si el valor cambió.' },
-      { code: 'print(nuevas, borradas, cambiadas)', note: 'Resultado del «diff».' }
+      { code: 'v1 = {"ikFk": 1, "stretch": 0, "space": "world"}', note: 'Previous version.' },
+      { code: 'v2 = {"ikFk": 0, "stretch": 0, "twist": 1}', note: 'New version.' },
+      { code: 'added = sorted(v2.keys() - v1.keys())', note: 'Keys only in v2 → `["twist"]`.' },
+      { code: 'removed = sorted(v1.keys() - v2.keys())', note: 'Keys only in v1 → `["space"]`.' },
+      { code: 'changed = {k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}', note: 'We walk only the shared keys and store (before, after) if the value changed.' },
+      { code: 'print(added, removed, changed)', note: 'The result of the «diff».' }
     ],
     output: "['twist'] ['space'] {'ikFk': (1, 0)}"
   },
 
   mini: [
     {
-      q: '`esperados` y `encontrados` tienen 10 000 nombres cada uno. ¿Cuál es la mejor forma de saber qué falta, **manteniendo el orden** de `esperados`?',
-      options: ['Dos bucles `for` anidados', '`sorted(set(esperados) - set(encontrados))`', '`s = set(encontrados)` y `[x for x in esperados if x not in s]`'],
+      q: '`expected` and `actual` have 10,000 names each. What is the best way to find what is missing, **keeping the order** of `expected`?',
+      options: ['Two nested `for` loops', '`sorted(set(expected) - set(actual))`', '`s = set(actual)` and `[x for x in expected if x not in s]`'],
       answer: 2,
-      why: 'Es rápido (el `in` es contra un set) y mantiene el orden original. La opción con `sorted` cambia el orden a alfabético.'
+      why: 'It is fast (the `in` is against a set) and keeps the original order. The `sorted` option changes the order to alphabetical.'
     },
     {
-      q: '¿Qué devuelve `{"a": 1, "b": 2}.keys() & {"b": 5, "c": 3}.keys()`?',
-      options: ['`{"b"}`', '`{"a", "b", "c"}`', 'Un error: las claves no son un conjunto'],
+      q: 'What does `{"a": 1, "b": 2}.keys() & {"b": 5, "c": 3}.keys()` return?',
+      options: ['`{"b"}`', '`{"a", "b", "c"}`', 'An error: keys are not a set'],
       answer: 0,
-      why: 'Las vistas de claves (`.keys()`) admiten operaciones de conjuntos. La clave común es `"b"`.'
+      why: 'Key views (`.keys()`) support set operations. The shared key is `"b"`.'
     }
   ],
   extra: [
     {
-      q: '¿Qué complejidad tiene comparar dos listas con dos bucles anidados?',
+      q: 'What is the complexity of comparing two lists with two nested loops?',
       options: ['O(n + m)', 'O(n × m)', 'O(1)'],
       answer: 1,
-      why: 'Por cada elemento de la primera lista se recorre toda la segunda: n × m.'
+      why: 'For each item of the first list you walk the whole second list: n × m.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Función de comparación',
-      prompt: 'Escribe la función `comparar(esperados, encontrados)`. Debe devolver **dos listas ordenadas**: `(faltan, sobran)`.\n\n- `faltan`: están en `esperados` pero no en `encontrados`.\n- `sobran`: están en `encontrados` pero no en `esperados`.',
-      starter: 'def comparar(esperados, encontrados):\n    # tu código\n    pass\n',
+      title: 'A compare function',
+      prompt: 'Write the function `compare(expected, actual)`. It must return **two sorted lists**: `(missing, extra)`.\n\n- `missing`: in `expected` but not in `actual`.\n- `extra`: in `actual` but not in `expected`.',
+      starter: 'def compare(expected, actual):\n    # your code\n    pass\n',
       tests: [
-        { check: "comparar(['a', 'b', 'c'], ['b', 'c', 'd']) == (['a'], ['d'])", msg: "comparar(['a','b','c'], ['b','c','d']) da (['a'], ['d'])" },
-        { check: "comparar(['x'], ['x']) == ([], [])", msg: 'si son iguales, devuelve dos listas vacías' },
-        { check: "comparar(['c', 'a'], []) == (['a', 'c'], [])", msg: 'las listas salen ordenadas' }
+        { check: "compare(['a', 'b', 'c'], ['b', 'c', 'd']) == (['a'], ['d'])", msg: "compare(['a','b','c'], ['b','c','d']) gives (['a'], ['d'])" },
+        { check: "compare(['x'], ['x']) == ([], [])", msg: 'if they match, it returns two empty lists' },
+        { check: "compare(['c', 'a'], []) == (['a', 'c'], [])", msg: 'the lists come out sorted' }
       ],
-      hints: ['Convierte las dos a `set` al principio.', '`return sorted(e - f), sorted(f - e)`'],
-      solution: 'def comparar(esperados, encontrados):\n    e = set(esperados)\n    f = set(encontrados)\n    return sorted(e - f), sorted(f - e)\n'
+      hints: ['Convert both to `set` at the start.', '`return sorted(e - a), sorted(a - e)`'],
+      solution: 'def compare(expected, actual):\n    e = set(expected)\n    a = set(actual)\n    return sorted(e - a), sorted(a - e)\n'
     },
     {
       id: 'e2',
-      title: 'Faltan, en el orden del guion',
-      prompt: 'Crea `faltan`: las tomas del guion que no se han exportado, **en el mismo orden que en el guion** (no alfabético).',
-      starter: 'guion = ["sh050", "sh010", "sh030", "sh020", "sh040"]\nexportadas = ["sh010", "sh040", "sh099"]\n\n',
-      tests: [{ check: "faltan == ['sh050', 'sh030', 'sh020']", msg: '`faltan` mantiene el orden del guion' }],
-      hints: ['Primero `hechas = set(exportadas)`.', 'Luego una comprensión: `[t for t in guion if t not in hechas]`.'],
-      solution: 'guion = ["sh050", "sh010", "sh030", "sh020", "sh040"]\nexportadas = ["sh010", "sh040", "sh099"]\n\nhechas = set(exportadas)\nfaltan = [t for t in guion if t not in hechas]\n'
+      title: 'Missing, in script order',
+      prompt: 'Create `missing`: the script\'s shots that have not been exported, **in the same order as the script** (not alphabetical).',
+      starter: 'script = ["sh050", "sh010", "sh030", "sh020", "sh040"]\nexported = ["sh010", "sh040", "sh099"]\n\n',
+      tests: [{ check: "missing == ['sh050', 'sh030', 'sh020']", msg: '`missing` keeps the script order' }],
+      hints: ['First `done = set(exported)`.', 'Then a comprehension: `[s for s in script if s not in done]`.'],
+      solution: 'script = ["sh050", "sh010", "sh030", "sh020", "sh040"]\nexported = ["sh010", "sh040", "sh099"]\n\ndone = set(exported)\nmissing = [s for s in script if s not in done]\n'
     },
     {
       id: 'e3',
-      title: 'Qué ha cambiado en el rig',
-      prompt: 'Crea `cambiadas`: un diccionario con las claves **comunes** cuyo valor cambió. El valor debe ser la pareja `(antes, después)`.\n\nCrea también `nuevas` (lista ordenada de claves que solo están en `v2`).',
+      title: 'What changed in the rig',
+      prompt: 'Create `changed`: a dictionary with the **shared** keys whose value changed. The value must be the pair `(before, after)`.\n\nAlso create `added` (sorted list of keys only in `v2`).',
       starter: 'v1 = {"ikFk": 1, "stretch": 0, "squash": 1, "space": "world"}\nv2 = {"ikFk": 0, "stretch": 0, "squash": 0, "twist": 1}\n\n',
       tests: [
-        { check: "cambiadas == {'ikFk': (1, 0), 'squash': (1, 0)}", msg: '`cambiadas` tiene ikFk y squash con (antes, después)' },
-        { check: "nuevas == ['twist']", msg: '`nuevas` es ["twist"]' }
+        { check: "changed == {'ikFk': (1, 0), 'squash': (1, 0)}", msg: '`changed` has ikFk and squash with (before, after)' },
+        { check: "added == ['twist']", msg: '`added` is ["twist"]' }
       ],
-      hints: ['Las claves comunes son `v1.keys() & v2.keys()`.', '`{k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}`'],
-      solution: 'v1 = {"ikFk": 1, "stretch": 0, "squash": 1, "space": "world"}\nv2 = {"ikFk": 0, "stretch": 0, "squash": 0, "twist": 1}\n\ncambiadas = {k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}\nnuevas = sorted(v2.keys() - v1.keys())\n'
+      hints: ['The shared keys are `v1.keys() & v2.keys()`.', '`{k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}`'],
+      solution: 'v1 = {"ikFk": 1, "stretch": 0, "squash": 1, "space": "world"}\nv2 = {"ikFk": 0, "stretch": 0, "squash": 0, "twist": 1}\n\nchanged = {k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}\nadded = sorted(v2.keys() - v1.keys())\n'
     }
   ],
 
   summary: [
-    'Para comparar, convierte una colección en `set`: O(n + m) en vez de O(n × m).',
-    'Para mantener el orden: `[x for x in a if x not in set_b]`.',
-    'En diccionarios: `d.keys()` admite `&`, `-`, `|`; compara valores solo en las claves comunes.'
+    'To compare, turn one collection into a `set`: O(n + m) instead of O(n × m).',
+    'To keep the order: `[x for x in a if x not in set_b]`.',
+    'For dicts: `d.keys()` supports `&`, `-`, `|`; compare values only on the shared keys.'
   ]
 });

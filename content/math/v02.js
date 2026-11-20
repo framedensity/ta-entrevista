@@ -1,119 +1,118 @@
 (function () {
 var SETUP = [
-  'def _cerca(a, b, tol=1e-6):',
+  'def _close(a, b, tol=1e-6):',
   '    if isinstance(a, (int, float)) and isinstance(b, (int, float)):',
   '        return abs(a - b) < tol',
   '    try:',
   '        a, b = list(a), list(b)',
   '    except TypeError:',
   '        return False',
-  '    return len(a) == len(b) and all(_cerca(x, y, tol) for x, y in zip(a, b))'
+  '    return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))'
 ].join('\n') + '\n';
 
 TA.add({
   id: 'v02',
-  title: 'Magnitud y normalización',
-  en: 'length & normalize',
+  title: 'Length and normalization',
 
   explain: [
-    'La **magnitud** (length / magnitude) de un vector es lo que mide la flecha. **Normalizar** (normalize) es dejar la flecha con la misma dirección pero con longitud **1**.',
-    { type: 'analogy', text: 'normalizar es como quedarte solo con la brújula: «hacia el noreste», sin importar si son 2 metros o 2 kilómetros.' },
-    '### Longitud: Pitágoras',
-    'En 2D, el vector `(3, 4)` mide `√(3² + 4²) = √25 = 5`. En 3D se añade la z: `√(x² + y² + z²)`.',
+    'The **length** (magnitude) of a vector is how long the arrow is. To **normalize** a vector is to keep its direction but make its length exactly **1**.',
+    { type: 'analogy', text: 'normalizing is like keeping only the compass reading: «north-east», no matter if it is 2 meters or 2 kilometers.' },
+    '### Length: Pythagoras',
+    'In 2D, the vector `(3, 4)` is `√(3² + 4²) = √25 = 5` long. In 3D you add z: `√(x² + y² + z²)`.',
     { type: 'viz', name: 'normalize' },
-    '### Normalizar',
-    'Divide cada componente por la longitud: `(3, 4) / 5 = (0.6, 0.8)`. Un vector de longitud 1 se llama **vector unitario** (unit vector).',
-    { type: 'warn', text: 'el vector `(0, 0, 0)` no tiene dirección: normalizarlo divide por cero. Una buena función lo comprueba y avisa (o devuelve cero, según lo que acuerde el equipo).' },
-    '### Distancia',
-    'La distancia entre dos puntos es la longitud de su resta: `longitud(b - a)`.',
-    { type: 'tip', text: 'truco de rendimiento: para **comparar** distancias no hace falta la raíz. Si `d² < radio²`, entonces `d < radio`. Con miles de objetos se nota, y en la entrevista queda muy bien mencionarlo.' },
-    { type: 'cg', text: 'para mover algo a velocidad constante hacia un objetivo, se normaliza la dirección y se multiplica por la velocidad. Sin normalizar, los objetos lejanos irían más rápido.' }
+    '### Normalizing',
+    'Divide every component by the length: `(3, 4) / 5 = (0.6, 0.8)`. A vector of length 1 is called a **unit vector**.',
+    { type: 'warn', text: 'the vector `(0, 0, 0)` has no direction: normalizing it divides by zero. A good function checks this and complains (or returns zero, whatever the team agrees on).' },
+    '### Distance',
+    'The distance between two points is the length of their difference: `length(b - a)`.',
+    { type: 'tip', text: 'performance trick: to **compare** distances you do not need the square root. If `d² < radius²`, then `d < radius`. With thousands of objects it shows, and it is a great thing to mention in an interview.' },
+    { type: 'cg', text: 'to move something toward a target at constant speed, normalize the direction and multiply by the speed. Without normalizing, far-away objects would move faster.' }
   ],
 
   example: {
-    intro: 'Longitud, normalización y distancia.',
+    intro: 'Length, normalization and distance.',
     lines: [
-      { code: 'import math', note: 'Para `math.sqrt` (raíz cuadrada).' },
-      { code: 'def longitud(v):\n    return math.sqrt(sum(c * c for c in v))', note: 'Pitágoras para cualquier número de dimensiones.' },
-      { code: 'def normalizar(v):\n    l = longitud(v)\n    if l == 0:\n        raise ValueError("No se puede normalizar un vector cero")\n    return tuple(c / l for c in v)', note: 'Comprobamos el cero antes de dividir.' },
-      { code: 'print(longitud((3, 4, 0)), normalizar((3, 4, 0)))', note: 'Longitud 5; dirección (0.6, 0.8, 0).' }
+      { code: 'import math', note: 'For `math.sqrt` (square root).' },
+      { code: 'def length(v):\n    return math.sqrt(sum(c * c for c in v))', note: 'Pythagoras for any number of dimensions.' },
+      { code: 'def normalize(v):\n    l = length(v)\n    if l == 0:\n        raise ValueError("Cannot normalize a zero vector")\n    return tuple(c / l for c in v)', note: 'Check for zero before dividing.' },
+      { code: 'print(length((3, 4, 0)), normalize((3, 4, 0)))', note: 'Length 5; direction (0.6, 0.8, 0).' }
     ],
     output: '5.0 (0.6, 0.8, 0.0)'
   },
 
   mini: [
     {
-      q: '¿Cuál es la longitud de `(0, 3, 4)`?',
+      q: 'What is the length of `(0, 3, 4)`?',
       options: ['7', '5', '25'],
       answer: 1,
       why: '`√(0 + 9 + 16) = √25 = 5`.'
     },
     {
-      q: 'Tienes 5 000 enemigos y quieres saber cuáles están a menos de 10 unidades. ¿Qué es más eficiente?',
-      options: ['Calcular la raíz de cada distancia y comparar con 10', 'Comparar la distancia **al cuadrado** con 100', 'Normalizar todas las posiciones'],
+      q: 'You have 5,000 enemies and want the ones closer than 10 units. What is most efficient?',
+      options: ['Take the square root of every distance and compare with 10', 'Compare the **squared** distance with 100', 'Normalize every position'],
       answer: 1,
-      why: 'Si `d² < 100` entonces `d < 10`. Te ahorras 5 000 raíces cuadradas.'
+      why: 'If `d² < 100` then `d < 10`. You skip 5,000 square roots.'
     }
   ],
   extra: [
     {
-      q: '¿Qué longitud tiene un vector normalizado?',
-      options: ['0', '1', 'Depende del vector'],
+      q: 'How long is a normalized vector?',
+      options: ['0', '1', 'Depends on the vector'],
       answer: 1,
-      why: 'Normalizar significa dejarlo con longitud 1 (vector unitario).'
+      why: 'Normalizing means making it length 1 (a unit vector).'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Longitud y distancia',
-      prompt: 'Escribe `longitud(v)` y `distancia(a, b)` para vectores 3D.',
+      title: 'Length and distance',
+      prompt: 'Write `length(v)` and `distance(a, b)` for 3D vectors.',
       setup: SETUP,
-      starter: 'import math\n\ndef longitud(v):\n    pass\n\ndef distancia(a, b):\n    pass\n',
+      starter: 'import math\n\ndef length(v):\n    pass\n\ndef distance(a, b):\n    pass\n',
       tests: [
-        { check: '_cerca(longitud((3, 4, 0)), 5)', msg: 'longitud((3,4,0)) es 5' },
-        { check: '_cerca(longitud((1, 2, 2)), 3)', msg: 'longitud((1,2,2)) es 3' },
-        { check: '_cerca(distancia((1, 1, 1), (4, 5, 1)), 5)', msg: 'distancia((1,1,1), (4,5,1)) es 5' }
+        { check: '_close(length((3, 4, 0)), 5)', msg: 'length((3,4,0)) is 5' },
+        { check: '_close(length((1, 2, 2)), 3)', msg: 'length((1,2,2)) is 3' },
+        { check: '_close(distance((1, 1, 1), (4, 5, 1)), 5)', msg: 'distance((1,1,1), (4,5,1)) is 5' }
       ],
-      hints: ['`math.sqrt(x*x + y*y + z*z)`', 'distancia = longitud de la resta: `longitud(tuple(q - p for p, q in zip(a, b)))`.'],
-      solution: 'import math\n\ndef longitud(v):\n    return math.sqrt(sum(c * c for c in v))\n\ndef distancia(a, b):\n    return longitud(tuple(q - p for p, q in zip(a, b)))\n'
+      hints: ['`math.sqrt(x*x + y*y + z*z)`', 'distance = length of the difference: `length(tuple(q - p for p, q in zip(a, b)))`.'],
+      solution: 'import math\n\ndef length(v):\n    return math.sqrt(sum(c * c for c in v))\n\ndef distance(a, b):\n    return length(tuple(q - p for p, q in zip(a, b)))\n'
     },
     {
       id: 'e2',
-      title: 'Normalizar con seguridad',
-      prompt: 'Escribe `normalizar(v)`. Si la longitud es 0, lanza `ValueError`.',
+      title: 'Normalize safely',
+      prompt: 'Write `normalize(v)`. If the length is 0, raise `ValueError`.',
       setup: SETUP + 'def _raises(fn, exc):\n    try:\n        fn()\n    except exc:\n        return True\n    except Exception:\n        return False\n    return False\n',
-      starter: 'import math\n\ndef normalizar(v):\n    pass\n',
+      starter: 'import math\n\ndef normalize(v):\n    pass\n',
       tests: [
-        { check: '_cerca(normalizar((3, 4, 0)), (0.6, 0.8, 0))', msg: 'normalizar((3,4,0)) da (0.6, 0.8, 0)' },
-        { check: '_cerca(normalizar((0, 0, -7)), (0, 0, -1))', msg: 'normalizar((0,0,-7)) da (0, 0, -1)' },
-        { check: '_raises(lambda: normalizar((0, 0, 0)), ValueError)', msg: 'con (0,0,0) lanza ValueError' }
+        { check: '_close(normalize((3, 4, 0)), (0.6, 0.8, 0))', msg: 'normalize((3,4,0)) gives (0.6, 0.8, 0)' },
+        { check: '_close(normalize((0, 0, -7)), (0, 0, -1))', msg: 'normalize((0,0,-7)) gives (0, 0, -1)' },
+        { check: '_raises(lambda: normalize((0, 0, 0)), ValueError)', msg: '(0,0,0) raises ValueError' }
       ],
-      hints: ['Calcula la longitud `l` primero.', '`if l == 0: raise ValueError("vector cero")`', '`return tuple(c / l for c in v)`'],
-      solution: 'import math\n\ndef normalizar(v):\n    l = math.sqrt(sum(c * c for c in v))\n    if l == 0:\n        raise ValueError("No se puede normalizar un vector cero")\n    return tuple(c / l for c in v)\n'
+      hints: ['Compute the length `l` first.', '`if l == 0: raise ValueError("zero vector")`', '`return tuple(c / l for c in v)`'],
+      solution: 'import math\n\ndef normalize(v):\n    l = math.sqrt(sum(c * c for c in v))\n    if l == 0:\n        raise ValueError("Cannot normalize a zero vector")\n    return tuple(c / l for c in v)\n'
     },
     {
       id: 'e3',
-      title: 'Quién está cerca (sin raíces)',
-      prompt: 'Escribe `cercanos(centro, objetos, radio)`. `objetos` es un diccionario `{nombre: posicion}`. Devuelve una **lista ordenada** con los nombres a una distancia **menor o igual** que `radio`.\n\nNo uses `math.sqrt`: compara distancias al cuadrado.',
+      title: 'Who is nearby (no square roots)',
+      prompt: 'Write `nearby(center, objects, radius)`. `objects` is a dict `{name: position}`. Return a **sorted list** of the names at a distance **less than or equal to** `radius`.\n\nDo not use `math.sqrt`: compare squared distances.',
       setup: SETUP,
-      starter: 'def cercanos(centro, objetos, radio):\n    pass\n',
+      starter: 'def nearby(center, objects, radius):\n    pass\n',
       tests: [
-        { check: "cercanos((0, 0, 0), {'a': (1, 0, 0), 'b': (6, 0, 0), 'c': (0, 3, 4)}, 5) == ['a', 'c']", msg: 'a (distancia 1) y c (distancia 5, justo en el borde) están dentro; b (6) no' },
-        { check: "cercanos((10, 0, 0), {'x': (0, 0, 0)}, 3) == []", msg: 'si nadie está cerca, lista vacía' },
-        { check: "'sqrt' not in _codigo", msg: 'no usa sqrt' }
+        { check: "nearby((0, 0, 0), {'a': (1, 0, 0), 'b': (6, 0, 0), 'c': (0, 3, 4)}, 5) == ['a', 'c']", msg: 'a (distance 1) and c (distance 5, right on the edge) are inside; b (6) is not' },
+        { check: "nearby((10, 0, 0), {'x': (0, 0, 0)}, 3) == []", msg: 'if nobody is close, empty list' },
+        { check: "'sqrt' not in _code", msg: 'does not use sqrt' }
       ],
-      hints: ['`r2 = radio * radio`', 'Para cada objeto: `d2 = sum((p - c) ** 2 for p, c in zip(pos, centro))`.', '`sorted(n for n, pos in objetos.items() if d2(pos) <= r2)`'],
-      solution: 'def cercanos(centro, objetos, radio):\n    r2 = radio * radio\n    def d2(pos):\n        return sum((p - c) ** 2 for p, c in zip(pos, centro))\n    return sorted(n for n, pos in objetos.items() if d2(pos) <= r2)\n',
-      explain: 'Con miles de objetos, quitar la raíz cuadrada es una optimización real que se usa en juegos y herramientas.'
+      hints: ['`r2 = radius * radius`', 'For each object: `d2 = sum((p - c) ** 2 for p, c in zip(pos, center))`.', '`sorted(n for n, pos in objects.items() if d2(pos) <= r2)`'],
+      solution: 'def nearby(center, objects, radius):\n    r2 = radius * radius\n    def d2(pos):\n        return sum((p - c) ** 2 for p, c in zip(pos, center))\n    return sorted(n for n, pos in objects.items() if d2(pos) <= r2)\n',
+      explain: 'With thousands of objects, dropping the square root is a real optimization used in games and tools.'
     }
   ],
 
   summary: [
-    'Longitud = √(x² + y² + z²); distancia = longitud de la resta.',
-    'Normalizar = dividir por la longitud (resultado de longitud 1); cuidado con el vector cero.',
-    'Para comparar distancias, usa los cuadrados y evita la raíz.'
+    'Length = √(x² + y² + z²); distance = length of the difference.',
+    'Normalize = divide by the length (result has length 1); watch out for the zero vector.',
+    'To compare distances, use squares and skip the root.'
   ]
 });
 })();

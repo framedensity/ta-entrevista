@@ -2,106 +2,105 @@
 var SETUP = [
   'import os',
   'os.makedirs("render")',
-  'for _n in ["Shot10_v1.exr", "shot20_V3.exr", "sh030_v002.exr", "Shot30_v2.exr", "notas.txt"]:',
+  'for _n in ["Shot10_v1.exr", "shot20_V3.exr", "sh030_v002.exr", "Shot30_v2.exr", "notes.txt"]:',
   '    open(os.path.join("render", _n), "w").close()',
   'del _n'
 ].join('\n') + '\n';
-var FILES = 'render/\n  Shot10_v1.exr\n  shot20_V3.exr\n  sh030_v002.exr\n  Shot30_v2.exr\n  notas.txt';
-var NORM = 'import re\n\ndef normalizar(nombre):\n    """"Shot10_v1.exr" -> "sh010_v001.exr". Devuelve None si no encaja."""\n    m = re.fullmatch(r"(?i)sh(?:ot)?(\\d+)_v(\\d+)(\\.\\w+)", nombre)\n    if not m:\n        return None\n    return f"sh{int(m.group(1)):03d}_v{int(m.group(2)):03d}{m.group(3).lower()}"\n';
+var FILES = 'render/\n  Shot10_v1.exr\n  shot20_V3.exr\n  sh030_v002.exr\n  Shot30_v2.exr\n  notes.txt';
+var NORM = 'import re\n\ndef normalize(name):\n    """"Shot10_v1.exr" -> "sh010_v001.exr". Returns None if it does not match."""\n    m = re.fullmatch(r"(?i)sh(?:ot)?(\\d+)_v(\\d+)(\\.\\w+)", name)\n    if not m:\n        return None\n    return f"sh{int(m.group(1)):03d}_v{int(m.group(2)):03d}{m.group(3).lower()}"\n';
 
 TA.add({
   id: 'p19',
-  title: 'TA: renombrado por lotes seguro',
-  en: 'batch rename with dry run',
+  title: 'TA: safe batch rename',
 
   explain: [
-    'Renombrar cientos de archivos es una tarea típica. También es **peligrosa**: un error puede sobrescribir renders de una semana. La clave es **planificar antes de actuar**.',
-    { type: 'analogy', text: 'antes de mover los muebles de una casa, haces un plano: qué va a dónde. Si dos muebles van al mismo sitio, lo ves en el papel, no cuando ya rompiste algo.' },
-    '### Tres pasos separados',
-    '1. **Planificar**: calcular el nombre nuevo de cada archivo → un diccionario `{viejo: nuevo}`. No toca nada.\n2. **Validar**: buscar **conflictos**: dos archivos que acabarían con el mismo nombre, o un nombre nuevo que ya existe.\n3. **Aplicar**: renombrar. Con un modo **dry run** (*ensayo*), solo muestra lo que haría.',
+    'Renaming hundreds of files is a typical task. It is also **dangerous**: one mistake can overwrite a week of renders. The key is to **plan before acting**.',
+    { type: 'analogy', text: 'before moving the furniture in a house, you draw a plan: what goes where. If two pieces go to the same spot, you see it on paper, not after you have broken something.' },
+    '### Three separate steps',
+    '1. **Plan**: compute the new name of every file → a dict `{old: new}`. It touches nothing.\n2. **Validate**: look for **conflicts**: two files that would end up with the same name, or a new name that already exists.\n3. **Apply**: rename. With a **dry run** mode, it only shows what it would do.',
     { type: 'compare',
-      badTitle: 'Renombrar mientras calculas',
-      bad: 'for n in os.listdir(carpeta):\n    os.rename(n, normalizar(n))  # ¿y si choca?',
-      goodTitle: 'Plan → conflictos → aplicar',
-      good: 'plan = planificar(nombres)\nchoques = conflictos(plan, nombres)\nif choques:\n    raise RuntimeError(choques)\naplicar(carpeta, plan, dry_run=True)' },
-    { type: 'warn', text: 'en Windows, `os.rename` falla si el destino existe; en Mac y Linux, **lo sobrescribe sin avisar**. Por eso hay que comprobar los conflictos antes.' },
-    { type: 'cg', text: 'llegan renders de un proveedor externo con nombres como `Shot10_v1.exr`. El pipeline espera `sh010_v001.exr`. La herramienta enseña el plan, el supervisor lo aprueba y solo entonces renombra.' },
-    { type: 'tip', text: 'decir «siempre hago un dry run y valido conflictos antes de tocar archivos» en la entrevista transmite que has trabajado en producción de verdad.' }
+      badTitle: 'Renaming while you compute',
+      bad: 'for n in os.listdir(folder):\n    os.rename(n, normalize(n))  # what if it clashes?',
+      goodTitle: 'Plan → conflicts → apply',
+      good: 'plan = make_plan(names)\nclashes = conflicts(plan, names)\nif clashes:\n    raise RuntimeError(clashes)\napply(folder, plan, dry_run=True)' },
+    { type: 'warn', text: 'on Windows, `os.rename` fails if the target exists; on Mac and Linux, it **overwrites it silently**. That is why you must check for conflicts first.' },
+    { type: 'cg', text: 'renders arrive from an outside vendor with names like `Shot10_v1.exr`. The pipeline expects `sh010_v001.exr`. The tool shows the plan, the supervisor approves it, and only then does it rename.' },
+    { type: 'tip', text: 'saying «I always do a dry run and check for conflicts before touching files» in the interview tells them you have worked in real production.' }
   ],
 
   example: {
-    intro: 'La función `normalizar` ya existe. Hacemos el plan y buscamos choques.',
+    intro: 'The `normalize` function already exists. We build the plan and look for clashes.',
     lines: [
-      { code: 'nombres = ["Shot10_v1.exr", "sh010_v001.exr", "Shot20_v3.exr"]', note: '¡Ojo! El primero, normalizado, se llamaría igual que el segundo.' },
-      { code: 'plan = {n: normalizar(n) for n in nombres if normalizar(n) not in (None, n)}', note: 'Solo los que cambian y que se pueden normalizar.' },
-      { code: 'destinos = list(plan.values())\nquedan = set(nombres) - set(plan)', note: '`quedan`: archivos que no se renombran y seguirán ahí.' },
-      { code: 'choques = [d for d in destinos if destinos.count(d) > 1 or d in quedan]', note: 'Choque: dos van al mismo nombre, o el nombre ya lo tiene otro archivo.' },
-      { code: 'print(plan)\nprint(choques)', note: 'El plan y el problema que evitamos.' }
+      { code: 'names = ["Shot10_v1.exr", "sh010_v001.exr", "Shot20_v3.exr"]', note: 'Careful! The first one, once normalized, would have the same name as the second.' },
+      { code: 'plan = {n: normalize(n) for n in names if normalize(n) not in (None, n)}', note: 'Only the ones that change and can be normalized.' },
+      { code: 'targets = list(plan.values())\nstaying = set(names) - set(plan)', note: '`staying`: files that are not renamed and will still be there.' },
+      { code: 'clashes = [t for t in targets if targets.count(t) > 1 or t in staying]', note: 'Clash: two go to the same name, or another file already has that name.' },
+      { code: 'print(plan)\nprint(clashes)', note: 'The plan and the problem we avoided.' }
     ],
     output: "{'Shot10_v1.exr': 'sh010_v001.exr', 'Shot20_v3.exr': 'sh020_v003.exr'}\n['sh010_v001.exr']"
   },
 
   mini: [
     {
-      q: '¿Qué hace un modo «dry run»?',
-      options: ['Renombra más rápido', 'Muestra lo que haría, sin cambiar nada', 'Borra los archivos antiguos'],
+      q: 'What does a «dry run» mode do?',
+      options: ['Renames faster', 'Shows what it would do, without changing anything', 'Deletes the old files'],
       answer: 1,
-      why: 'Es un ensayo: permite revisar el plan antes de tocar archivos.'
+      why: 'It is a rehearsal: you can review the plan before touching files.'
     },
     {
-      q: 'En Linux, `os.rename("a.exr", "b.exr")` cuando `b.exr` ya existe…',
-      options: ['Da error', 'Sobrescribe `b.exr` sin avisar', 'Crea `b (1).exr`'],
+      q: 'On Linux, `os.rename("a.exr", "b.exr")` when `b.exr` already exists…',
+      options: ['Raises an error', 'Overwrites `b.exr` silently', 'Creates `b (1).exr`'],
       answer: 1,
-      why: 'Por eso un buen renombrador comprueba los conflictos antes.'
+      why: 'That is why a good renamer checks for conflicts first.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Planificar',
-      prompt: 'La función `normalizar` ya está escrita. Escribe `planificar(nombres)` que devuelva un dict `{viejo: nuevo}` **solo** con los archivos que se pueden normalizar **y** cambian de nombre.',
-      starter: NORM + '\ndef planificar(nombres):\n    # tu código\n    pass\n',
+      title: 'Planning',
+      prompt: 'The `normalize` function is already written. Write `make_plan(names)` that returns a dict `{old: new}` with **only** the files that can be normalized **and** change name.',
+      starter: NORM + '\ndef make_plan(names):\n    # your code\n    pass\n',
       tests: [
-        { check: "planificar(['Shot10_v1.exr', 'sh030_v002.exr', 'notas.txt', 'shot20_V3.exr']) == {'Shot10_v1.exr': 'sh010_v001.exr', 'shot20_V3.exr': 'sh020_v003.exr'}", msg: 'incluye solo los que cambian' },
-        { check: "planificar([]) == {}", msg: 'sin nombres, plan vacío' }
+        { check: "make_plan(['Shot10_v1.exr', 'sh030_v002.exr', 'notes.txt', 'shot20_V3.exr']) == {'Shot10_v1.exr': 'sh010_v001.exr', 'shot20_V3.exr': 'sh020_v003.exr'}", msg: 'includes only the ones that change' },
+        { check: "make_plan([]) == {}", msg: 'no names, empty plan' }
       ],
-      hints: ['Para cada nombre: `nuevo = normalizar(n)`.', 'Añádelo si `nuevo is not None and nuevo != n`.'],
-      solution: NORM + '\ndef planificar(nombres):\n    plan = {}\n    for n in nombres:\n        nuevo = normalizar(n)\n        if nuevo is not None and nuevo != n:\n            plan[n] = nuevo\n    return plan\n'
+      hints: ['For each name: `new = normalize(n)`.', 'Add it if `new is not None and new != n`.'],
+      solution: NORM + '\ndef make_plan(names):\n    plan = {}\n    for n in names:\n        new = normalize(n)\n        if new is not None and new != n:\n            plan[n] = new\n    return plan\n'
     },
     {
       id: 'e2',
-      title: 'Detectar conflictos',
-      prompt: 'Escribe `conflictos(plan, existentes)` que devuelva la **lista ordenada** de nombres nuevos que chocan:\n\n- dos archivos del plan van al **mismo** nombre, o\n- el nombre nuevo ya lo tiene un archivo de `existentes` que **no** se va a renombrar.\n\nHazlo eficiente (sin `count` dentro de bucles).',
-      starter: 'from collections import Counter\n\ndef conflictos(plan, existentes):\n    # tu código\n    pass\n',
+      title: 'Detecting conflicts',
+      prompt: 'Write `conflicts(plan, existing)` that returns the **sorted list** of new names that clash:\n\n- two files in the plan go to the **same** name, or\n- the new name already belongs to a file in `existing` that is **not** being renamed.\n\nMake it efficient (no `count` inside loops).',
+      starter: 'from collections import Counter\n\ndef conflicts(plan, existing):\n    # your code\n    pass\n',
       tests: [
-        { check: "conflictos({'Shot30_v2.exr': 'sh030_v002.exr'}, ['Shot30_v2.exr', 'sh030_v002.exr']) == ['sh030_v002.exr']", msg: 'detecta que el destino ya existe' },
-        { check: "conflictos({'a': 'x', 'b': 'x', 'c': 'y'}, ['a', 'b', 'c']) == ['x']", msg: 'detecta dos que van al mismo nombre' },
-        { check: "conflictos({'a': 'b', 'b': 'c'}, ['a', 'b']) == []", msg: 'renombrar a un nombre que también se renombra no choca' }
+        { check: "conflicts({'Shot30_v2.exr': 'sh030_v002.exr'}, ['Shot30_v2.exr', 'sh030_v002.exr']) == ['sh030_v002.exr']", msg: 'detects that the target already exists' },
+        { check: "conflicts({'a': 'x', 'b': 'x', 'c': 'y'}, ['a', 'b', 'c']) == ['x']", msg: 'detects two going to the same name' },
+        { check: "conflicts({'a': 'b', 'b': 'c'}, ['a', 'b']) == []", msg: 'renaming to a name that is itself being renamed is not a clash' }
       ],
-      hints: ['`veces = Counter(plan.values())` cuenta los destinos.', '`quedan = set(existentes) - set(plan)` son los archivos que no se mueven.'],
-      solution: 'from collections import Counter\n\ndef conflictos(plan, existentes):\n    veces = Counter(plan.values())\n    quedan = set(existentes) - set(plan)\n    return sorted({d for d in plan.values() if veces[d] > 1 or d in quedan})\n'
+      hints: ['`times = Counter(plan.values())` counts the targets.', '`staying = set(existing) - set(plan)` are the files that do not move.'],
+      solution: 'from collections import Counter\n\ndef conflicts(plan, existing):\n    times = Counter(plan.values())\n    staying = set(existing) - set(plan)\n    return sorted({t for t in plan.values() if times[t] > 1 or t in staying})\n'
     },
     {
       id: 'e3',
-      title: 'Aplicar con dry run',
-      prompt: 'Escribe `aplicar(carpeta, plan, dry_run=True)`:\n\n- Devuelve una lista **ordenada** de textos `"viejo -> nuevo"`.\n- Solo renombra de verdad (con `os.rename`) si `dry_run=False`.',
+      title: 'Applying with a dry run',
+      prompt: 'Write `apply(folder, plan, dry_run=True)`:\n\n- Return a **sorted** list of strings `"old -> new"`.\n- Only really rename (with `os.rename`) if `dry_run=False`.',
       setup: SETUP, files: FILES,
-      starter: 'import os\n\ndef aplicar(carpeta, plan, dry_run=True):\n    # tu código\n    pass\n',
+      starter: 'import os\n\ndef apply(folder, plan, dry_run=True):\n    # your code\n    pass\n',
       tests: [
-        { check: "aplicar('render', {'Shot10_v1.exr': 'sh010_v001.exr'}) == ['Shot10_v1.exr -> sh010_v001.exr']", msg: 'devuelve las líneas del plan' },
-        { check: "aplicar('render', {'Shot10_v1.exr': 'sh010_v001.exr'}) is not None and __import__('os').path.exists('render/Shot10_v1.exr')", msg: 'en dry run no toca nada' },
-        { check: "aplicar('render', {'shot20_V3.exr': 'sh020_v003.exr'}, dry_run=False) and __import__('os').path.exists('render/sh020_v003.exr') and not __import__('os').path.exists('render/shot20_V3.exr')", msg: 'con dry_run=False renombra de verdad' }
+        { check: "apply('render', {'Shot10_v1.exr': 'sh010_v001.exr'}) == ['Shot10_v1.exr -> sh010_v001.exr']", msg: 'returns the plan lines' },
+        { check: "apply('render', {'Shot10_v1.exr': 'sh010_v001.exr'}) is not None and __import__('os').path.exists('render/Shot10_v1.exr')", msg: 'in a dry run it touches nothing' },
+        { check: "apply('render', {'shot20_V3.exr': 'sh020_v003.exr'}, dry_run=False) and __import__('os').path.exists('render/sh020_v003.exr') and not __import__('os').path.exists('render/shot20_V3.exr')", msg: 'with dry_run=False it really renames' }
       ],
-      hints: ['`lineas = [f"{v} -> {n}" for v, n in plan.items()]`', '`if not dry_run:` recorre el plan y usa `os.rename(os.path.join(carpeta, v), os.path.join(carpeta, n))`.'],
-      solution: 'import os\n\ndef aplicar(carpeta, plan, dry_run=True):\n    lineas = sorted(f"{v} -> {n}" for v, n in plan.items())\n    if not dry_run:\n        for viejo, nuevo in plan.items():\n            os.rename(os.path.join(carpeta, viejo), os.path.join(carpeta, nuevo))\n    return lineas\n'
+      hints: ['`lines = [f"{o} -> {n}" for o, n in plan.items()]`', '`if not dry_run:` loop over the plan and use `os.rename(os.path.join(folder, o), os.path.join(folder, n))`.'],
+      solution: 'import os\n\ndef apply(folder, plan, dry_run=True):\n    lines = sorted(f"{o} -> {n}" for o, n in plan.items())\n    if not dry_run:\n        for old, new in plan.items():\n            os.rename(os.path.join(folder, old), os.path.join(folder, new))\n    return lines\n'
     }
   ],
 
   summary: [
-    'Separa planificar, validar y aplicar: el plan es un dict `{viejo: nuevo}`.',
-    'Conflictos: destinos repetidos (`Counter`) o que ya existen y no se mueven.',
-    'Ofrece siempre un dry run antes de tocar archivos.'
+    'Separate plan, validate and apply: the plan is a dict `{old: new}`.',
+    'Conflicts: repeated targets (`Counter`) or targets that already exist and are not moving.',
+    'Always offer a dry run before touching files.'
   ]
 });
 })();

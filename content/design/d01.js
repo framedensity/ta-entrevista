@@ -1,40 +1,39 @@
 TA.add({
   id: 'd01',
-  title: '¿Qué es una buena herramienta?',
-  en: 'what makes a good tool',
+  title: 'What makes a good tool?',
 
   explain: [
-    'En la entrevista no solo te preguntarán «¿sabes programar?», sino «¿sabes hacer herramientas que la gente **use**?». No es lo mismo.',
-    { type: 'analogy', text: 'una buena herramienta es como un buen cuchillo de cocina: hace una cosa muy bien, no te corta a ti, y el cocinero se olvida de que lo está usando. Una mala herramienta es un cuchillo que hay que aprender a usar y que a veces se rompe.' },
-    '### Las cinco cualidades',
-    '- **Resuelve el problema real**: el que tiene el artista, no el que tú imaginaste. Primero se pregunta (lección d02).\n- **Es segura**: no destruye trabajo; avisa antes de sobrescribir; se puede deshacer.\n- **Falla bien**: si algo va mal, dice qué, dónde y qué hacer (lección d03).\n- **Es fácil de usar**: pocos pasos, valores por defecto sensatos, sin leer un manual (lección d04).\n- **Se puede mantener**: código ordenado, lógica separada de la interfaz, configurable sin tocar código (lección d05).',
-    '### Medir el éxito',
-    'Una herramienta buena **se usa**. Si los artistas la evitan, algo falla, aunque el código sea perfecto. Pregunta, observa cómo la usan y mejora.',
-    { type: 'cg', text: 'una herramienta que ahorra 5 minutos por toma, en una cinemática de 200 tomas, ahorra más de 16 horas. Ese es el tipo de número que conviene contar en la entrevista.' },
-    { type: 'tip', text: 'cuando hables de tus herramientas, usa la estructura **problema → solución → resultado** con un número: «el ajuste de profundidad de campo tardaba medio día por proyecto; lo automaticé y ahora tarda menos de una hora».' }
+    'In the interview they will not only ask «can you code?», but «can you make tools people actually **use**?». Those are different things.',
+    { type: 'analogy', text: 'a good tool is like a good kitchen knife: it does one thing very well, it does not cut you, and the cook forgets they are using it. A bad tool is a knife you have to learn to use and that sometimes breaks.' },
+    '### The five qualities',
+    '- **Solves the real problem**: the one the artist has, not the one you imagined. Ask first (lesson d02).\n- **Is safe**: never destroys work; warns before overwriting; can be undone.\n- **Fails well**: if something goes wrong, it says what, where and what to do (lesson d03).\n- **Is easy to use**: few steps, sensible defaults, no manual to read (lesson d04).\n- **Is maintainable**: tidy code, logic separate from the UI, configurable without touching code (lesson d05).',
+    '### Measuring success',
+    'A good tool **gets used**. If artists avoid it, something is wrong, even if the code is perfect. Ask, watch how they use it and improve it.',
+    { type: 'cg', text: 'a tool that saves 5 minutes per shot, in a 200-shot cutscene, saves more than 16 hours. That is the kind of number worth mentioning in the interview.' },
+    { type: 'tip', text: 'when you talk about your tools, use the structure **problem → solution → result** with a number: «setting up depth of field took half a day per project; I automated it and now it takes less than an hour».' }
   ],
 
   example: {
-    intro: 'La misma tarea, dos herramientas.',
+    intro: 'The same task, two tools.',
     lines: [
-      { label: 'Herramienta A', code: 'Botón «Exportar».\nExporta todo lo seleccionado a C:/temp.\nSi el archivo existe, lo sobrescribe.\nSi algo falla, aparece un error de Python en rojo.', note: 'Funciona en el ordenador de quien la hizo. Para los demás, es un riesgo.' },
-      { label: 'Herramienta B', code: 'Lista de tomas con su rango y cámara.\nCarpeta por defecto según el proyecto.\nAvisa si va a sobrescribir.\nAl terminar: «28 exportadas, 2 con error: sh045 sin cámara».', note: 'Hace lo mismo, pero el artista sabe qué va a pasar y qué pasó.' }
+      { label: 'Tool A', code: '«Export» button.\nExports everything selected to C:/temp.\nIf the file exists, it overwrites it.\nIf something fails, a red Python error shows up.', note: 'Works on the author\'s machine. For everyone else, it is a risk.' },
+      { label: 'Tool B', code: 'List of shots with their range and camera.\nDefault folder from the project.\nWarns before overwriting.\nWhen done: «28 exported, 2 with errors: sh045 has no camera».', note: 'Does the same thing, but the artist knows what will happen and what happened.' }
     ],
-    outro: 'La diferencia no está en lo difícil del código, sino en pensar en la persona que la va a usar.'
+    outro: 'The difference is not how hard the code is, but thinking about the person who will use it.'
   },
 
   mini: [
     {
-      q: 'Tu herramienta funciona perfectamente, pero los animadores siguen haciendo el trabajo a mano. ¿Qué haces?',
-      options: ['Les obligas a usarla', 'Observas cómo trabajan y preguntas qué les falla para mejorarla', 'Nada: el código está bien'],
+      q: 'Your tool works perfectly, but animators keep doing the job by hand. What do you do?',
+      options: ['Force them to use it', 'Watch how they work and ask what is missing so you can improve it', 'Nothing: the code is fine'],
       answer: 1,
-      why: 'Si no se usa, no resuelve el problema real. Hay que entender por qué.'
+      why: 'If it is not used, it does not solve the real problem. You need to understand why.'
     },
     {
-      q: '¿Qué estructura es mejor para contar una herramienta en la entrevista?',
-      options: ['Lista de funciones que tiene', 'Problema → solución → resultado (con un número)', 'El lenguaje en que la escribiste'],
+      q: 'Which structure is best for describing a tool in the interview?',
+      options: ['A list of its features', 'Problem → solution → result (with a number)', 'The language you wrote it in'],
       answer: 1,
-      why: 'Muestra que entiendes el impacto, no solo la técnica.'
+      why: 'It shows you understand the impact, not just the technique.'
     }
   ],
 
@@ -42,23 +41,23 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: 'Tu mejor herramienta',
-      prompt: 'Cuenta en 4-6 frases una herramienta que hayas hecho (por ejemplo, la de ruido de captura de movimiento o la de profundidad de campo), como lo harías en la entrevista.',
+      title: 'Your best tool',
+      prompt: 'Describe a tool you have made in 4-6 sentences (for example, the mocap noise tool or the depth-of-field one), as you would in the interview.',
       checklist: [
-        'Empiezo por el **problema**: qué pasaba y cuánto tiempo costaba.',
-        'Explico la **solución** en una o dos frases, sin entrar en todos los detalles.',
-        'Doy un **resultado con número** (de X horas a Y minutos, en N proyectos).',
-        'Menciono a **quién** ayudó (animadores, la ciudad, el estudio) y que se sigue usando.',
-        'Dejo un gancho para que me pregunten más (un detalle técnico interesante).'
+        'I start with the **problem**: what was happening and how much time it cost.',
+        'I explain the **solution** in one or two sentences, without every detail.',
+        'I give a **result with a number** (from X hours to Y minutes, across N projects).',
+        'I mention **who** it helped (animators, the team, the studio) and that it is still in use.',
+        'I leave a hook so they ask for more (an interesting technical detail).'
       ],
-      model: '«En captura de movimiento, el ruido y los saltos de las articulaciones se corregían a mano, personaje por personaje. En una escena de 30 personajes eran unas dos semanas de trabajo. Hice una herramienta que detecta automáticamente los picos en los valores de las claves y los suaviza solo en esas zonas. Ahora la misma escena se limpia en 30 o 40 minutos, y el equipo puede empezar antes con el ajuste fino de la animación. La parte más difícil fue no estropear los movimientos rápidos de verdad, que también tienen cambios bruscos.»',
-      followups: ['¿Cómo distinguías el ruido de un movimiento rápido real?', '¿Cómo la probaste antes de dársela al equipo?', '¿Qué cambiarías si la hicieras hoy?']
+      model: '«In motion capture, noise and joint pops were fixed by hand, character by character. A scene with 30 characters took about two weeks. I made a tool that automatically detects spikes in the key values and smooths only those areas. Now the same scene is cleaned in 30 or 40 minutes, and the team can start fine-tuning the animation sooner. The hardest part was not damaging genuinely fast motion, which also has sharp changes.»',
+      followups: ['How did you tell noise apart from real fast motion?', 'How did you test it before giving it to the team?', 'What would you change if you built it today?']
     }
   ],
 
   summary: [
-    'Una buena herramienta resuelve el problema real, es segura, falla bien, es fácil y se mantiene.',
-    'El éxito se mide en uso: si no la usan, algo falla.',
-    'Cuéntala como problema → solución → resultado, con un número.'
+    'A good tool solves the real problem, is safe, fails well, is easy and maintainable.',
+    'Success is measured in use: if nobody uses it, something is wrong.',
+    'Describe it as problem → solution → result, with a number.'
   ]
 });

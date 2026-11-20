@@ -1,4 +1,4 @@
-// Progreso en localStorage. Si el navegador no deja guardar, la web sigue funcionando.
+// Progress in localStorage. If the browser blocks storage, the site still works.
 window.Store = (function () {
   var KEY = 'ta-entrevista-v1';
   var data = { done: {}, solved: {}, step: {}, mistakes: {}, free: false, text: {}, exams: [] };

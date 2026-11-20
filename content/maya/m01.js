@@ -6,105 +6,104 @@ var SETUP = [
   '_c.camera(name="cam_sh010")',
   '_c.createNode("transform", name="empty_grp")'
 ].join('\n') + '\n';
-var FILES = 'Escena (además de persp, top, front, side):\n  hero_geo   (transform) → hero_geoShape  (mesh)\n  ctrl_main  (transform) → ctrl_mainShape (locator)\n  cam_sh010  (transform) → cam_sh010Shape (camera)\n  empty_grp  (transform, sin forma)\n  polyCube1  (nodo de historia)';
+var FILES = 'Scene (besides persp, top, front, side):\n  hero_geo   (transform) → hero_geoShape  (mesh)\n  ctrl_main  (transform) → ctrl_mainShape (locator)\n  cam_sh010  (transform) → cam_sh010Shape (camera)\n  empty_grp  (transform, no shape)\n  polyCube1  (history node)';
 
 TA.add({
   id: 'm01',
-  title: 'La escena como árbol genealógico',
-  en: 'nodes, DAG, transform & shape',
+  title: 'The scene as a family tree',
 
   explain: [
-    'Todo en Maya es un **nodo** (*node*): un objeto, una cámara, un material, incluso una operación como «crear un cubo». Cada nodo tiene un **tipo** y unos **atributos**.',
-    { type: 'analogy', text: 'la escena es un **árbol genealógico**. Hay padres, hijos y hermanos. Si mueves al padre, toda su familia se mueve con él.' },
-    'Ese árbol se llama **DAG** (*Directed Acyclic Graph*). Es la jerarquía que ves en el *Outliner*.',
-    '### Transform y shape: la pareja inseparable',
-    'Lo que ves como «un cubo» son en realidad **dos nodos**:',
-    '- El **transform**: dónde está, cómo está girado y escalado. Es el que seleccionas.\n- El **shape** (*forma*): la geometría de verdad (los vértices). Vive **debajo** del transform, como su hijo.',
-    { type: 'analogy', text: 'el transform es la **percha** y el shape es la **ropa**. Mueves la percha y la ropa va con ella. La percha sola (un grupo vacío) no se ve.' },
-    'Así, `hero_geo` es el transform, y `hero_geoShape` es su shape de tipo `mesh`.',
-    '### Nodos que no están en el árbol',
-    'Algunos nodos no tienen posición: materiales, nodos de historia como `polyCube1`. Existen en la escena, pero no en el DAG.',
-    '### Una escena nueva no está vacía',
-    'Maya crea siempre cuatro cámaras: `persp`, `top`, `front` y `side`. ¡Cuidado al listar cámaras: tu herramienta debe ignorarlas!',
-    { type: 'cg', text: 'un exportador de cinemáticas busca las cámaras de la toma. Si no filtra las cuatro por defecto, exporta `persp` como si fuera una cámara del guion.' },
-    'En estos ejercicios usamos `from maya import cmds`. Es un **simulador** en el navegador con lo básico de Maya.'
+    'Everything in Maya is a **node**: an object, a camera, a material, even an operation like «make a cube». Each node has a **type** and some **attributes**.',
+    { type: 'analogy', text: 'the scene is a **family tree**. There are parents, children and siblings. If you move the parent, the whole family moves with it.' },
+    'That tree is called the **DAG** (Directed Acyclic Graph). It is the hierarchy you see in the *Outliner*.',
+    '### Transform and shape: the inseparable pair',
+    'What you see as «a cube» is actually **two nodes**:',
+    '- The **transform**: where it is, how it is rotated and scaled. It is the one you select.\n- The **shape**: the actual geometry (the vertices). It lives **under** the transform, as its child.',
+    { type: 'analogy', text: 'the transform is the **hanger** and the shape is the **clothes**. Move the hanger and the clothes go with it. A hanger on its own (an empty group) is invisible.' },
+    'So `hero_geo` is the transform, and `hero_geoShape` is its shape of type `mesh`.',
+    '### Nodes that are not in the tree',
+    'Some nodes have no position: materials, history nodes like `polyCube1`. They exist in the scene, but not in the DAG.',
+    '### A new scene is not empty',
+    'Maya always creates four cameras: `persp`, `top`, `front` and `side`. Careful when listing cameras: your tool must ignore them!',
+    { type: 'cg', text: 'a cinematics exporter looks for the shot cameras. If it does not filter out the four defaults, it exports `persp` as if it were a scripted camera.' },
+    'In these exercises we use `from maya import cmds`. It is a **simulator** that runs the basics of Maya in the browser.'
   ],
 
   example: {
-    intro: 'Miramos qué hay en la escena.',
+    intro: 'We look at what is in the scene.',
     lines: [
-      { code: 'from maya import cmds', note: 'La forma habitual de importar los comandos.' },
-      { code: 'print(cmds.ls(type="camera"))', note: 'Las cámaras son **shapes**. Salen las 4 por defecto y la nuestra.' },
-      { code: 'print(cmds.listRelatives("hero_geo", shapes=True))', note: 'El shape que cuelga del transform.' },
-      { code: 'print(cmds.nodeType("hero_geo"), cmds.nodeType("hero_geoShape"))', note: 'Transform por fuera, mesh por dentro.' },
-      { code: 'print(cmds.listRelatives("empty_grp", shapes=True))', note: 'Un grupo vacío no tiene shape. ¡Devuelve `None`, no una lista vacía!' }
+      { code: 'from maya import cmds', note: 'The usual way to import the commands.' },
+      { code: 'print(cmds.ls(type="camera"))', note: 'Cameras are **shapes**. You get the 4 defaults and ours.' },
+      { code: 'print(cmds.listRelatives("hero_geo", shapes=True))', note: 'The shape hanging under the transform.' },
+      { code: 'print(cmds.nodeType("hero_geo"), cmds.nodeType("hero_geoShape"))', note: 'Transform on the outside, mesh inside.' },
+      { code: 'print(cmds.listRelatives("empty_grp", shapes=True))', note: 'An empty group has no shape. It returns `None`, not an empty list!' }
     ],
     output: "['perspShape', 'topShape', 'frontShape', 'sideShape', 'cam_sh010Shape']\n['hero_geoShape']\ntransform mesh\nNone"
   },
 
   mini: [
     {
-      q: 'Seleccionas un cubo en el viewport. ¿Qué nodo has seleccionado?',
-      options: ['El shape (`mesh`)', 'El transform', 'El nodo `polyCube1`'],
+      q: 'You select a cube in the viewport. Which node did you select?',
+      options: ['The shape (`mesh`)', 'The transform', 'The `polyCube1` node'],
       answer: 1,
-      why: 'Lo que seleccionas y mueves es el transform. El shape cuelga de él.'
+      why: 'What you select and move is the transform. The shape hangs under it.'
     },
     {
-      q: '¿Qué cámaras trae una escena nueva de Maya?',
-      options: ['Ninguna', 'Solo `persp`', '`persp`, `top`, `front` y `side`'],
+      q: 'Which cameras come with a new Maya scene?',
+      options: ['None', 'Only `persp`', '`persp`, `top`, `front` and `side`'],
       answer: 2,
-      why: 'Por eso las herramientas filtran estas cuatro al buscar cámaras de producción.'
+      why: 'That is why tools filter out these four when looking for production cameras.'
     }
   ],
   extra: [
     {
-      q: '¿Qué devuelve `cmds.listRelatives(nodo, shapes=True)` si el nodo no tiene shapes?',
-      options: ['`[]`', '`None`', 'Un error'],
+      q: 'What does `cmds.listRelatives(node, shapes=True)` return if the node has no shapes?',
+      options: ['`[]`', '`None`', 'An error'],
       answer: 1,
-      why: 'Una trampa clásica de Maya: muchos comandos devuelven `None` cuando no hay resultados. Usa `... or []`.'
+      why: 'A classic Maya trap: many commands return `None` when there are no results. Use `... or []`.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Mis transforms',
-      prompt: 'Crea `mios`: lista **ordenada** de transforms de la escena, **sin** las cuatro cámaras por defecto.',
+      title: 'My transforms',
+      prompt: 'Create `mine`: a **sorted** list of the transforms in the scene, **without** the four default cameras.',
       setup: SETUP, files: FILES,
-      starter: 'from maya import cmds\n\nPOR_DEFECTO = {"persp", "top", "front", "side"}\n\n',
-      tests: [{ check: "mios == ['cam_sh010', 'ctrl_main', 'empty_grp', 'hero_geo']", msg: '`mios` tiene los 4 transforms creados, ordenados' }],
-      hints: ['`cmds.ls(type="transform")` da todos los transforms.', '`sorted(t for t in cmds.ls(type="transform") if t not in POR_DEFECTO)`'],
-      solution: 'from maya import cmds\n\nPOR_DEFECTO = {"persp", "top", "front", "side"}\n\nmios = sorted(t for t in cmds.ls(type="transform") if t not in POR_DEFECTO)\n'
+      starter: 'from maya import cmds\n\nDEFAULT_CAMS = {"persp", "top", "front", "side"}\n\n',
+      tests: [{ check: "mine == ['cam_sh010', 'ctrl_main', 'empty_grp', 'hero_geo']", msg: '`mine` has the 4 created transforms, sorted' }],
+      hints: ['`cmds.ls(type="transform")` gives every transform.', '`sorted(t for t in cmds.ls(type="transform") if t not in DEFAULT_CAMS)`'],
+      solution: 'from maya import cmds\n\nDEFAULT_CAMS = {"persp", "top", "front", "side"}\n\nmine = sorted(t for t in cmds.ls(type="transform") if t not in DEFAULT_CAMS)\n'
     },
     {
       id: 'e2',
-      title: 'Percha y ropa',
-      prompt: 'Crea `formas`: dict `{transform: tipo_de_su_shape}` para los transforms de `TRANSFORMS`. Si un transform **no tiene** shape, el valor es `None`.',
+      title: 'Hanger and clothes',
+      prompt: 'Create `shape_types`: a dict `{transform: type_of_its_shape}` for the transforms in `TRANSFORMS`. If a transform has **no** shape, the value is `None`.',
       setup: SETUP, files: FILES,
       starter: 'from maya import cmds\n\nTRANSFORMS = ["hero_geo", "ctrl_main", "cam_sh010", "empty_grp"]\n\n',
-      tests: [{ check: "formas == {'hero_geo': 'mesh', 'ctrl_main': 'locator', 'cam_sh010': 'camera', 'empty_grp': None}", msg: '`formas` da el tipo del shape, o None' }],
-      hints: ['`shapes = cmds.listRelatives(t, shapes=True)` puede ser `None`.', '`formas[t] = cmds.nodeType(shapes[0]) if shapes else None`'],
-      solution: 'from maya import cmds\n\nTRANSFORMS = ["hero_geo", "ctrl_main", "cam_sh010", "empty_grp"]\n\nformas = {}\nfor t in TRANSFORMS:\n    shapes = cmds.listRelatives(t, shapes=True)\n    formas[t] = cmds.nodeType(shapes[0]) if shapes else None\n'
+      tests: [{ check: "shape_types == {'hero_geo': 'mesh', 'ctrl_main': 'locator', 'cam_sh010': 'camera', 'empty_grp': None}", msg: '`shape_types` gives the shape type, or None' }],
+      hints: ['`shapes = cmds.listRelatives(t, shapes=True)` can be `None`.', '`shape_types[t] = cmds.nodeType(shapes[0]) if shapes else None`'],
+      solution: 'from maya import cmds\n\nTRANSFORMS = ["hero_geo", "ctrl_main", "cam_sh010", "empty_grp"]\n\nshape_types = {}\nfor t in TRANSFORMS:\n    shapes = cmds.listRelatives(t, shapes=True)\n    shape_types[t] = cmds.nodeType(shapes[0]) if shapes else None\n'
     },
     {
       id: 'e3',
-      title: 'Cámaras de producción',
-      prompt: 'Escribe `camaras_de_produccion()`: devuelve la lista **ordenada** de **transforms** de cámara, sin las cámaras por defecto.\n\nRecuerda: `ls(type="camera")` da los **shapes**. Tienes que subir a su padre.',
+      title: 'Production cameras',
+      prompt: 'Write `production_cameras()`: return the **sorted** list of camera **transforms**, without the default cameras.\n\nRemember: `ls(type="camera")` gives the **shapes**. You have to go up to their parent.',
       setup: SETUP, files: FILES,
-      starter: 'from maya import cmds\n\ndef camaras_de_produccion():\n    # tu código\n    pass\n',
+      starter: 'from maya import cmds\n\ndef production_cameras():\n    # your code\n    pass\n',
       tests: [
-        { check: "camaras_de_produccion() == ['cam_sh010']", msg: 'devuelve ["cam_sh010"]' },
-        { check: "(cmds.camera(name='cam_sh020'), camaras_de_produccion())[1] == ['cam_sh010', 'cam_sh020']", msg: 'si se crea otra cámara, aparece' }
+        { check: "production_cameras() == ['cam_sh010']", msg: 'returns ["cam_sh010"]' },
+        { check: "(cmds.camera(name='cam_sh020'), production_cameras())[1] == ['cam_sh010', 'cam_sh020']", msg: 'if another camera is created, it shows up' }
       ],
-      hints: ['`cmds.listRelatives(shape, parent=True)[0]` es el transform.', 'Filtra con `{"persp", "top", "front", "side"}`.'],
-      solution: 'from maya import cmds\n\ndef camaras_de_produccion():\n    defecto = {"persp", "top", "front", "side"}\n    resultado = []\n    for shape in cmds.ls(type="camera"):\n        transform = cmds.listRelatives(shape, parent=True)[0]\n        if transform not in defecto:\n            resultado.append(transform)\n    return sorted(resultado)\n'
+      hints: ['`cmds.listRelatives(shape, parent=True)[0]` is the transform.', 'Filter with `{"persp", "top", "front", "side"}`.'],
+      solution: 'from maya import cmds\n\ndef production_cameras():\n    defaults = {"persp", "top", "front", "side"}\n    result = []\n    for shape in cmds.ls(type="camera"):\n        transform = cmds.listRelatives(shape, parent=True)[0]\n        if transform not in defaults:\n            result.append(transform)\n    return sorted(result)\n'
     }
   ],
 
   summary: [
-    'Todo es un nodo; los que tienen posición forman el árbol DAG (padres e hijos).',
-    'Un objeto visible = **transform** (percha) + **shape** (ropa) debajo.',
-    'Una escena nueva trae `persp/top/front/side`; muchos comandos devuelven `None` si no hay nada.'
+    'Everything is a node; the ones with a position form the DAG tree (parents and children).',
+    'A visible object = **transform** (hanger) + **shape** (clothes) underneath.',
+    'A new scene has `persp/top/front/side`; many commands return `None` when there is nothing.'
   ]
 });
 })();

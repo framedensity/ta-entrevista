@@ -1,6 +1,6 @@
-// Ejecuta Python en el navegador con Pyodide y corrige con casos de prueba.
-// Pyodide se descarga solo la primera vez que se pulsa "Ejecutar".
-// Cada ejecución empieza en una carpeta limpia (/home/pyodide/ta_trabajo) y con la escena de Maya vacía.
+// Runs Python in the browser with Pyodide and grades it with test cases.
+// Pyodide downloads only the first time you tap "Run".
+// Each run starts in a clean folder (/home/pyodide/ta_work) with an empty Maya scene.
 window.PyRunner = (function () {
   var BASE = 'https://cdn.jsdelivr.net/pyodide/v0.26.4/full/';
   var promise = null;
@@ -8,7 +8,7 @@ window.PyRunner = (function () {
   var HARNESS = [
     'import sys, io, json, traceback, os, shutil, logging, types',
     '_TA_HOME = "/home/pyodide"',
-    '_TA_BASE = _TA_HOME + "/ta_trabajo"',
+    '_TA_BASE = _TA_HOME + "/ta_work"',
     'def _ta_reset():',
     '    os.makedirs(_TA_HOME, exist_ok=True)',
     '    os.chdir(_TA_HOME)',
@@ -37,18 +37,18 @@ window.PyRunner = (function () {
     '    try:',
     '        sys.stdout, sys.stderr = out, errb',
     '        if setup:',
-    '            exec(compile(setup, "<preparacion>", "exec"), ns)',
-    '        exec(compile(user_code, "<tu codigo>", "exec"), ns)',
+    '            exec(compile(setup, "<setup>", "exec"), ns)',
+    '        exec(compile(user_code, "<your code>", "exec"), ns)',
     '    except SyntaxError as e:',
-    '        err = "SyntaxError (línea %s): %s" % (e.lineno, e.msg)',
+    '        err = "SyntaxError (line %s): %s" % (e.lineno, e.msg)',
     '    except Exception as e:',
     '        line = None',
     '        for fr in traceback.extract_tb(e.__traceback__):',
-    '            if fr.filename == "<tu codigo>":',
+    '            if fr.filename == "<your code>":',
     '                line = fr.lineno',
     '        err = "%s: %s" % (type(e).__name__, e)',
     '        if line:',
-    '            err += "  (línea %d)" % line',
+    '            err += "  (line %d)" % line',
     '    finally:',
     '        sys.stdout, sys.stderr = old_o, old_e',
     '    results = []',
@@ -57,7 +57,7 @@ window.PyRunner = (function () {
     '            env = dict(ns)',
     '            env["_out"] = out.getvalue()',
     '            env["_log"] = errb.getvalue()',
-    '            env["_codigo"] = user_code',
+    '            env["_code"] = user_code',
     '            try:',
     '                sys.stdout, sys.stderr = io.StringIO(), io.StringIO()',
     '                ok = bool(eval(t["check"], env))',
@@ -92,7 +92,7 @@ window.PyRunner = (function () {
           resolve(py);
         }).catch(function (e) { promise = null; reject(e); });
       };
-      s.onerror = function () { promise = null; reject(new Error('No se pudo cargar Python. Revisa la conexión a internet.')); };
+      s.onerror = function () { promise = null; reject(new Error('Could not load Python. Check your internet connection.')); };
       document.head.appendChild(s);
     });
     return promise;

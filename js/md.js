@@ -1,4 +1,4 @@
-// Markdown mínimo: párrafos, **negrita**, *cursiva*, `código`, bloques ```, listas "- ", ### títulos.
+// Minimal Markdown: paragraphs, **bold**, *italic*, `code`, ``` blocks, "- " lists, ### headings.
 window.MD = (function () {
   function esc(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

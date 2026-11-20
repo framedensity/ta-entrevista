@@ -1,4 +1,4 @@
-// Registro global del contenido. Cada lección llama a TA.add({...}).
+// Global content registry. Every lesson calls TA.add({...}).
 window.TA = {
   curriculum: [],
   lessons: {},

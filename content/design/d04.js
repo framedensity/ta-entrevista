@@ -1,39 +1,38 @@
 TA.add({
   id: 'd04',
-  title: 'Pensar como artista',
-  en: 'artist UX',
+  title: 'Thinking like an artist',
 
   explain: [
-    'Tú eres también artista de cinemáticas. Esa es tu gran ventaja como TA: sabes **dónde le duele** al artista. Esta lección es sobre aprovecharla.',
-    { type: 'analogy', text: 'un buen camarero no te pregunta veinte cosas para servirte un café. Sabe lo que suele pedir la gente, te lo propone, y solo pregunta lo que de verdad cambia.' },
-    '### Principios',
-    '- **Valores por defecto sensatos**: lo más común debe funcionar con un clic.\n- **Pocos pasos**: si el artista tiene que hacer 6 clics cada vez, lo dejará de usar.\n- **No interrumpir la creatividad**: la herramienta trabaja por detrás; no obliga a cambiar la forma de trabajar.\n- **Seguridad**: nunca perder trabajo. Avisar antes de sobrescribir, y poder deshacer.\n- **Feedback**: el artista siempre sabe qué está pasando (progreso) y qué pasó (resumen).\n- **Hablar su idioma**: «toma», «cámara», «rango», no «MDagPath» ni «KeyError».',
-    '### Automatizar lo mecánico, no lo creativo',
-    'Las mejores herramientas quitan el trabajo **mecánico** (comprobar especificaciones, configurar exportaciones, limpiar ruido) para que el artista dedique su tiempo a lo **creativo** (la cámara, la actuación, el ritmo).',
-    { type: 'cg', text: 'en vez de una ventana con 15 opciones, el exportador lee la configuración del proyecto y solo muestra la lista de tomas y un botón. Las opciones avanzadas quedan en una sección plegada.' },
-    { type: 'tip', text: 'frase muy tuya para la entrevista: «Como también hago cinemáticas, sé dónde se pierde el tiempo. Automatizo lo mecánico para que el equipo pueda concentrarse en la parte creativa».' }
+    'You are also a cinematics artist. That is your big advantage as a TA: you know **where it hurts** for the artist. This lesson is about using that.',
+    { type: 'analogy', text: 'a good waiter does not ask you twenty questions to serve you a coffee. They know what people usually order, suggest it, and only ask what really matters.' },
+    '### Principles',
+    '- **Sensible defaults**: the most common case should work in one click.\n- **Few steps**: if the artist has to make 6 clicks every time, they will stop using it.\n- **Do not interrupt creativity**: the tool works in the background; it does not force a new way of working.\n- **Safety**: never lose work. Warn before overwriting, and allow undo.\n- **Feedback**: the artist always knows what is happening (progress) and what happened (summary).\n- **Speak their language**: «shot», «camera», «range», not «MDagPath» or «KeyError».',
+    '### Automate the mechanical, not the creative',
+    'The best tools remove the **mechanical** work (checking specs, setting up exports, cleaning noise) so the artist spends their time on the **creative** part (camera, acting, timing).',
+    { type: 'cg', text: 'instead of a window with 15 options, the exporter reads the project config and only shows the shot list and one button. Advanced options sit in a collapsed section.' },
+    { type: 'tip', text: 'a very «you» sentence for the interview: «Since I also make cutscenes, I know where the time goes. I automate the mechanical work so the team can focus on the creative part».' }
   ],
 
   example: {
-    intro: 'Dos interfaces para la misma herramienta.',
+    intro: 'Two UIs for the same tool.',
     lines: [
-      { label: 'Pensada por un programador', code: 'Campos: ruta absoluta, formato, escala, eje arriba, fps,\nrango inicial, rango final, nombre de la cámara, nombre del archivo…\nBotón: Ejecutar', note: 'Todo configurable, pero el artista tiene que rellenarlo cada vez y puede equivocarse.' },
-      { label: 'Pensada por un artista', code: 'Lista de tomas (con rango y cámara ya detectados).\nBotón: Exportar seleccionadas.\n▸ Opciones avanzadas (plegadas)', note: 'Los valores vienen del proyecto. El artista solo elige qué tomas.' }
+      { label: 'Designed by a programmer', code: 'Fields: absolute path, format, scale, up axis, fps,\nstart frame, end frame, camera name, file name…\nButton: Run', note: 'Everything is configurable, but the artist has to fill it in every time and can make mistakes.' },
+      { label: 'Designed by an artist', code: 'Shot list (range and camera already detected).\nButton: Export selected.\n▸ Advanced options (collapsed)', note: 'Values come from the project. The artist only picks the shots.' }
     ]
   },
 
   mini: [
     {
-      q: '¿Qué deberías automatizar con una herramienta?',
-      options: ['Las decisiones creativas, para ir más rápido', 'El trabajo mecánico y repetitivo, para liberar tiempo creativo', 'Todo lo posible, sin excepción'],
+      q: 'What should you automate with a tool?',
+      options: ['Creative decisions, to go faster', 'Mechanical, repetitive work, to free up creative time', 'Everything possible, no exceptions'],
       answer: 1,
-      why: 'Las decisiones creativas son del artista. La herramienta le quita lo mecánico.'
+      why: 'Creative decisions belong to the artist. The tool takes the mechanical part off their hands.'
     },
     {
-      q: 'Una opción que solo usa el 5 % de los artistas, ¿dónde la pondrías?',
-      options: ['En primer plano, con letra grande', 'En una sección de opciones avanzadas, plegada', 'No la pondría nunca'],
+      q: 'Where would you put an option that only 5% of artists use?',
+      options: ['Front and center, in big letters', 'In a collapsed advanced-options section', 'I would never add it'],
       answer: 1,
-      why: 'Está disponible para quien la necesita, sin estorbar a los demás.'
+      why: 'It is available for whoever needs it, without getting in everyone else\'s way.'
     }
   ],
 
@@ -41,24 +40,24 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: 'Mejora la experiencia',
-      prompt: 'Un artista se queja: «la herramienta de exportar es lenta de usar: cada vez tengo que escribir la ruta, el rango de frames y elegir la cámara, y a veces me equivoco».\n\n¿Qué cambiarías?',
+      title: 'Improve the experience',
+      prompt: 'An artist complains: «the export tool is slow to use: every time I have to type the path, the frame range and pick the camera, and sometimes I get it wrong».\n\nWhat would you change?',
       checklist: [
-        'Detectar automáticamente el rango y la cámara de cada toma (por nombre o metadatos).',
-        'Ruta por defecto según el proyecto y la convención; recordar la última usada.',
-        'Mostrar lo detectado para que el artista lo confirme, en vez de escribirlo.',
-        'Validar antes de exportar y avisar con claridad (por ejemplo, cámara no encontrada).',
-        'Permitir varias tomas a la vez (lote).',
-        'Observar o preguntar a otros artistas para confirmar que es el problema real.'
+        'Detect each shot\'s range and camera automatically (by name or metadata).',
+        'Default path from the project and naming convention; remember the last one used.',
+        'Show what was detected so the artist confirms it instead of typing it.',
+        'Validate before exporting and warn clearly (for example, camera not found).',
+        'Allow several shots at once (batch).',
+        'Watch or ask other artists to confirm it is the real problem.'
       ],
-      model: 'Quitaría todo lo que el artista escribe a mano:\n- El **rango** se lee de la escena o del atributo de la toma.\n- La **cámara** se encuentra por su atributo `shotName` o por la convención de nombres.\n- La **ruta** sale de la configuración del proyecto, y la herramienta recuerda la última.\n\nLa ventana mostraría la lista de tomas con todo ya detectado; el artista solo marca cuáles exportar. Antes de exportar, la herramienta valida y avisa si falta algo. Y lo comprobaría con dos o tres artistas antes de darlo por terminado.',
-      followups: ['¿Qué pasa si la detección automática se equivoca?', '¿Cómo sabrías que la nueva versión es realmente más rápida de usar?']
+      model: 'I would remove everything the artist types by hand:\n- The **range** is read from the scene or the shot attribute.\n- The **camera** is found by its `shotName` attribute or the naming convention.\n- The **path** comes from the project config, and the tool remembers the last one.\n\nThe window would show the shot list with everything already detected; the artist only ticks which to export. Before exporting, the tool validates and warns if anything is missing. And I would check it with two or three artists before calling it done.',
+      followups: ['What happens if the automatic detection is wrong?', 'How would you know the new version is actually faster to use?']
     }
   ],
 
   summary: [
-    'Valores por defecto, pocos pasos, feedback y nunca perder trabajo.',
-    'Automatiza lo mecánico para liberar tiempo creativo.',
-    'Tu experiencia como artista es tu ventaja: úsala y menciónala.'
+    'Defaults, few steps, feedback, and never lose work.',
+    'Automate the mechanical to free up creative time.',
+    'Your experience as an artist is your edge: use it and mention it.'
   ]
 });

@@ -7,96 +7,95 @@ var SETUP = [
   '_c.connectAttr("door_ctrl.rotateY", "lid_geo.rotateX")',
   '_c.connectAttr("door_ctrl.translateY", "lid_geo.translateY")'
 ].join('\n') + '\n';
-var FILES = 'Escena:\n  door_ctrl (locator)\n  door_geo  (mesh)\n  lid_geo   (mesh)\nConexiones ya hechas:\n  door_ctrl.rotateY    → lid_geo.rotateX\n  door_ctrl.translateY → lid_geo.translateY';
+var FILES = 'Scene:\n  door_ctrl (locator)\n  door_geo  (mesh)\n  lid_geo   (mesh)\nExisting connections:\n  door_ctrl.rotateY    → lid_geo.rotateX\n  door_ctrl.translateY → lid_geo.translateY';
 
 TA.add({
   id: 'm06',
-  title: 'Conexiones',
-  en: 'connectAttr / listConnections',
+  title: 'Connections',
 
   explain: [
-    'Un atributo puede **recibir** su valor de otro atributo. Eso es una **conexión**. Es la base de los rigs: un control mueve una puerta, una expresión mueve una rueda.',
-    { type: 'analogy', text: 'una conexión es una tubería de agua: el valor fluye del **origen** (*source*) al **destino** (*destination*). Si conectas una tubería a un grifo, ya no puedes llenarlo a mano.' },
+    'An attribute can **receive** its value from another attribute. That is a **connection**. It is the basis of rigs: a control moves a door, an expression spins a wheel.',
+    { type: 'analogy', text: 'a connection is a water pipe: the value flows from the **source** to the **destination**. Once a pipe feeds a tap, you can no longer fill it by hand.' },
     '```python\ncmds.connectAttr("door_ctrl.rotateY", "door_geo.rotateY")\n```',
-    'Ahora, al girar `door_ctrl`, la puerta gira con él.',
-    { type: 'warn', text: 'un atributo con una conexión de **entrada** ya no se puede cambiar con `setAttr`: da error. Y no se le puede conectar una segunda entrada, salvo con `force=True` (que sustituye la anterior).' },
-    '### Preguntar por las conexiones: listConnections',
-    '- `source=True, destination=False` → solo lo que **entra**.\n- `source=False, destination=True` → solo lo que **sale**.\n- `plugs=True` → devuelve `"nodo.atributo"` en vez de solo el nodo.\n- Si no hay nada → `None` (otra vez).',
-    '`cmds.disconnectAttr(origen, destino)` corta la tubería.',
-    { type: 'cg', text: 'antes de exportar la animación de una puerta, el exportador comprueba si `door_geo.rotateY` está conectado. Si lo está, hay que **hornear** (*bake*) los valores, porque el FBX no guarda la conexión.' }
+    'Now, when you rotate `door_ctrl`, the door rotates with it.',
+    { type: 'warn', text: 'an attribute with an **incoming** connection can no longer be changed with `setAttr`: it raises an error. And you cannot connect a second input to it, except with `force=True` (which replaces the old one).' },
+    '### Asking about connections: listConnections',
+    '- `source=True, destination=False` → only what comes **in**.\n- `source=False, destination=True` → only what goes **out**.\n- `plugs=True` → returns `"node.attribute"` instead of just the node.\n- If there is nothing → `None` (again).',
+    '`cmds.disconnectAttr(source, destination)` cuts the pipe.',
+    { type: 'cg', text: 'before exporting a door\'s animation, the exporter checks whether `door_geo.rotateY` is connected. If it is, the values have to be **baked**, because FBX does not store the connection.' }
   ],
 
   example: {
-    intro: 'Exploramos las tuberías de `lid_geo`.',
+    intro: 'We explore the pipes going into `lid_geo`.',
     lines: [
-      { code: 'from maya import cmds', note: 'Importamos.' },
-      { code: 'print(cmds.listConnections("lid_geo", source=True, destination=False, plugs=True))', note: 'Lo que entra en `lid_geo`, como `nodo.atributo`.' },
-      { code: 'print(cmds.listConnections("lid_geo.rotateX", plugs=True))', note: 'También se puede preguntar por un atributo concreto.' },
-      { code: 'try:\n    cmds.setAttr("lid_geo.rotateX", 10)\nexcept RuntimeError as e:\n    print("Error:", e)', note: 'No se puede escribir en un atributo conectado.' },
-      { code: 'print(cmds.listConnections("door_geo"))', note: 'Sin conexiones → `None`.' }
+      { code: 'from maya import cmds', note: 'We import.' },
+      { code: 'print(cmds.listConnections("lid_geo", source=True, destination=False, plugs=True))', note: 'What comes into `lid_geo`, as `node.attribute`.' },
+      { code: 'print(cmds.listConnections("lid_geo.rotateX", plugs=True))', note: 'You can also ask about a specific attribute.' },
+      { code: 'try:\n    cmds.setAttr("lid_geo.rotateX", 10)\nexcept RuntimeError as e:\n    print("Error:", e)', note: 'You cannot write to a connected attribute.' },
+      { code: 'print(cmds.listConnections("door_geo"))', note: 'No connections → `None`.' }
     ],
-    output: "['door_ctrl.rotateY', 'door_ctrl.translateY']\n['door_ctrl.rotateY']\nError: El atributo 'lid_geo.rotateX' está conectado y no se puede cambiar.\nNone"
+    output: "['door_ctrl.rotateY', 'door_ctrl.translateY']\n['door_ctrl.rotateY']\nError: setAttr: The attribute 'lid_geo.rotateX' is locked or connected and cannot be modified.\nNone"
   },
 
   mini: [
     {
-      q: 'Conectas `a.tx → b.tx`. ¿Qué pasa con `cmds.setAttr("b.tx", 5)`?',
-      options: ['b.tx vale 5', 'Da error: el atributo está conectado', 'a.tx también vale 5'],
+      q: 'You connect `a.tx → b.tx`. What happens with `cmds.setAttr("b.tx", 5)`?',
+      options: ['b.tx becomes 5', 'It raises an error: the attribute is connected', 'a.tx also becomes 5'],
       answer: 1,
-      why: 'El valor de b.tx lo decide la conexión. Hay que desconectar primero.'
+      why: 'The connection decides b.tx\'s value. You have to disconnect first.'
     },
     {
-      q: '¿Qué opción de `listConnections` da `"nodo.atributo"` en vez de solo el nodo?',
+      q: 'Which `listConnections` option gives `"node.attribute"` instead of just the node?',
       options: ['`long=True`', '`plugs=True`', '`fullPath=True`'],
       answer: 1,
-      why: 'Un *plug* es la combinación nodo + atributo.'
+      why: 'A *plug* is the node + attribute combination.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Conectar la puerta',
-      prompt: 'Conecta `door_ctrl.rotateY` a `door_geo.rotateY`.',
+      title: 'Wiring the door',
+      prompt: 'Connect `door_ctrl.rotateY` to `door_geo.rotateY`.',
       setup: SETUP, files: FILES,
       starter: 'from maya import cmds\n\n',
       tests: [{ check: "cmds.isConnected('door_ctrl.rotateY', 'door_geo.rotateY')", msg: 'door_ctrl.rotateY → door_geo.rotateY' }],
-      hints: ['`cmds.connectAttr(origen, destino)`'],
+      hints: ['`cmds.connectAttr(source, destination)`'],
       solution: 'from maya import cmds\n\ncmds.connectAttr("door_ctrl.rotateY", "door_geo.rotateY")\n'
     },
     {
       id: 'e2',
-      title: '¿Qué controla este nodo?',
-      prompt: 'Escribe `entradas(nodo)`: devuelve una lista **ordenada** de los plugs (`"nodo.atributo"`) que **entran** en el nodo. Lista vacía si no hay.',
+      title: 'What drives this node?',
+      prompt: 'Write `inputs(node)`: return a **sorted** list of the plugs (`"node.attribute"`) that come **into** the node. Empty list if there are none.',
       setup: SETUP, files: FILES,
-      starter: 'from maya import cmds\n\ndef entradas(nodo):\n    # tu código\n    pass\n',
+      starter: 'from maya import cmds\n\ndef inputs(node):\n    # your code\n    pass\n',
       tests: [
-        { check: "entradas('lid_geo') == ['door_ctrl.rotateY', 'door_ctrl.translateY']", msg: 'lid_geo recibe dos conexiones' },
-        { check: "entradas('door_geo') == []", msg: 'door_geo no recibe nada → []' }
+        { check: "inputs('lid_geo') == ['door_ctrl.rotateY', 'door_ctrl.translateY']", msg: 'lid_geo receives two connections' },
+        { check: "inputs('door_geo') == []", msg: 'door_geo receives nothing → []' }
       ],
-      hints: ['`cmds.listConnections(nodo, source=True, destination=False, plugs=True)`', 'Recuerda el `or []` y el `sorted`.'],
-      solution: 'from maya import cmds\n\ndef entradas(nodo):\n    return sorted(cmds.listConnections(nodo, source=True, destination=False, plugs=True) or [])\n'
+      hints: ['`cmds.listConnections(node, source=True, destination=False, plugs=True)`', 'Remember the `or []` and the `sorted`.'],
+      solution: 'from maya import cmds\n\ndef inputs(node):\n    return sorted(cmds.listConnections(node, source=True, destination=False, plugs=True) or [])\n'
     },
     {
       id: 'e3',
-      title: 'Liberar un atributo',
-      prompt: 'Escribe `liberar(plug)`: si `plug` (por ejemplo `"lid_geo.rotateX"`) tiene una conexión de entrada, desconéctala. Devuelve el plug de origen que se desconectó, o `None` si no había ninguna.',
+      title: 'Freeing an attribute',
+      prompt: 'Write `free_attr(plug)`: if `plug` (for example `"lid_geo.rotateX"`) has an incoming connection, disconnect it. Return the source plug that was disconnected, or `None` if there was none.',
       setup: SETUP, files: FILES,
-      starter: 'from maya import cmds\n\ndef liberar(plug):\n    # tu código\n    pass\n',
+      starter: 'from maya import cmds\n\ndef free_attr(plug):\n    # your code\n    pass\n',
       tests: [
-        { check: "liberar('lid_geo.rotateX') == 'door_ctrl.rotateY'", msg: 'devuelve el origen desconectado' },
-        { check: "liberar('lid_geo.rotateX') is None", msg: 'si ya no hay conexión, devuelve None' },
-        { check: "(cmds.setAttr('lid_geo.rotateX', 10), cmds.getAttr('lid_geo.rotateX'))[1] == 10", msg: 'ahora se puede escribir en el atributo' }
+        { check: "free_attr('lid_geo.rotateX') == 'door_ctrl.rotateY'", msg: 'returns the disconnected source' },
+        { check: "free_attr('lid_geo.rotateX') is None", msg: 'if there is no connection any more, returns None' },
+        { check: "(cmds.setAttr('lid_geo.rotateX', 10), cmds.getAttr('lid_geo.rotateX'))[1] == 10", msg: 'now the attribute can be written' }
       ],
-      hints: ['`origen = cmds.listConnections(plug, source=True, destination=False, plugs=True)`', 'Si hay origen: `cmds.disconnectAttr(origen[0], plug)` y devuélvelo.'],
-      solution: 'from maya import cmds\n\ndef liberar(plug):\n    origen = cmds.listConnections(plug, source=True, destination=False, plugs=True)\n    if not origen:\n        return None\n    cmds.disconnectAttr(origen[0], plug)\n    return origen[0]\n'
+      hints: ['`source = cmds.listConnections(plug, source=True, destination=False, plugs=True)`', 'If there is a source: `cmds.disconnectAttr(source[0], plug)` and return it.'],
+      solution: 'from maya import cmds\n\ndef free_attr(plug):\n    source = cmds.listConnections(plug, source=True, destination=False, plugs=True)\n    if not source:\n        return None\n    cmds.disconnectAttr(source[0], plug)\n    return source[0]\n'
     }
   ],
 
   summary: [
-    '`connectAttr(origen, destino)`: el valor fluye del origen al destino.',
-    'Un atributo con entrada no acepta `setAttr`; `disconnectAttr` lo libera.',
-    '`listConnections(source=, destination=, plugs=)`; devuelve `None` si no hay nada.'
+    '`connectAttr(source, destination)`: the value flows from source to destination.',
+    'An attribute with an input does not accept `setAttr`; `disconnectAttr` frees it.',
+    '`listConnections(source=, destination=, plugs=)`; it returns `None` when there is nothing.'
   ]
 });
 })();

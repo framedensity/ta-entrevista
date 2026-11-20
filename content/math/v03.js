@@ -1,125 +1,124 @@
 (function () {
 var SETUP = [
-  'def _cerca(a, b, tol=1e-6):',
+  'def _close(a, b, tol=1e-6):',
   '    if isinstance(a, (int, float)) and isinstance(b, (int, float)):',
   '        return abs(a - b) < tol',
   '    try:',
   '        a, b = list(a), list(b)',
   '    except TypeError:',
   '        return False',
-  '    return len(a) == len(b) and all(_cerca(x, y, tol) for x, y in zip(a, b))'
+  '    return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))'
 ].join('\n') + '\n';
 
 TA.add({
   id: 'v03',
-  title: 'Producto escalar',
-  en: 'dot product',
+  title: 'Dot product',
 
   explain: [
-    'El **producto escalar** (dot product) de dos vectores da **un solo número**. Ese número dice cuánto apuntan en la misma dirección.',
-    { type: 'analogy', text: 'es como medir cuánto te ayuda el viento: si sopla en tu dirección, ayuda mucho (positivo); si sopla de lado, nada (cero); si sopla de frente, te frena (negativo).' },
-    '### La fórmula',
-    '`a · b = ax·bx + ay·by + az·bz`. Se multiplica componente a componente y se suma.',
-    'También es igual a `|a| · |b| · cos(θ)`, donde θ es el ángulo entre ellos. Con vectores **normalizados**, el producto escalar es directamente el **coseno del ángulo**.',
+    'The **dot product** of two vectors gives **a single number**. That number tells you how much they point the same way.',
+    { type: 'analogy', text: 'it is like measuring how much the wind helps you: blowing your way, it helps a lot (positive); from the side, not at all (zero); head-on, it slows you down (negative).' },
+    '### The formula',
+    '`a · b = ax·bx + ay·by + az·bz`. Multiply component by component and add.',
+    'It also equals `|a| · |b| · cos(θ)`, where θ is the angle between them. With **normalized** vectors, the dot product is directly the **cosine of the angle**.',
     { type: 'viz', name: 'dot' },
-    '### Cómo leer el resultado',
-    '- **Positivo**: menos de 90° entre ellos (más o menos la misma dirección).\n- **Cero**: perpendiculares (90°).\n- **Negativo**: más de 90° (direcciones opuestas).\n- Con vectores unitarios: **1** = misma dirección, **-1** = opuestas.',
-    { type: 'cg', text: '¿el enemigo está delante o detrás del jugador? `dot(enemigo - jugador, mirada)`. Si es positivo, está delante. Así funcionan muchos conos de visión y comprobaciones de «la cámara ve al personaje».' },
-    { type: 'tip', text: 'pregunta clásica de entrevista: «¿cómo sabes si un objeto está delante de la cámara?». Respuesta: el producto escalar entre la dirección de la cámara y el vector hacia el objeto; si es positivo, está delante.' }
+    '### Reading the result',
+    '- **Positive**: less than 90° apart (roughly the same direction).\n- **Zero**: perpendicular (90°).\n- **Negative**: more than 90° apart (opposite directions).\n- With unit vectors: **1** = same direction, **-1** = opposite.',
+    { type: 'cg', text: 'is the enemy in front of or behind the player? `dot(enemy - player, facing)`. If it is positive, it is in front. Lots of vision cones and «can the camera see the character» checks work this way.' },
+    { type: 'tip', text: 'classic interview question: «how do you know if an object is in front of the camera?». Answer: the dot product of the camera direction and the vector to the object; if it is positive, it is in front.' }
   ],
 
   example: {
-    intro: '¿Está el enemigo delante del jugador?',
+    intro: 'Is the enemy in front of the player?',
     lines: [
-      { code: 'def punto(a, b):\n    return sum(x * y for x, y in zip(a, b))', note: 'Producto escalar: multiplicar y sumar.' },
-      { code: 'jugador = (0, 0, 0)\nmirada = (0, 0, 1)', note: 'El jugador mira hacia +Z.' },
-      { code: 'enemigo = (2, 0, 5)', note: 'Un enemigo delante y un poco a la derecha.' },
-      { code: 'hacia = tuple(e - j for e, j in zip(enemigo, jugador))', note: 'Vector del jugador al enemigo: (2, 0, 5).' },
-      { code: 'print(punto(hacia, mirada) > 0)', note: '`2·0 + 0·0 + 5·1 = 5`, positivo: está delante.' }
+      { code: 'def dot(a, b):\n    return sum(x * y for x, y in zip(a, b))', note: 'Dot product: multiply and add.' },
+      { code: 'player = (0, 0, 0)\nfacing = (0, 0, 1)', note: 'The player looks toward +Z.' },
+      { code: 'enemy = (2, 0, 5)', note: 'An enemy ahead and a little to the side.' },
+      { code: 'to_enemy = tuple(e - p for e, p in zip(enemy, player))', note: 'Vector from the player to the enemy: (2, 0, 5).' },
+      { code: 'print(dot(to_enemy, facing) > 0)', note: '`2·0 + 0·0 + 5·1 = 5`, positive: it is in front.' }
     ],
     output: 'True'
   },
 
   mini: [
     {
-      q: '¿Cuánto vale `(1, 0, 0) · (0, 1, 0)`?',
+      q: 'What is `(1, 0, 0) · (0, 1, 0)`?',
       options: ['1', '0', '-1'],
       answer: 1,
-      why: 'Son perpendiculares: `1·0 + 0·1 + 0·0 = 0`.'
+      why: 'They are perpendicular: `1·0 + 0·1 + 0·0 = 0`.'
     },
     {
-      q: 'Dos vectores **unitarios** tienen producto escalar `-1`. ¿Qué significa?',
-      options: ['Son perpendiculares', 'Apuntan en direcciones opuestas', 'Uno de ellos es cero'],
+      q: 'Two **unit** vectors have a dot product of `-1`. What does that mean?',
+      options: ['They are perpendicular', 'They point in opposite directions', 'One of them is zero'],
       answer: 1,
-      why: 'Con vectores unitarios, el producto escalar es el coseno del ángulo. cos(180°) = -1.'
+      why: 'With unit vectors, the dot product is the cosine of the angle. cos(180°) = -1.'
     }
   ],
   extra: [
     {
-      q: '¿Qué devuelve el producto escalar?',
-      options: ['Un vector', 'Un número', 'Una matriz'],
+      q: 'What does the dot product return?',
+      options: ['A vector', 'A number', 'A matrix'],
       answer: 1,
-      why: 'Por eso se llama **escalar**: el resultado es un solo número.'
+      why: 'That is why it is also called the **scalar** product: the result is a single number.'
     },
     {
-      q: 'Para calcular el ángulo entre dos vectores con el producto escalar, ¿qué tienes que hacer antes?',
-      options: ['Nada', 'Normalizarlos (o dividir por sus longitudes)', 'Sumarlos'],
+      q: 'To get the angle between two vectors with the dot product, what do you need to do first?',
+      options: ['Nothing', 'Normalize them (or divide by their lengths)', 'Add them'],
       answer: 1,
-      why: '`cos θ = a·b / (|a|·|b|)`. Si ya son unitarios, `cos θ = a·b`.'
+      why: '`cos θ = a·b / (|a|·|b|)`. If they are already unit vectors, `cos θ = a·b`.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Producto escalar',
-      prompt: 'Escribe `punto(a, b)` para vectores de cualquier tamaño.',
+      title: 'Dot product',
+      prompt: 'Write `dot(a, b)` for vectors of any size.',
       setup: SETUP,
-      starter: 'def punto(a, b):\n    pass\n',
+      starter: 'def dot(a, b):\n    pass\n',
       tests: [
-        { check: 'punto((1, 2, 3), (4, 5, 6)) == 32', msg: '(1,2,3)·(4,5,6) = 32' },
-        { check: 'punto((1, 0, 0), (0, 1, 0)) == 0', msg: 'perpendiculares dan 0' },
-        { check: 'punto((1, 0), (-1, 0)) == -1', msg: 'funciona en 2D: opuestos dan -1' }
+        { check: 'dot((1, 2, 3), (4, 5, 6)) == 32', msg: '(1,2,3)·(4,5,6) = 32' },
+        { check: 'dot((1, 0, 0), (0, 1, 0)) == 0', msg: 'perpendicular gives 0' },
+        { check: 'dot((1, 0), (-1, 0)) == -1', msg: 'works in 2D: opposite gives -1' }
       ],
       hints: ['`sum(x * y for x, y in zip(a, b))`'],
-      solution: 'def punto(a, b):\n    return sum(x * y for x, y in zip(a, b))\n'
+      solution: 'def dot(a, b):\n    return sum(x * y for x, y in zip(a, b))\n'
     },
     {
       id: 'e2',
-      title: '¿Delante o detrás?',
-      prompt: 'Escribe `delante(objeto, observador, mirada)`. Devuelve `True` si `objeto` está delante del observador (producto escalar mayor que 0).\n\n`objeto` y `observador` son posiciones; `mirada` es la dirección en la que mira.',
+      title: 'In front or behind?',
+      prompt: 'Write `in_front(obj, viewer, facing)`. Return `True` if `obj` is in front of the viewer (dot product greater than 0).\n\n`obj` and `viewer` are positions; `facing` is the direction the viewer looks.',
       setup: SETUP,
-      starter: 'def delante(objeto, observador, mirada):\n    pass\n',
+      starter: 'def in_front(obj, viewer, facing):\n    pass\n',
       tests: [
-        { check: 'delante((2, 0, 5), (0, 0, 0), (0, 0, 1)) is True', msg: '(2,0,5) está delante de quien mira hacia +Z' },
-        { check: 'delante((0, 0, -3), (0, 0, 0), (0, 0, 1)) is False', msg: '(0,0,-3) está detrás' },
-        { check: 'delante((10, 0, 0), (8, 0, 0), (-1, 0, 0)) is False', msg: 'funciona cuando el observador no está en el origen' }
+        { check: 'in_front((2, 0, 5), (0, 0, 0), (0, 0, 1)) is True', msg: '(2,0,5) is in front of someone looking toward +Z' },
+        { check: 'in_front((0, 0, -3), (0, 0, 0), (0, 0, 1)) is False', msg: '(0,0,-3) is behind' },
+        { check: 'in_front((10, 0, 0), (8, 0, 0), (-1, 0, 0)) is False', msg: 'works when the viewer is not at the origin' }
       ],
-      hints: ['Primero el vector hacia el objeto: `objeto - observador`.', 'Luego `sum(h * m for h, m in zip(hacia, mirada)) > 0`.'],
-      solution: 'def delante(objeto, observador, mirada):\n    hacia = [o - b for o, b in zip(objeto, observador)]\n    return sum(h * m for h, m in zip(hacia, mirada)) > 0\n'
+      hints: ['First the vector to the object: `obj - viewer`.', 'Then `sum(t * f for t, f in zip(to_obj, facing)) > 0`.'],
+      solution: 'def in_front(obj, viewer, facing):\n    to_obj = [o - v for o, v in zip(obj, viewer)]\n    return sum(t * f for t, f in zip(to_obj, facing)) > 0\n'
     },
     {
       id: 'e3',
-      title: 'Ángulo entre vectores',
-      prompt: 'Escribe `angulo(a, b)`: el ángulo en **grados** entre dos vectores (no tienen por qué ser unitarios).\n\nUsa `cos θ = a·b / (|a|·|b|)`. Cuidado: por errores de redondeo el coseno puede salir 1.0000001; limítalo a [-1, 1] antes de `math.acos`.',
+      title: 'Angle between vectors',
+      prompt: 'Write `angle(a, b)`: the angle in **degrees** between two vectors (not necessarily unit vectors).\n\nUse `cos θ = a·b / (|a|·|b|)`. Careful: because of rounding the cosine can come out as 1.0000001; clamp it to [-1, 1] before `math.acos`.',
       setup: SETUP,
-      starter: 'import math\n\ndef angulo(a, b):\n    pass\n',
+      starter: 'import math\n\ndef angle(a, b):\n    pass\n',
       tests: [
-        { check: '_cerca(angulo((1, 0, 0), (0, 1, 0)), 90)', msg: 'X e Y forman 90°' },
-        { check: '_cerca(angulo((1, 0, 0), (1, 1, 0)), 45)', msg: '(1,0,0) y (1,1,0) forman 45°' },
-        { check: '_cerca(angulo((2, 0, 0), (5, 0, 0)), 0)', msg: 'misma dirección: 0° (sin error de dominio)' },
-        { check: '_cerca(angulo((0, 0, 1), (0, 0, -3)), 180)', msg: 'opuestos: 180°' }
+        { check: '_close(angle((1, 0, 0), (0, 1, 0)), 90)', msg: 'X and Y are 90° apart' },
+        { check: '_close(angle((1, 0, 0), (1, 1, 0)), 45)', msg: '(1,0,0) and (1,1,0) are 45° apart' },
+        { check: '_close(angle((2, 0, 0), (5, 0, 0)), 0)', msg: 'same direction: 0° (no domain error)' },
+        { check: '_close(angle((0, 0, 1), (0, 0, -3)), 180)', msg: 'opposite: 180°' }
       ],
-      hints: ['`la = math.sqrt(sum(c*c for c in a))`, igual para b.', '`c = max(-1.0, min(1.0, punto / (la * lb)))`', '`return math.degrees(math.acos(c))`'],
-      solution: 'import math\n\ndef angulo(a, b):\n    d = sum(x * y for x, y in zip(a, b))\n    la = math.sqrt(sum(c * c for c in a))\n    lb = math.sqrt(sum(c * c for c in b))\n    c = max(-1.0, min(1.0, d / (la * lb)))\n    return math.degrees(math.acos(c))\n',
-      explain: 'Limitar el coseno a [-1, 1] evita un `ValueError: math domain error` que aparece en producción con vectores casi paralelos.'
+      hints: ['`la = math.sqrt(sum(c*c for c in a))`, same for b.', '`c = max(-1.0, min(1.0, d / (la * lb)))`', '`return math.degrees(math.acos(c))`'],
+      solution: 'import math\n\ndef angle(a, b):\n    d = sum(x * y for x, y in zip(a, b))\n    la = math.sqrt(sum(c * c for c in a))\n    lb = math.sqrt(sum(c * c for c in b))\n    c = max(-1.0, min(1.0, d / (la * lb)))\n    return math.degrees(math.acos(c))\n',
+      explain: 'Clamping the cosine to [-1, 1] avoids a `ValueError: math domain error` that shows up in production with nearly parallel vectors.'
     }
   ],
 
   summary: [
-    'a · b = suma de productos; da un número.',
-    'Positivo = misma dirección, 0 = perpendiculares, negativo = opuestos.',
-    'Con unitarios es el coseno del ángulo: sirve para «delante/detrás» y conos de visión.'
+    'a · b = sum of products; it gives a number.',
+    'Positive = same direction, 0 = perpendicular, negative = opposite.',
+    'With unit vectors it is the cosine of the angle: use it for «in front / behind» and vision cones.'
   ]
 });
 })();

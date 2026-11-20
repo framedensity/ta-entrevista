@@ -1,33 +1,33 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>Entrevista TA</title>
+  <title>TA Interview</title>
   <meta name="theme-color" content="#0f766e">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Entrevista TA">
+  <meta name="apple-mobile-web-app-title" content="TA Interview">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <header class="top">
-    <a href="#/" class="brand">Entrevista TA</a>
-    <button type="button" id="theme" class="ghost" aria-label="Cambiar tema">Tema</button>
+    <a href="#/" class="brand">TA Interview</a>
+    <button type="button" id="theme" class="ghost" aria-label="Change theme">Theme</button>
   </header>
 
   <main id="app" class="wrap"></main>
 
-  <nav class="tabbar" aria-label="Navegación">
-    <a href="#/" data-tab="ruta"><span class="ico">🗺️</span><span>Ruta</span></a>
-    <a href="#/repaso" data-tab="repaso"><span class="ico">🔁</span><span>Repaso</span></a>
-    <a href="#/simulacro" data-tab="simulacro"><span class="ico">⏱️</span><span>Simulacro</span></a>
+  <nav class="tabbar" aria-label="Navigation">
+    <a href="#/" data-tab="path"><span class="ico">🗺️</span><span>Path</span></a>
+    <a href="#/review" data-tab="review"><span class="ico">🔁</span><span>Review</span></a>
+    <a href="#/mock" data-tab="mock"><span class="ico">⏱️</span><span>Mock exam</span></a>
   </nav>
 
-  <!-- Contenido (separado del código) -->
+  <!-- Content (kept separate from the code) -->
   <script src="content/ta.js"></script>
   <script src="content/curriculum.js"></script>
-  <!-- Las lecciones se cargan solas desde content/<tema>/<id>.js (ver curriculum.js) -->
-  <!-- Código -->
+  <!-- Lessons load themselves from content/<module>/<id>.js (see curriculum.js) -->
+  <!-- Code -->
   <script src="js/md.js"></script>
   <script src="js/store.js"></script>
   <script src="js/maya_mock.js"></script>

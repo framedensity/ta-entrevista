@@ -1,5 +1,5 @@
-// Figuras interactivas para Matemáticas 3D (Canvas). Se pueden arrastrar con el dedo.
-// Uso en una lección: { type: 'viz', name: 'dot' }
+// Interactive figures for 3D Math (Canvas). Drag them with your finger.
+// Use in a lesson: { type: 'viz', name: 'dot' }
 window.Viz = (function () {
   function css(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim() || '#888'; }
   function fmt(v, d) { d = d === undefined ? 2 : d; var s = (Math.round(v * Math.pow(10, d)) / Math.pow(10, d)).toFixed(d); return s === '-0.00' ? '0.00' : s; }
@@ -8,7 +8,7 @@ window.Viz = (function () {
   function deg(r) { return r * 180 / Math.PI; }
   function rad(d) { return d * Math.PI / 180; }
 
-  // ---------- Plano 2D con arrastre ----------
+  // ---------- 2D plane with dragging ----------
   function Plane(box, opt) {
     opt = opt || {};
     var self = this;
@@ -139,8 +139,8 @@ window.Viz = (function () {
       pl.line([a[0], 0], a, css('--mute')); pl.line([0, a[1]], a, css('--mute'));
       pl.arrow([0, 0], a, css('--acc'), 3, 'v');
     };
-    pl.onchange = function () { r.innerHTML = 'v = (<b>' + fmt(a[0], 1) + '</b>, <b>' + fmt(a[1], 1) + '</b>) · x = cuánto a la derecha · y = cuánto hacia arriba'; };
-    hint(box, 'Arrastra la punta de la flecha.'); pl.onchange();
+    pl.onchange = function () { r.innerHTML = 'v = (<b>' + fmt(a[0], 1) + '</b>, <b>' + fmt(a[1], 1) + '</b>) · x = how far right · y = how far up'; };
+    hint(box, 'Drag the tip of the arrow.'); pl.onchange();
   };
 
   W.normalize = function (box) {
@@ -153,9 +153,9 @@ window.Viz = (function () {
     };
     pl.onchange = function () {
       var L = len(a);
-      r.innerHTML = 'longitud de v = <b>' + fmt(L) + '</b><br>n = v / longitud = (<b>' + fmt(a[0] / (L || 1)) + '</b>, <b>' + fmt(a[1] / (L || 1)) + '</b>) · longitud de n = <b>1.00</b>';
+      r.innerHTML = 'length of v = <b>' + fmt(L) + '</b><br>n = v / length = (<b>' + fmt(a[0] / (L || 1)) + '</b>, <b>' + fmt(a[1] / (L || 1)) + '</b>) · length of n = <b>1.00</b>';
     };
-    hint(box, 'Arrastra v. La flecha n siempre mide 1 (toca el círculo).'); pl.onchange();
+    hint(box, 'Drag v. Arrow n always has length 1 (it touches the circle).'); pl.onchange();
   };
 
   W.dot = function (box) {
@@ -175,10 +175,10 @@ window.Viz = (function () {
       var d = dot(a, b), La = len(a), Lb = len(b);
       var cos = (La && Lb) ? d / (La * Lb) : 0;
       var ang = deg(Math.acos(Math.max(-1, Math.min(1, cos))));
-      var txt = cos > 0.05 ? 'apuntan hacia el <b>mismo lado</b> (positivo)' : (cos < -0.05 ? 'apuntan hacia <b>lados opuestos</b> (negativo)' : 'son <b>perpendiculares</b> (≈ 0)');
-      r.innerHTML = 'a · b = ' + fmt(a[0], 1) + '×' + fmt(b[0], 1) + ' + ' + fmt(a[1], 1) + '×' + fmt(b[1], 1) + ' = <b>' + fmt(d) + '</b><br>ángulo = <b>' + fmt(ang, 0) + '°</b> · ' + txt;
+      var txt = cos > 0.05 ? 'they point the <b>same way</b> (positive)' : (cos < -0.05 ? 'they point <b>opposite ways</b> (negative)' : 'they are <b>perpendicular</b> (≈ 0)');
+      r.innerHTML = 'a · b = ' + fmt(a[0], 1) + '×' + fmt(b[0], 1) + ' + ' + fmt(a[1], 1) + '×' + fmt(b[1], 1) + ' = <b>' + fmt(d) + '</b><br>angle = <b>' + fmt(ang, 0) + '°</b> · ' + txt;
     };
-    hint(box, 'Arrastra las puntas de a (verde) y b (naranja).'); pl.onchange();
+    hint(box, 'Drag the tips of a (green) and b (orange).'); pl.onchange();
   };
 
   W.cross = function (box) {
@@ -194,11 +194,11 @@ window.Viz = (function () {
     pl.onchange = function () {
       var z = a[0] * b[1] - a[1] * b[0];
       r.innerHTML = 'a × b = (0, 0, <b>' + fmt(z) + '</b>)<br>' +
-        (Math.abs(z) < 0.05 ? 'a y b son <b>paralelos</b>: el resultado es 0.' :
-          (z > 0 ? 'Positivo: el resultado sale <b>hacia ti</b> (de la pantalla).' : 'Negativo: el resultado entra <b>hacia dentro</b> de la pantalla.')) +
-        '<br>Su longitud = área de la zona coloreada = <b>' + fmt(Math.abs(z)) + '</b>';
+        (Math.abs(z) < 0.05 ? 'a and b are <b>parallel</b>: the result is 0.' :
+          (z > 0 ? 'Positive: the result points <b>out of the screen</b>, toward you.' : 'Negative: the result points <b>into the screen</b>.')) +
+        '<br>Its length = area of the shaded shape = <b>' + fmt(Math.abs(z)) + '</b>';
     };
-    hint(box, 'En 2D, el producto vectorial apunta fuera de la pantalla. Arrastra a y b.'); pl.onchange();
+    hint(box, 'In 2D, the cross product points out of the screen. Drag a and b.'); pl.onchange();
   };
 
   W.matrix = function (box) {
@@ -218,11 +218,11 @@ window.Viz = (function () {
     };
     function upd() {
       var m = M(); pl.render();
-      r.innerHTML = 'Matriz:<br><code>[ ' + fmt(m[0][0]) + '  ' + fmt(m[0][1]) + ' ]</code><br><code>[ ' + fmt(m[1][0]) + '  ' + fmt(m[1][1]) + ' ]</code><br>Columna 1 = hacia dónde va el eje X (rojo). Columna 2 = el eje Y (verde).';
+      r.innerHTML = 'Matrix:<br><code>[ ' + fmt(m[0][0]) + '  ' + fmt(m[0][1]) + ' ]</code><br><code>[ ' + fmt(m[1][0]) + '  ' + fmt(m[1][1]) + ' ]</code><br>Column 1 = where the X axis goes (red). Column 2 = the Y axis (green).';
     }
-    slider(box, 'Rotación (°)', -180, 180, 1, st.ang, function (v) { st.ang = v; upd(); });
-    slider(box, 'Escala X', 0.2, 2, 0.1, st.sx, function (v) { st.sx = v; upd(); });
-    slider(box, 'Escala Y', 0.2, 2, 0.1, st.sy, function (v) { st.sy = v; upd(); });
+    slider(box, 'Rotation (°)', -180, 180, 1, st.ang, function (v) { st.ang = v; upd(); });
+    slider(box, 'Scale X', 0.2, 2, 0.1, st.sx, function (v) { st.sx = v; upd(); });
+    slider(box, 'Scale Y', 0.2, 2, 0.1, st.sy, function (v) { st.sy = v; upd(); });
     upd();
   };
 
@@ -236,16 +236,16 @@ window.Viz = (function () {
       var c = Math.cos(rad(st.ang)), s = Math.sin(rad(st.ang)), p = [st.px, st.py];
       pl.arrow(p, [p[0] + c * 1.5, p[1] + s * 1.5], '#d64545', 2, 'x');
       pl.arrow(p, [p[0] - s * 1.5, p[1] + c * 1.5], '#2f9e57', 2, 'y');
-      pl.dot(p, css('--mute'), 6); pl.text(p, 'padre', css('--mute'));
-      var w = world(); pl.line(p, w, css('--acc')); pl.dot(w, css('--acc'), 7); pl.text(w, 'hijo', css('--acc'));
+      pl.dot(p, css('--mute'), 6); pl.text(p, 'parent', css('--mute'));
+      var w = world(); pl.line(p, w, css('--acc')); pl.dot(w, css('--acc'), 7); pl.text(w, 'child', css('--acc'));
     };
     function upd() {
       var w = world(); pl.render();
-      r.innerHTML = 'Local (respecto al padre): (<b>' + fmt(st.lx, 1) + '</b>, <b>' + fmt(st.ly, 1) + '</b>)<br>Mundo (respecto al origen): (<b>' + fmt(w[0]) + '</b>, <b>' + fmt(w[1]) + '</b>)';
+      r.innerHTML = 'Local (relative to the parent): (<b>' + fmt(st.lx, 1) + '</b>, <b>' + fmt(st.ly, 1) + '</b>)<br>World (relative to the origin): (<b>' + fmt(w[0]) + '</b>, <b>' + fmt(w[1]) + '</b>)';
     }
-    slider(box, 'Padre: posición X', -3, 3, 0.5, st.px, function (v) { st.px = v; upd(); });
-    slider(box, 'Padre: rotación (°)', -180, 180, 5, st.ang, function (v) { st.ang = v; upd(); });
-    slider(box, 'Hijo: X local', -3, 3, 0.5, st.lx, function (v) { st.lx = v; upd(); });
+    slider(box, 'Parent: position X', -3, 3, 0.5, st.px, function (v) { st.px = v; upd(); });
+    slider(box, 'Parent: rotation (°)', -180, 180, 5, st.ang, function (v) { st.ang = v; upd(); });
+    slider(box, 'Child: local X', -3, 3, 0.5, st.lx, function (v) { st.lx = v; upd(); });
     upd();
   };
 
@@ -258,14 +258,14 @@ window.Viz = (function () {
     function rotX(v, a) { var c = Math.cos(a), s = Math.sin(a); return [v[0], c * v[1] - s * v[2], s * v[1] + c * v[2]]; }
     function rotY(v, a) { var c = Math.cos(a), s = Math.sin(a); return [c * v[0] + s * v[2], v[1], -s * v[0] + c * v[2]]; }
     function rotZ(v, a) { var c = Math.cos(a), s = Math.sin(a); return [c * v[0] - s * v[1], s * v[0] + c * v[1], v[2]]; }
-    function proj(v, w) { // proyección isométrica sencilla
+    function proj(v, w) { // simple isometric projection
       var x = (v[0] - v[1]) * Math.cos(rad(30)), y = v[2] + (v[0] + v[1]) * Math.sin(rad(30));
       return [w / 2 + x * w * 0.3, w / 2 - y * w * 0.3];
     }
     function draw() {
       var dpr = window.devicePixelRatio || 1, w = cv.clientWidth || 320;
       cv.width = w * dpr; cv.height = w * dpr; var c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
-      // Orden XYZ (como en Maya): Z es el aro de fuera, Y el del medio, X el de dentro.
+      // XYZ order (as in Maya): Z is the outer ring, Y the middle one, X the inner one.
       var zAxis = [0, 0, 1];
       var yAxis = rotZ([0, 1, 0], rad(st.z));
       var xAxis = rotZ(rotY([1, 0, 0], rad(st.y)), rad(st.z));
@@ -279,13 +279,13 @@ window.Viz = (function () {
       });
       var cosXZ = Math.abs(xAxis[0] * zAxis[0] + xAxis[1] * zAxis[1] + xAxis[2] * zAxis[2]);
       var locked = cosXZ > 0.985;
-      r.innerHTML = 'Ejes de giro de los aros (orden XYZ).<br>Ángulo entre el eje X y el eje Z: <b>' + fmt(deg(Math.acos(Math.min(1, cosXZ))), 0) + '°</b><br>' +
-        (locked ? '⚠️ <b>Bloqueo de cardán:</b> X y Z giran alrededor del mismo eje. Has perdido una dirección de giro.' : 'Los tres ejes son distintos: puedes girar en las tres direcciones.');
+      r.innerHTML = 'Rotation axes of the rings (XYZ order).<br>Angle between the X axis and the Z axis: <b>' + fmt(deg(Math.acos(Math.min(1, cosXZ))), 0) + '°</b><br>' +
+        (locked ? '⚠️ <b>Gimbal lock:</b> X and Z rotate around the same axis. You have lost one direction of rotation.' : 'The three axes are different: you can rotate in all three directions.');
     }
-    slider(box, 'Rotar X (°)', -180, 180, 5, st.x, function (v) { st.x = v; draw(); });
-    slider(box, 'Rotar Y (°)', -90, 90, 5, st.y, function (v) { st.y = v; draw(); });
-    slider(box, 'Rotar Z (°)', -180, 180, 5, st.z, function (v) { st.z = v; draw(); });
-    hint(box, 'Lleva «Rotar Y» a 90 y mira qué pasa con X y Z.');
+    slider(box, 'Rotate X (°)', -180, 180, 5, st.x, function (v) { st.x = v; draw(); });
+    slider(box, 'Rotate Y (°)', -90, 90, 5, st.y, function (v) { st.y = v; draw(); });
+    slider(box, 'Rotate Z (°)', -180, 180, 5, st.z, function (v) { st.z = v; draw(); });
+    hint(box, 'Set «Rotate Y» to 90 and watch what happens to X and Z.');
     setTimeout(draw, 0); window.addEventListener('resize', draw);
   };
 
@@ -302,17 +302,17 @@ window.Viz = (function () {
       var x = st.axis === 'X' ? s : 0, y = st.axis === 'Y' ? s : 0, z = st.axis === 'Z' ? s : 0;
       pl.render();
       r.innerHTML = 'q = (w, x, y, z) = (<b>' + fmt(w) + '</b>, <b>' + fmt(x) + '</b>, <b>' + fmt(y) + '</b>, <b>' + fmt(z) + '</b>)<br>' +
-        'w = cos(' + st.ang + '° / 2) · la parte (x, y, z) = eje × sin(' + st.ang + '° / 2)<br>longitud de q = <b>' + fmt(Math.sqrt(w * w + x * x + y * y + z * z)) + '</b> (siempre 1)';
+        'w = cos(' + st.ang + '° / 2) · the (x, y, z) part = axis × sin(' + st.ang + '° / 2)<br>length of q = <b>' + fmt(Math.sqrt(w * w + x * x + y * y + z * z)) + '</b> (always 1)';
     }
-    slider(box, 'Ángulo (°)', -360, 360, 5, st.ang, function (v) { st.ang = v; upd(); });
+    slider(box, 'Angle (°)', -360, 360, 5, st.ang, function (v) { st.ang = v; upd(); });
     var sel = document.createElement('div'); sel.className = 'keys';
     ['X', 'Y', 'Z'].forEach(function (k) {
-      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Eje ' + k;
+      var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Axis ' + k;
       b.addEventListener('click', function () { st.axis = k; upd(); });
       sel.appendChild(b);
     });
     box.appendChild(sel);
-    hint(box, 'El dibujo muestra el giro alrededor de Z. Prueba 360°: q vale (-1, 0, 0, 0) pero el giro es el mismo que 0°.');
+    hint(box, 'The drawing shows the rotation around Z. Try 360°: q is (-1, 0, 0, 0) but the rotation is the same as 0°.');
     upd();
   };
 
@@ -329,7 +329,7 @@ window.Viz = (function () {
       r.innerHTML = 'P = A + (B − A) × t = (<b>' + fmt(p[0]) + '</b>, <b>' + fmt(p[1]) + '</b>) · t = <b>' + st.t + '</b>';
     };
     slider(box, 't', 0, 1, 0.05, st.t, function (v) { st.t = v; pl.render(); pl.onchange(); });
-    hint(box, 't = 0 es A, t = 1 es B. Arrastra A y B.'); pl.onchange();
+    hint(box, 't = 0 is A, t = 1 is B. Drag A and B.'); pl.onchange();
   };
 
   W.slerp = function (box) {
@@ -347,16 +347,16 @@ window.Viz = (function () {
     function upd() {
       var A = u(st.a0), B = u(st.a1), t = st.t, L = [A[0] + (B[0] - A[0]) * t, A[1] + (B[1] - A[1]) * t];
       pl.render();
-      r.innerHTML = '<span style="color:#d64545">lerp</span>: longitud <b>' + fmt(len(L)) + '</b> (se encoge en el medio)<br><span style="color:#3b6fd6">slerp</span>: longitud <b>1.00</b>, gira a velocidad constante';
+      r.innerHTML = '<span style="color:#d64545">lerp</span>: length <b>' + fmt(len(L)) + '</b> (shrinks in the middle)<br><span style="color:#3b6fd6">slerp</span>: length <b>1.00</b>, turns at constant speed';
     }
     slider(box, 't', 0, 1, 0.05, st.t, function (v) { st.t = v; upd(); });
-    slider(box, 'Ángulo de B (°)', 20, 180, 5, st.a1, function (v) { st.a1 = v; upd(); });
+    slider(box, 'Angle of B (°)', 20, 180, 5, st.a1, function (v) { st.a1 = v; upd(); });
     upd();
   };
 
   function mount(name, box) {
     if (W[name]) W[name](box);
-    else box.textContent = '(figura no encontrada: ' + name + ')';
+    else box.textContent = '(figure not found: ' + name + ')';
   }
   return { mount: mount };
 })();

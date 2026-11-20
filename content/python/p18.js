@@ -1,96 +1,95 @@
 TA.add({
   id: 'p18',
-  title: 'TA: verificador de nomenclatura',
-  en: 'naming convention checker',
+  title: 'TA: naming convention checker',
 
   explain: [
-    'Primer proyecto de TA: una herramienta que revisa los nombres de una escena antes de entregarla. Aquí juntas lo que ya sabes: diccionarios, regex, agrupar y funciones pequeñas.',
-    { type: 'analogy', text: 'es el corrector ortográfico del pipeline. No arregla nada por su cuenta: señala dónde está el problema y por qué, para que el artista decida.' },
-    '### Las reglas son datos, no código',
-    'Un error común es escribir un `if` por cada regla. Si mañana cambia la convención, hay que tocar el código. Mejor guardar las reglas en un **diccionario**: tipo de nodo → patrón.',
+    'First TA project: a tool that checks a scene\'s names before it is delivered. Here you combine what you already know: dictionaries, regex, grouping and small functions.',
+    { type: 'analogy', text: 'it is the pipeline\'s spell checker. It does not fix anything on its own: it points out where the problem is and why, so the artist decides.' },
+    '### Rules are data, not code',
+    'A common mistake is writing one `if` per rule. If the convention changes tomorrow, you have to edit the code. Better to keep the rules in a **dictionary**: node type → pattern.',
     { type: 'compare',
-      badTitle: 'Reglas mezcladas con la lógica',
-      bad: 'if tipo == "camera" and not nombre.startswith("cam_"):\n    ...\nelif tipo == "joint" and not nombre.endswith("_jnt"):\n    ...',
-      goodTitle: 'Reglas en datos; la lógica no cambia',
-      good: 'REGLAS = {\n    "camera": r"cam_sh\\d{3}",\n    "joint": r"[a-z]+_(l|r|c)_jnt",\n}\npatron = REGLAS.get(tipo)\nif patron and not re.fullmatch(patron, nombre): ...' },
-    'Así, las reglas pueden venir de un **JSON** del proyecto (lección 15), y cada proyecto tiene las suyas sin tocar la herramienta.',
-    '### Informe útil, no solo «falló»',
-    'Un buen verificador dice **qué** nombre falla y **por qué**, y si puede, **sugiere** el nombre correcto. Agrupar los fallos por motivo ayuda a arreglarlos de una vez.',
-    { type: 'cg', text: 'antes de enviar la escena a iluminación, el verificador encuentra `Cam_SH10` (debería ser `cam_sh010`) y `Hip_JNT`. El artista los corrige en un minuto en vez de que falle el render.' },
-    { type: 'tip', text: 'en la entrevista, describe la estructura: «reglas en un JSON, una función pura que devuelve los problemas, y la interfaz solo los muestra. Así lo puedo correr en lote sin abrir Maya».' }
+      badTitle: 'Rules mixed with the logic',
+      bad: 'if kind == "camera" and not name.startswith("cam_"):\n    ...\nelif kind == "joint" and not name.endswith("_jnt"):\n    ...',
+      goodTitle: 'Rules as data; the logic does not change',
+      good: 'RULES = {\n    "camera": r"cam_sh\\d{3}",\n    "joint": r"[a-z]+_(l|r|c)_jnt",\n}\npattern = RULES.get(kind)\nif pattern and not re.fullmatch(pattern, name): ...' },
+    'That way the rules can come from a project **JSON** (lesson 15), and each project has its own without touching the tool.',
+    '### A useful report, not just «failed»',
+    'A good checker says **which** name fails and **why**, and if it can, it **suggests** the right name. Grouping the failures by reason helps fix them in one go.',
+    { type: 'cg', text: 'before sending the scene to lighting, the checker finds `Cam_SH10` (should be `cam_sh010`) and `Hip_JNT`. The artist fixes them in a minute instead of the render failing.' },
+    { type: 'tip', text: 'in the interview, describe the structure: «rules in a JSON, a pure function that returns the problems, and the UI only displays them. That way I can run it in batch without opening Maya».' }
   ],
 
   example: {
-    intro: 'Reglas por tipo de nodo, y una función que devuelve los problemas.',
+    intro: 'Rules per node type, and a function that returns the problems.',
     lines: [
-      { code: 'import re', note: 'Usaremos `re.fullmatch`.' },
-      { code: 'REGLAS = {"camera": r"cam_sh\\d{3}", "joint": r"[a-z]+_(l|r|c)_jnt"}', note: 'Las reglas son datos: tipo → patrón.' },
-      { code: 'nodos = [("cam_sh010", "camera"), ("Cam_SH10", "camera"), ("hip_c_jnt", "joint"), ("knee_jnt", "joint")]', note: 'Parejas (nombre, tipo).' },
-      { code: 'malos = [n for n, t in nodos if t in REGLAS and not re.fullmatch(REGLAS[t], n)]', note: 'Solo revisamos los tipos que tienen regla.' },
-      { code: 'print(malos)', note: 'Los dos nombres que no cumplen.' }
+      { code: 'import re', note: 'We will use `re.fullmatch`.' },
+      { code: 'RULES = {"camera": r"cam_sh\\d{3}", "joint": r"[a-z]+_(l|r|c)_jnt"}', note: 'The rules are data: type → pattern.' },
+      { code: 'nodes = [("cam_sh010", "camera"), ("Cam_SH10", "camera"), ("hip_c_jnt", "joint"), ("knee_jnt", "joint")]', note: '(name, type) pairs.' },
+      { code: 'bad = [n for n, t in nodes if t in RULES and not re.fullmatch(RULES[t], n)]', note: 'We only check the types that have a rule.' },
+      { code: 'print(bad)', note: 'The two names that break the rules.' }
     ],
     output: "['Cam_SH10', 'knee_jnt']"
   },
 
   mini: [
     {
-      q: '¿Por qué guardar las reglas en un diccionario (o JSON) en vez de en `if`?',
-      options: ['Porque es más rápido', 'Porque cambiar la convención no obliga a cambiar el código', 'Porque `if` no funciona con texto'],
+      q: 'Why keep the rules in a dictionary (or JSON) instead of in `if`s?',
+      options: ['Because it is faster', 'Because changing the convention does not force a code change', 'Because `if` does not work with text'],
       answer: 1,
-      why: 'Separar datos y lógica permite que cada proyecto tenga sus reglas sin tocar la herramienta.'
+      why: 'Separating data and logic lets each project have its own rules without touching the tool.'
     },
     {
-      q: 'Un nodo es de un tipo que **no** tiene regla. ¿Qué es lo más razonable?',
-      options: ['Marcarlo como error', 'Ignorarlo (no hay nada que comprobar)', 'Borrarlo'],
+      q: 'A node is of a type that has **no** rule. What is most reasonable?',
+      options: ['Flag it as an error', 'Skip it (there is nothing to check)', 'Delete it'],
       answer: 1,
-      why: 'Si no hay regla para ese tipo, no hay nada que incumplir. (Opcionalmente, puedes listarlo como «sin revisar».)'
+      why: 'If there is no rule for that type, there is nothing to break. (Optionally, you can list it as «not checked».)'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Revisar con reglas',
-      prompt: 'Escribe `revisar(nodos, reglas)`:\n\n- `nodos`: lista de `(nombre, tipo)`.\n- `reglas`: dict `{tipo: patrón}`.\n\nDevuelve un **dict** `{nombre: patrón_que_incumple}` con los nodos que tienen regla y **no** la cumplen (usa `re.fullmatch`).',
-      starter: 'import re\n\ndef revisar(nodos, reglas):\n    # tu código\n    pass\n',
+      title: 'Checking with rules',
+      prompt: 'Write `check(nodes, rules)`:\n\n- `nodes`: list of `(name, type)`.\n- `rules`: dict `{type: pattern}`.\n\nReturn a **dict** `{name: pattern_it_breaks}` with the nodes that have a rule and do **not** follow it (use `re.fullmatch`).',
+      starter: 'import re\n\ndef check(nodes, rules):\n    # your code\n    pass\n',
       tests: [
-        { check: "revisar([('cam_sh010', 'camera'), ('Cam_SH10', 'camera'), ('x', 'mesh')], {'camera': r'cam_sh\\d{3}'}) == {'Cam_SH10': r'cam_sh\\d{3}'}", msg: 'detecta Cam_SH10 e ignora el tipo sin regla' },
-        { check: "revisar([], {'camera': 'x'}) == {}", msg: 'sin nodos, devuelve {}' }
+        { check: "check([('cam_sh010', 'camera'), ('Cam_SH10', 'camera'), ('x', 'mesh')], {'camera': r'cam_sh\\d{3}'}) == {'Cam_SH10': r'cam_sh\\d{3}'}", msg: 'finds Cam_SH10 and skips the type with no rule' },
+        { check: "check([], {'camera': 'x'}) == {}", msg: 'no nodes returns {}' }
       ],
-      hints: ['`patron = reglas.get(tipo)`; si es `None`, sigue con el siguiente.', '`if not re.fullmatch(patron, nombre): problemas[nombre] = patron`'],
-      solution: 'import re\n\ndef revisar(nodos, reglas):\n    problemas = {}\n    for nombre, tipo in nodos:\n        patron = reglas.get(tipo)\n        if patron and not re.fullmatch(patron, nombre):\n            problemas[nombre] = patron\n    return problemas\n'
+      hints: ['`pattern = rules.get(kind)`; if it is `None`, move on to the next.', '`if not re.fullmatch(pattern, name): problems[name] = pattern`'],
+      solution: 'import re\n\ndef check(nodes, rules):\n    problems = {}\n    for name, kind in nodes:\n        pattern = rules.get(kind)\n        if pattern and not re.fullmatch(pattern, name):\n            problems[name] = pattern\n    return problems\n'
     },
     {
       id: 'e2',
-      title: 'Sugerir el nombre correcto',
-      prompt: 'Escribe `sugerir_camara(nombre)` que normalice nombres de cámara:\n\n- todo en minúsculas\n- el número de toma con **3 dígitos**\n\nEjemplos: `"Cam_SH10"` → `"cam_sh010"`, `"CAM_sh7"` → `"cam_sh007"`.\n\nSi no encuentra un número, devuelve `None`.',
-      starter: 'import re\n\ndef sugerir_camara(nombre):\n    # tu código\n    pass\n',
+      title: 'Suggesting the right name',
+      prompt: 'Write `suggest_camera(name)` that normalizes camera names:\n\n- all lowercase\n- the shot number with **3 digits**\n\nExamples: `"Cam_SH10"` → `"cam_sh010"`, `"CAM_sh7"` → `"cam_sh007"`.\n\nIf it finds no number, return `None`.',
+      starter: 'import re\n\ndef suggest_camera(name):\n    # your code\n    pass\n',
       tests: [
-        { check: "sugerir_camara('Cam_SH10') == 'cam_sh010'", msg: 'Cam_SH10 → cam_sh010' },
-        { check: "sugerir_camara('CAM_sh7') == 'cam_sh007'", msg: 'CAM_sh7 → cam_sh007' },
-        { check: "sugerir_camara('cam_main') is None", msg: 'sin número devuelve None' }
+        { check: "suggest_camera('Cam_SH10') == 'cam_sh010'", msg: 'Cam_SH10 → cam_sh010' },
+        { check: "suggest_camera('CAM_sh7') == 'cam_sh007'", msg: 'CAM_sh7 → cam_sh007' },
+        { check: "suggest_camera('cam_main') is None", msg: 'no number returns None' }
       ],
-      hints: ['`m = re.search(r"\\d+", nombre)` busca el primer número.', '`return f"cam_sh{int(m.group()):03d}"`'],
-      solution: 'import re\n\ndef sugerir_camara(nombre):\n    m = re.search(r"\\d+", nombre)\n    if not m:\n        return None\n    return f"cam_sh{int(m.group()):03d}"\n'
+      hints: ['`m = re.search(r"\\d+", name)` finds the first number.', '`return f"cam_sh{int(m.group()):03d}"`'],
+      solution: 'import re\n\ndef suggest_camera(name):\n    m = re.search(r"\\d+", name)\n    if not m:\n        return None\n    return f"cam_sh{int(m.group()):03d}"\n'
     },
     {
       id: 'e3',
-      title: 'Informe agrupado por motivo',
-      prompt: 'Escribe `informe(nombres)` que revise cada nombre con estas comprobaciones, **en este orden**, y se quede con el **primer** motivo que falle:\n\n1. `"mayúsculas"` si el nombre no es todo minúsculas.\n2. `"espacios"` si contiene un espacio.\n3. `"sin versión"` si no termina en `_v` + 3 dígitos.\n\nDevuelve un dict normal `{motivo: [nombres ordenados]}` solo con los motivos que tengan nombres.',
-      starter: 'import re\nfrom collections import defaultdict\n\ndef informe(nombres):\n    # tu código\n    pass\n',
+      title: 'A report grouped by reason',
+      prompt: 'Write `report(names)` that checks each name with these checks, **in this order**, and keeps the **first** reason that fails:\n\n1. `"uppercase"` if the name is not all lowercase.\n2. `"spaces"` if it contains a space.\n3. `"no version"` if it does not end in `_v` + 3 digits.\n\nReturn a plain dict `{reason: [sorted names]}` with only the reasons that have names.',
+      starter: 'import re\nfrom collections import defaultdict\n\ndef report(names):\n    # your code\n    pass\n',
       tests: [
-        { check: "informe(['hero_v001', 'Hero_v001', 'my hero_v002', 'boss', 'Boss x']) == {'mayúsculas': ['Boss x', 'Hero_v001'], 'espacios': ['my hero_v002'], 'sin versión': ['boss']}", msg: 'agrupa por el primer motivo que falla' },
-        { check: "informe(['a_v001']) == {}", msg: 'si todo está bien, devuelve {}' }
+        { check: "report(['hero_v001', 'Hero_v001', 'my hero_v002', 'boss', 'Boss x']) == {'uppercase': ['Boss x', 'Hero_v001'], 'spaces': ['my hero_v002'], 'no version': ['boss']}", msg: 'groups by the first reason that fails' },
+        { check: "report(['a_v001']) == {}", msg: 'if everything is fine, returns {}' }
       ],
-      hints: ['Guarda las comprobaciones en una lista de `(motivo, función)` y recórrela.', 'Por ejemplo: `("mayúsculas", lambda n: n != n.lower())`. Al encontrar el primero, `break`.'],
-      solution: 'import re\nfrom collections import defaultdict\n\nCOMPROBACIONES = [\n    ("mayúsculas", lambda n: n != n.lower()),\n    ("espacios", lambda n: " " in n),\n    ("sin versión", lambda n: not re.search(r"_v\\d{3}$", n)),\n]\n\ndef informe(nombres):\n    grupos = defaultdict(list)\n    for n in nombres:\n        for motivo, falla in COMPROBACIONES:\n            if falla(n):\n                grupos[motivo].append(n)\n                break\n    return {m: sorted(v) for m, v in grupos.items()}\n',
-      explain: 'Las comprobaciones son **datos** (una lista de parejas). Añadir una regla nueva es añadir una línea, sin tocar el bucle.'
+      hints: ['Keep the checks in a list of `(reason, function)` and loop over it.', 'For example: `("uppercase", lambda n: n != n.lower())`. When you find the first one, `break`.'],
+      solution: 'import re\nfrom collections import defaultdict\n\nCHECKS = [\n    ("uppercase", lambda n: n != n.lower()),\n    ("spaces", lambda n: " " in n),\n    ("no version", lambda n: not re.search(r"_v\\d{3}$", n)),\n]\n\ndef report(names):\n    groups = defaultdict(list)\n    for n in names:\n        for reason, fails in CHECKS:\n            if fails(n):\n                groups[reason].append(n)\n                break\n    return {r: sorted(v) for r, v in groups.items()}\n',
+      explain: 'The checks are **data** (a list of pairs). Adding a new rule is adding one line, without touching the loop.'
     }
   ],
 
   summary: [
-    'Reglas como datos (dict o JSON): la lógica no cambia cuando cambia la convención.',
-    'Devuelve problemas con contexto (qué y por qué) y, si puedes, una sugerencia.',
-    'Funciones puras sin interfaz: se pueden probar y usar en lotes.'
+    'Rules as data (dict or JSON): the logic does not change when the convention does.',
+    'Return problems with context (what and why) and, if you can, a suggestion.',
+    'Pure functions without a UI: they can be tested and run in batches.'
   ]
 });

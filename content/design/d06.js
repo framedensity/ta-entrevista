@@ -1,39 +1,38 @@
 TA.add({
   id: 'd06',
-  title: 'Caso: exportar 100 cortes de cinemática',
-  en: 'design case',
+  title: 'Case: exporting 100 cutscene shots',
 
   explain: [
-    'Este es el tipo de pregunta de diseño que te pueden hacer: «¿Cómo automatizarías la exportación de las 100 tomas de una cinemática?». Aquí juntas todo lo de las lecciones anteriores.',
-    { type: 'analogy', text: 'es como planear una mudanza de 100 cajas: primero haces la lista de qué va en cada caja, compruebas que todo cabe en el camión, numeras las cajas y, al llegar, revisas que no falte ninguna.' },
-    '### Una estructura para responder',
-    '1. **Aclarar** (d02): formato, motor, qué se exporta por toma (cámara, personajes, rango), quién lo lanza, cuánto tiempo hay.\n2. **Datos de entrada**: de dónde salen las tomas y sus rangos (atributos en la cámara, un archivo de edición, la base de datos de producción).\n3. **Plan**: una lista de trabajos `toma → qué exportar → dónde`. Sin tocar nada todavía (como el *dry run* de p19).\n4. **Validar**: cámaras que faltan, rangos que se solapan, nombres que chocan, carpetas.\n5. **Ejecutar**: por lotes, un error no para el resto, progreso visible, sin interfaz si es de noche.\n6. **Verificar y resumir**: comprobar que cada archivo existe y no está vacío; informe final.\n7. **Mantener**: configuración por proyecto, versión en los logs.',
-    { type: 'tip', text: 'dilo en voz alta en este orden. Aunque no termines de explicarlo todo, una estructura clara ya demuestra mucho. Empieza por: «Primero aclararía…».' },
-    { type: 'cg', text: 'con 100 tomas, si cada una tarda 1 minuto, el lote tarda casi 2 horas. Es buena idea poder lanzarlo sin interfaz, por la noche o en la granja, y poder repetir solo las tomas que fallaron.' }
+    'This is the kind of design question you may get: «How would you automate exporting the 100 shots of a cutscene?». Here you put together everything from the previous lessons.',
+    { type: 'analogy', text: 'it is like planning a move with 100 boxes: first you list what goes in each box, check everything fits in the truck, number the boxes and, when you arrive, check that none is missing.' },
+    '### A structure for your answer',
+    '1. **Clarify** (d02): format, engine, what is exported per shot (camera, characters, range), who runs it, how much time there is.\n2. **Input data**: where the shots and their ranges come from (camera attributes, an edit file, the production database).\n3. **Plan**: a list of jobs `shot → what to export → where`. Without touching anything yet (like the *dry run* in p19).\n4. **Validate**: missing cameras, overlapping ranges, clashing names, folders.\n5. **Run**: in batches, one error does not stop the rest, visible progress, headless if overnight.\n6. **Verify and summarize**: check every file exists and is not empty; final report.\n7. **Maintain**: per-project config, version in the logs.',
+    { type: 'tip', text: 'say it out loud in this order. Even if you do not finish explaining everything, a clear structure already shows a lot. Start with: «First I would clarify…».' },
+    { type: 'cg', text: 'with 100 shots, if each takes 1 minute, the batch takes almost 2 hours. It is a good idea to be able to run it headless, overnight or on the farm, and to re-run only the shots that failed.' }
   ],
 
   example: {
-    intro: 'Esqueleto de la lógica (sin interfaz).',
+    intro: 'Skeleton of the logic (no UI).',
     lines: [
-      { label: '1. Plan', code: 'def planificar(tomas, cfg):\n    return [Trabajo(t.nombre, t.camara, t.inicio, t.fin,\n                    ruta=cfg.ruta_para(t)) for t in tomas]', note: 'Solo calcula qué hay que hacer.' },
-      { label: '2. Validar', code: 'def validar(trabajos):\n    errores = []\n    errores += camaras_que_faltan(trabajos)\n    errores += rangos_solapados(trabajos)\n    errores += rutas_repetidas(trabajos)\n    return errores', note: 'Reglas separadas; fácil añadir más.' },
-      { label: '3. Ejecutar', code: 'def ejecutar(trabajos, progreso=None):\n    hechos, fallos = [], {}\n    for i, t in enumerate(trabajos, 1):\n        try:\n            exportar(t)\n            hechos.append(t.nombre)\n        except Exception as e:\n            log.exception("Falló %s", t.nombre)\n            fallos[t.nombre] = str(e)\n        if progreso:\n            progreso(i, len(trabajos))\n    return hechos, fallos', note: 'Un fallo no para el resto. `progreso` es opcional: la ventana lo usa; el lote nocturno no.' },
-      { label: '4. Verificar', code: 'def verificar(trabajos):\n    return [t.nombre for t in trabajos\n            if not os.path.exists(t.ruta) or os.path.getsize(t.ruta) == 0]', note: 'Comprueba que se exportó algo de verdad.' }
+      { label: '1. Plan', code: 'def plan(shots, cfg):\n    return [Job(s.name, s.camera, s.start, s.end,\n                path=cfg.path_for(s)) for s in shots]', note: 'Only works out what needs doing.' },
+      { label: '2. Validate', code: 'def validate(jobs):\n    errors = []\n    errors += missing_cameras(jobs)\n    errors += overlapping_ranges(jobs)\n    errors += duplicate_paths(jobs)\n    return errors', note: 'Separate rules; easy to add more.' },
+      { label: '3. Run', code: 'def run(jobs, progress=None):\n    done, failed = [], {}\n    for i, j in enumerate(jobs, 1):\n        try:\n            export(j)\n            done.append(j.name)\n        except Exception as e:\n            log.exception("Failed %s", j.name)\n            failed[j.name] = str(e)\n        if progress:\n            progress(i, len(jobs))\n    return done, failed', note: 'One failure does not stop the rest. `progress` is optional: the window uses it; the nightly batch does not.' },
+      { label: '4. Verify', code: 'def verify(jobs):\n    return [j.name for j in jobs\n            if not os.path.exists(j.path) or os.path.getsize(j.path) == 0]', note: 'Checks that something was really exported.' }
     ]
   },
 
   mini: [
     {
-      q: '¿Por qué separar «planificar» de «ejecutar»?',
-      options: ['Por estilo', 'Para poder revisar y validar el plan antes de exportar nada (y hacer un dry run)', 'Para que sea más lento'],
+      q: 'Why separate «plan» from «run»?',
+      options: ['Style', 'So you can review and validate the plan before exporting anything (and do a dry run)', 'To make it slower'],
       answer: 1,
-      why: 'Detectas los problemas antes de gastar dos horas exportando.'
+      why: 'You catch problems before spending two hours exporting.'
     },
     {
-      q: 'El lote tarda 2 horas. ¿Qué es lo más útil?',
-      options: ['Que se pueda lanzar sin interfaz (de noche o en la granja) y repetir solo las fallidas', 'Que la ventana sea más bonita', 'Exportar todo dos veces por si acaso'],
+      q: 'The batch takes 2 hours. What is most useful?',
+      options: ['Being able to run it headless (overnight or on the farm) and re-run only the failures', 'Making the window prettier', 'Exporting everything twice just in case'],
       answer: 0,
-      why: 'Así no bloquea al artista y los errores se corrigen sin repetirlo todo.'
+      why: 'It does not block the artist and errors get fixed without redoing everything.'
     }
   ],
 
@@ -41,25 +40,25 @@ TA.add({
     {
       id: 'e1',
       kind: 'free',
-      title: 'Responde la pregunta de entrevista',
-      prompt: '«Tenemos una cinemática de 100 tomas. Cada toma necesita exportar su cámara y la animación de los personajes al motor. ¿Cómo lo automatizarías?»\n\nEscribe tu respuesta como si hablaras (unos 2-3 minutos).',
+      title: 'Answer the interview question',
+      prompt: '«We have a 100-shot cutscene. Each shot needs its camera and the character animation exported to the engine. How would you automate it?»\n\nWrite your answer as if you were speaking (about 2-3 minutes).',
       checklist: [
-        'Empiezo aclarando requisitos (formato, motor, quién lo lanza, qué se exporta).',
-        'Explico de dónde salen las tomas y sus rangos (metadatos, archivo de edición).',
-        'Separo plan → validación → ejecución → verificación.',
-        'Menciono validaciones concretas: cámaras que faltan, rangos solapados, nombres que chocan.',
-        'Un error no para el lote; log con contexto; resumen al final; repetir solo las fallidas.',
-        'Se puede lanzar sin interfaz (noche o granja) y con progreso en la interfaz.',
-        'Configuración por proyecto y versión de la herramienta en los logs.'
+        'I start by clarifying requirements (format, engine, who runs it, what gets exported).',
+        'I explain where the shots and their ranges come from (metadata, edit file).',
+        'I separate plan → validation → run → verification.',
+        'I mention concrete validations: missing cameras, overlapping ranges, clashing names.',
+        'One error does not stop the batch; log with context; summary at the end; re-run only the failures.',
+        'It can run headless (overnight or farm) and shows progress in the UI.',
+        'Per-project config and tool version in the logs.'
       ],
-      model: '«Primero aclararía el formato que espera el motor, si se exporta cámara y personajes por separado, y si lo lanza el artista o un proceso nocturno.\n\nLas tomas y sus rangos los leería de los metadatos de las cámaras (un atributo `shotName`) o del archivo de edición, no a mano.\n\nLo dividiría en cuatro pasos. Primero, un **plan**: para cada toma, qué exportar y a qué ruta, según la convención del proyecto. Segundo, **validar** el plan: cámaras que faltan, rangos que se solapan, nombres repetidos y carpetas. Si hay errores, aviso antes de empezar. Tercero, **ejecutar** toma a toma: si una falla, la registro en el log con el motivo y sigo con las demás. Cuarto, **verificar** que cada archivo existe y no está vacío, y generar un resumen.\n\nLa lógica estaría separada de la interfaz, para poder lanzarla de noche o en la granja y repetir solo las tomas que fallaron. Los valores del proyecto irían en un JSON, y guardaría la versión de la herramienta en los logs.»',
-      followups: ['¿Cómo harías que fuera más rápido? (paralelo, granja)', '¿Qué haces si dos tomas comparten la misma cámara?', '¿Cómo sabría el motor qué versión de cada toma es la última?', '¿Cómo lo probarías antes de usarlo en producción?']
+      model: '«First I would clarify which format the engine expects, whether camera and characters are exported separately, and whether the artist runs it or a nightly process does.\n\nI would read the shots and their ranges from the camera metadata (a `shotName` attribute) or from the edit file, never by hand.\n\nI would split it into four steps. First, a **plan**: for each shot, what to export and to which path, following the project convention. Second, **validate** the plan: missing cameras, overlapping ranges, duplicate names and folders. If there are errors, I report them before starting. Third, **run** shot by shot: if one fails, I log it with the reason and carry on with the rest. Fourth, **verify** that every file exists and is not empty, and produce a summary.\n\nThe logic would be separate from the UI, so it can run overnight or on the farm and re-run only the failed shots. Project values would live in a JSON, and I would record the tool version in the logs.»',
+      followups: ['How would you make it faster? (parallel, farm)', 'What do you do if two shots share the same camera?', 'How would the engine know which version of each shot is the latest?', 'How would you test it before using it in production?']
     }
   ],
 
   summary: [
-    'Aclarar → plan → validar → ejecutar (sin parar por un fallo) → verificar → resumir.',
-    'Datos de las tomas desde metadatos, nunca escritos a mano.',
-    'Lógica sin interfaz: lote nocturno, granja y repetir solo las fallidas.'
+    'Clarify → plan → validate → run (without stopping on a failure) → verify → summarize.',
+    'Shot data from metadata, never typed by hand.',
+    'Logic without UI: nightly batch, farm, and re-running only the failures.'
   ]
 });

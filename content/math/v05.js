@@ -1,122 +1,121 @@
 (function () {
 var SETUP = [
-  'def _cerca(a, b, tol=1e-6):',
+  'def _close(a, b, tol=1e-6):',
   '    if isinstance(a, (int, float)) and isinstance(b, (int, float)):',
   '        return abs(a - b) < tol',
   '    try:',
   '        a, b = list(a), list(b)',
   '    except TypeError:',
   '        return False',
-  '    return len(a) == len(b) and all(_cerca(x, y, tol) for x, y in zip(a, b))'
+  '    return len(a) == len(b) and all(_close(x, y, tol) for x, y in zip(a, b))'
 ].join('\n') + '\n';
 
 TA.add({
   id: 'v05',
   title: 'Matrices',
-  en: 'matrices',
 
   explain: [
-    'Una **matriz** (matrix) es una tabla de números que **transforma** vectores: los rota, los escala o los mueve. Todo nodo transform de Maya guarda una.',
-    { type: 'analogy', text: 'una matriz es como una receta: le das un ingrediente (un vector) y te devuelve el plato (el vector transformado). Siempre la misma receta, para cualquier ingrediente.' },
+    'A **matrix** is a table of numbers that **transforms** vectors: it rotates, scales or moves them. Every Maya transform node stores one.',
+    { type: 'analogy', text: 'a matrix is like a recipe: you give it an ingredient (a vector) and it gives you back the dish (the transformed vector). Same recipe, any ingredient.' },
     { type: 'viz', name: 'matrix' },
-    '### Matriz por vector',
-    'Cada componente del resultado es el **producto escalar** de una fila de la matriz con el vector.',
+    '### Matrix times vector',
+    'Each component of the result is the **dot product** of one row of the matrix with the vector.',
     '```\n| a b |   | x |   | a·x + b·y |\n| c d | × | y | = | c·x + d·y |\n```',
-    '### Rotación en 2D (y alrededor de Z en 3D)',
-    '```\n| cos θ  −sin θ |\n| sin θ   cos θ |\n```\nCon θ = 90°, el vector `(1, 0)` pasa a `(0, 1)`.',
-    '### Combinar transformaciones',
-    'Multiplicar dos matrices = hacer una transformación y luego la otra. **El orden importa**: rotar y luego mover no es lo mismo que mover y luego rotar.',
-    { type: 'warn', text: 'Maya usa **vectores fila** (`v × M`): las matrices se leen en el orden contrario al de muchos libros, que usan vectores columna (`M × v`). Aquí usamos columnas. En la entrevista, basta con decir que el orden importa y que hay que saber qué convención usa cada sistema.' },
-    '### Matriz 4×4',
-    'En 3D se usan matrices 4×4: la parte 3×3 guarda rotación y escala, y la última fila (en Maya) guarda la **traslación**. Así una sola matriz puede rotar, escalar y mover a la vez.',
-    { type: 'cg', text: '`cmds.xform(obj, q=True, ws=True, matrix=True)` devuelve 16 números: la matriz 4×4 en espacio mundial. Con OpenMaya, `MMatrix` permite multiplicarlas e invertirlas.' }
+    '### Rotation in 2D (and around Z in 3D)',
+    '```\n| cos θ  −sin θ |\n| sin θ   cos θ |\n```\nWith θ = 90°, the vector `(1, 0)` becomes `(0, 1)`.',
+    '### Combining transformations',
+    'Multiplying two matrices = doing one transformation and then the other. **Order matters**: rotating then moving is not the same as moving then rotating.',
+    { type: 'warn', text: 'Maya uses **row vectors** (`v × M`): matrices read in the opposite order to many textbooks, which use column vectors (`M × v`). Here we use columns. In the interview it is enough to say that order matters and that you have to know which convention each system uses.' },
+    '### 4×4 matrices',
+    'In 3D we use 4×4 matrices: the 3×3 part holds rotation and scale, and the last row (in Maya) holds the **translation**. That way a single matrix can rotate, scale and move at once.',
+    { type: 'cg', text: '`cmds.xform(obj, q=True, ws=True, matrix=True)` returns 16 numbers: the 4×4 matrix in world space. With OpenMaya, `MMatrix` lets you multiply and invert them.' }
   ],
 
   example: {
-    intro: 'Rotar un vector 90° con una matriz.',
+    intro: 'Rotating a vector 90° with a matrix.',
     lines: [
-      { code: 'import math', note: 'Para seno y coseno.' },
-      { code: 'def mul_mat_vec(m, v):\n    return tuple(sum(a * b for a, b in zip(fila, v)) for fila in m)', note: 'Cada fila, producto escalar con el vector.' },
-      { code: 't = math.radians(90)\nrot = [[math.cos(t), -math.sin(t)],\n       [math.sin(t),  math.cos(t)]]', note: 'Matriz de rotación 2D. Las funciones trigonométricas usan radianes.' },
-      { code: 'r = mul_mat_vec(rot, (1, 0))', note: 'Rotamos el eje X.' },
-      { code: 'print(tuple(round(c, 6) for c in r))', note: 'Redondeamos para ocultar el error de coma flotante (6e-17).' }
+      { code: 'import math', note: 'For sine and cosine.' },
+      { code: 'def mul_mat_vec(m, v):\n    return tuple(sum(a * b for a, b in zip(row, v)) for row in m)', note: 'Each row, dot product with the vector.' },
+      { code: 't = math.radians(90)\nrot = [[math.cos(t), -math.sin(t)],\n       [math.sin(t),  math.cos(t)]]', note: '2D rotation matrix. Trig functions use radians.' },
+      { code: 'r = mul_mat_vec(rot, (1, 0))', note: 'Rotate the X axis.' },
+      { code: 'print(tuple(round(c, 6) for c in r))', note: 'Rounded to hide the floating-point error (6e-17).' }
     ],
     output: '(0.0, 1.0)'
   },
 
   mini: [
     {
-      q: '¿Qué es cada componente de `M × v`?',
-      options: ['La suma de la columna', 'El producto escalar de una fila de M con v', 'El producto vectorial de M y v'],
+      q: 'What is each component of `M × v`?',
+      options: ['The sum of a column', 'The dot product of one row of M with v', 'The cross product of M and v'],
       answer: 1,
-      why: 'Fila por vector, componente a componente, y se suma.'
+      why: 'Row times vector, component by component, then add.'
     },
     {
-      q: '¿Rotar 90° y luego mover 5 en X da lo mismo que mover 5 en X y luego rotar 90°?',
-      options: ['Sí, siempre', 'No: el orden de las transformaciones importa', 'Solo en 3D'],
+      q: 'Does rotating 90° and then moving 5 in X give the same as moving 5 in X and then rotating 90°?',
+      options: ['Yes, always', 'No: the order of transformations matters', 'Only in 3D'],
       answer: 1,
-      why: 'La multiplicación de matrices no es conmutativa: A × B ≠ B × A.'
+      why: 'Matrix multiplication is not commutative: A × B ≠ B × A.'
     }
   ],
   extra: [
     {
-      q: '¿Para qué sirve la cuarta fila/columna de una matriz 4×4 en Maya?',
-      options: ['Para el color', 'Para la traslación (posición)', 'No se usa'],
+      q: 'What is the fourth row/column of a 4×4 matrix used for in Maya?',
+      options: ['Color', 'Translation (position)', 'Nothing'],
       answer: 1,
-      why: 'Con 4×4 una sola matriz combina rotación, escala y traslación.'
+      why: 'With 4×4, a single matrix combines rotation, scale and translation.'
     }
   ],
 
   exercises: [
     {
       id: 'e1',
-      title: 'Matriz por vector',
-      prompt: 'Escribe `mul_mat_vec(m, v)`. `m` es una lista de filas (de cualquier tamaño). Devuelve una tupla.',
+      title: 'Matrix times vector',
+      prompt: 'Write `mul_mat_vec(m, v)`. `m` is a list of rows (any size). Return a tuple.',
       setup: SETUP,
       starter: 'def mul_mat_vec(m, v):\n    pass\n',
       tests: [
-        { check: 'mul_mat_vec([[1, 0, 0], [0, 2, 0], [0, 0, 3]], (1, 1, 1)) == (1, 2, 3)', msg: 'una matriz de escala (1, 2, 3)' },
-        { check: 'mul_mat_vec([[0, -1], [1, 0]], (1, 0)) == (0, 1)', msg: 'rotación de 90° en 2D' },
-        { check: 'mul_mat_vec([[1, 0], [0, 1]], (7, -2)) == (7, -2)', msg: 'la identidad no cambia nada' }
+        { check: 'mul_mat_vec([[1, 0, 0], [0, 2, 0], [0, 0, 3]], (1, 1, 1)) == (1, 2, 3)', msg: 'a scale matrix (1, 2, 3)' },
+        { check: 'mul_mat_vec([[0, -1], [1, 0]], (1, 0)) == (0, 1)', msg: '90° rotation in 2D' },
+        { check: 'mul_mat_vec([[1, 0], [0, 1]], (7, -2)) == (7, -2)', msg: 'the identity changes nothing' }
       ],
-      hints: ['Para cada fila: `sum(a * b for a, b in zip(fila, v))`.', 'Envuelve todo en `tuple(... for fila in m)`.'],
-      solution: 'def mul_mat_vec(m, v):\n    return tuple(sum(a * b for a, b in zip(fila, v)) for fila in m)\n'
+      hints: ['For each row: `sum(a * b for a, b in zip(row, v))`.', 'Wrap it in `tuple(... for row in m)`.'],
+      solution: 'def mul_mat_vec(m, v):\n    return tuple(sum(a * b for a, b in zip(row, v)) for row in m)\n'
     },
     {
       id: 'e2',
-      title: 'Rotar alrededor de Z',
-      prompt: 'Escribe `rotar_z(v, grados)`: rota un vector 3D alrededor del eje Z.\n\nLa matriz es:\n```\n| cos  −sin  0 |\n| sin   cos  0 |\n|  0     0   1 |\n```\nRecuerda convertir los grados a radianes.',
+      title: 'Rotate around Z',
+      prompt: 'Write `rotate_z(v, degrees)`: rotate a 3D vector around the Z axis.\n\nThe matrix is:\n```\n| cos  −sin  0 |\n| sin   cos  0 |\n|  0     0   1 |\n```\nRemember to convert degrees to radians.',
       setup: SETUP,
-      starter: 'import math\n\ndef rotar_z(v, grados):\n    pass\n',
+      starter: 'import math\n\ndef rotate_z(v, degrees):\n    pass\n',
       tests: [
-        { check: '_cerca(rotar_z((1, 0, 0), 90), (0, 1, 0))', msg: 'X rotado 90° es Y' },
-        { check: '_cerca(rotar_z((1, 0, 5), 180), (-1, 0, 5))', msg: '180°: X pasa a −X; la Z no cambia' },
-        { check: '_cerca(rotar_z((0, 2, 0), -90), (2, 0, 0))', msg: 'con ángulos negativos gira al otro lado' }
+        { check: '_close(rotate_z((1, 0, 0), 90), (0, 1, 0))', msg: 'X rotated 90° is Y' },
+        { check: '_close(rotate_z((1, 0, 5), 180), (-1, 0, 5))', msg: '180°: X becomes −X; Z does not change' },
+        { check: '_close(rotate_z((0, 2, 0), -90), (2, 0, 0))', msg: 'negative angles turn the other way' }
       ],
-      hints: ['`t = math.radians(grados)`; `c, s = math.cos(t), math.sin(t)`.', '`m = [[c, -s, 0], [s, c, 0], [0, 0, 1]]` y multiplica por `v`.'],
-      solution: 'import math\n\ndef rotar_z(v, grados):\n    t = math.radians(grados)\n    c, s = math.cos(t), math.sin(t)\n    m = [[c, -s, 0], [s, c, 0], [0, 0, 1]]\n    return tuple(sum(a * b for a, b in zip(fila, v)) for fila in m)\n'
+      hints: ['`t = math.radians(degrees)`; `c, s = math.cos(t), math.sin(t)`.', '`m = [[c, -s, 0], [s, c, 0], [0, 0, 1]]` and multiply by `v`.'],
+      solution: 'import math\n\ndef rotate_z(v, degrees):\n    t = math.radians(degrees)\n    c, s = math.cos(t), math.sin(t)\n    m = [[c, -s, 0], [s, c, 0], [0, 0, 1]]\n    return tuple(sum(a * b for a, b in zip(row, v)) for row in m)\n'
     },
     {
       id: 'e3',
-      title: 'Matriz por matriz',
-      prompt: 'Escribe `mul_mat(a, b)` para dos matrices cuadradas del mismo tamaño. Devuelve una lista de filas.\n\nEl elemento `[i][j]` del resultado es el producto escalar de la **fila i** de `a` con la **columna j** de `b`.',
+      title: 'Matrix times matrix',
+      prompt: 'Write `mul_mat(a, b)` for two square matrices of the same size. Return a list of rows.\n\nElement `[i][j]` of the result is the dot product of **row i** of `a` with **column j** of `b`.',
       setup: SETUP,
       starter: 'def mul_mat(a, b):\n    pass\n',
       tests: [
         { check: 'mul_mat([[1, 2], [3, 4]], [[5, 6], [7, 8]]) == [[19, 22], [43, 50]]', msg: '[[1,2],[3,4]] × [[5,6],[7,8]] = [[19,22],[43,50]]' },
-        { check: 'mul_mat([[1, 0], [0, 1]], [[2, 3], [4, 5]]) == [[2, 3], [4, 5]]', msg: 'identidad × M = M' },
-        { check: 'mul_mat([[0, 1], [1, 0]], [[1, 2], [3, 4]]) != mul_mat([[1, 2], [3, 4]], [[0, 1], [1, 0]])', msg: 'A × B ≠ B × A (el orden importa)' }
+        { check: 'mul_mat([[1, 0], [0, 1]], [[2, 3], [4, 5]]) == [[2, 3], [4, 5]]', msg: 'identity × M = M' },
+        { check: 'mul_mat([[0, 1], [1, 0]], [[1, 2], [3, 4]]) != mul_mat([[1, 2], [3, 4]], [[0, 1], [1, 0]])', msg: 'A × B ≠ B × A (order matters)' }
       ],
-      hints: ['Columnas de b: `cols = list(zip(*b))`.', '`[[sum(x * y for x, y in zip(fila, col)) for col in cols] for fila in a]`'],
-      solution: 'def mul_mat(a, b):\n    cols = list(zip(*b))\n    return [[sum(x * y for x, y in zip(fila, col)) for col in cols] for fila in a]\n',
-      explain: '`zip(*b)` «transpone» la matriz: convierte columnas en filas. Es un truco muy útil de Python.'
+      hints: ['Columns of b: `cols = list(zip(*b))`.', '`[[sum(x * y for x, y in zip(row, col)) for col in cols] for row in a]`'],
+      solution: 'def mul_mat(a, b):\n    cols = list(zip(*b))\n    return [[sum(x * y for x, y in zip(row, col)) for col in cols] for row in a]\n',
+      explain: '`zip(*b)` «transposes» the matrix: it turns columns into rows. A very handy Python trick.'
     }
   ],
 
   summary: [
-    'Una matriz transforma vectores; cada componente es fila · vector.',
-    'Multiplicar matrices = encadenar transformaciones, y el orden importa.',
-    'Maya usa 4×4 con vectores fila: la traslación va en la última fila.'
+    'A matrix transforms vectors; each component is row · vector.',
+    'Multiplying matrices = chaining transformations, and order matters.',
+    'Maya uses 4×4 with row vectors: translation sits in the last row.'
   ]
 });
 })();

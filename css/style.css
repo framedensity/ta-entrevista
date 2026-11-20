@@ -1,4 +1,4 @@
-/* ===== Colores (claro / oscuro) ===== */
+/* ===== Colors (light / dark) ===== */
 :root{
   --bg:#f6f7f5;--card:#ffffff;--ink:#1c1f1e;--mute:#62686a;--line:#dfe3e1;
   --acc:#0f766e;--accbg:#e1f3f0;--ok:#1a7f45;--okbg:#e3f4ea;--ng:#b42318;--ngbg:#fde7e4;
@@ -34,7 +34,7 @@ p{margin:10px 0}
 ul{padding-left:22px;margin:8px 0}
 li{margin:4px 0}
 
-/* ===== Cabecera y barra inferior ===== */
+/* ===== Header and bottom bar ===== */
 .top{position:sticky;top:0;z-index:10;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 16px;padding-top:calc(10px + env(safe-area-inset-top));background:var(--bg);border-bottom:1px solid var(--line)}
 .brand{font-weight:800;color:var(--ink);text-decoration:none;font-size:17px}
 button,.btn{font:inherit;font-size:15px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 16px;cursor:pointer;min-height:44px}
@@ -46,7 +46,7 @@ button:disabled{opacity:.45;cursor:default}
 .tabbar a .ico{font-size:20px;line-height:1}
 .tabbar a.on{color:var(--acc);font-weight:700}
 
-/* ===== Tarjetas, ruta ===== */
+/* ===== Cards, path ===== */
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin:12px 0}
 .muted{color:var(--mute);font-size:14.5px}
 .bar{height:8px;border-radius:99px;background:var(--line);overflow:hidden;margin:8px 0}
@@ -68,7 +68,7 @@ button:disabled{opacity:.45;cursor:default}
 .switch input:checked + span{background:var(--acc)}
 .switch input:checked + span::before{transform:translateX(20px)}
 
-/* ===== Lección ===== */
+/* ===== Lesson ===== */
 .crumb{font-size:14px;color:var(--mute);margin:6px 0 0}
 .steps{display:flex;gap:4px;margin:12px 0 4px;overflow-x:auto;scrollbar-width:none}
 .steps::-webkit-scrollbar{display:none}
@@ -84,14 +84,14 @@ button:disabled{opacity:.45;cursor:default}
 .cg{background:var(--accbg);border-radius:12px;padding:10px 14px;margin:12px 0}
 .cg b{color:var(--acc)}
 
-/* Ejemplo línea por línea */
+/* Line-by-line example */
 .line{border:1px solid var(--line);border-radius:12px;margin:8px 0;overflow:hidden}
 .line pre{margin:0;border-radius:0}
 .line .note{padding:8px 12px;font-size:15px}
 .out{font-size:14px}
 .out pre{margin-top:4px}
 
-/* Mini práctica */
+/* Quick check */
 .q{font-weight:700;margin:6px 0 8px}
 .opts{display:grid;gap:8px}
 .opts button{text-align:left;width:100%}
@@ -101,7 +101,7 @@ button:disabled{opacity:.45;cursor:default}
 .why.ok{background:var(--okbg)}
 .why.ng{background:var(--ngbg)}
 
-/* Ejercicios */
+/* Exercises */
 .ex h3{margin-top:0}
 .editor{width:100%;min-height:150px;resize:vertical;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:16px;line-height:1.5;background:var(--code);color:var(--codeink);tab-size:4;white-space:pre;overflow-x:auto}
 .keys{display:flex;gap:6px;overflow-x:auto;padding:6px 0;scrollbar-width:none}
@@ -121,7 +121,7 @@ button:disabled{opacity:.45;cursor:default}
 .center{text-align:center}
 .empty{text-align:center;color:var(--mute);padding:30px 10px}
 
-/* ===== Añadidos: figuras, comparaciones, respuestas libres, simulacro ===== */
+/* ===== Additions: figures, comparisons, free answers, mock exam ===== */
 .btn.block{display:block;text-align:center;text-decoration:none;margin:12px 0}
 .tipbox{background:var(--accbg);border-left:4px solid var(--acc);border-radius:0 12px 12px 0;padding:10px 14px;margin:12px 0}
 .tipbox b{color:var(--acc)}
@@ -149,3 +149,5 @@ details.model summary{cursor:pointer;font-weight:700;color:var(--acc)}
 .examhead{display:flex;justify-content:space-between;align-items:center;margin:8px 0}
 .timer{font-variant-numeric:tabular-nums;font-weight:700}
 .big{font-size:44px;font-weight:800;color:var(--acc)}
+
+h1 small { display: block; font-size: .5em; font-weight: 500; margin-top: 4px; }
