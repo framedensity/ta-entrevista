@@ -82,6 +82,10 @@
       app.appendChild(mc);
     });
 
+    var off = el('p', 'muted center small', '');
+    app.appendChild(off);
+    offlineStatus(off);
+
     var reset = el('button', 'ghost', 'Reset my progress'); reset.type = 'button';
     reset.addEventListener('click', function () { if (confirm('Delete all your progress? This cannot be undone.')) { Store.reset(); viewRoute(); } });
     var rc = el('div', 'center'); rc.appendChild(reset); app.appendChild(rc);
@@ -263,6 +267,27 @@
       window.scrollTo(0, 0);
     }
     show();
+  }
+
+  // ---------- Offline (service worker) ----------
+  function offlineStatus(box) {
+    if (!('serviceWorker' in navigator) || !window.caches) return;
+    caches.has('ta-pyodide-v0.26.4').then(function (has) {
+      if (!has) { box.textContent = 'Offline: preparing…'; return null; }
+      return caches.open('ta-pyodide-v0.26.4').then(function (c) {
+        return c.match('https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.asm.wasm');
+      }).then(function (hit) {
+        box.textContent = hit ? 'Ready to use offline (lessons and Python).' : 'Offline: lessons ready; Python still downloading.';
+      });
+    }).catch(function () {});
+  }
+  if ('serviceWorker' in navigator && location.protocol !== 'file:') {
+    var hadController = !!navigator.serviceWorker.controller;
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+    navigator.serviceWorker.addEventListener('controllerchange', function () {
+      if (hadController) location.reload();     // a new version was installed
+      hadController = true;
+    });
   }
 
   // ---------- Router ----------
