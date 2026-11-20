@@ -1,7 +1,7 @@
 // Progreso en localStorage. Si el navegador no deja guardar, la web sigue funcionando.
 window.Store = (function () {
   var KEY = 'ta-entrevista-v1';
-  var data = { done: {}, solved: {}, step: {}, mistakes: {}, free: false };
+  var data = { done: {}, solved: {}, step: {}, mistakes: {}, free: false, text: {}, exams: [] };
   try {
     var raw = localStorage.getItem(KEY);
     if (raw) { var o = JSON.parse(raw); for (var k in data) if (o[k] !== undefined) data[k] = o[k]; }
@@ -20,6 +20,10 @@ window.Store = (function () {
     mistakes: function () { return data.mistakes; },
     free: function () { return !!data.free; },
     setFree: function (v) { data.free = !!v; save(); },
-    reset: function () { data = { done: {}, solved: {}, step: {}, mistakes: {}, free: false }; save(); }
+    getText: function (key) { return data.text[key] || ''; },
+    setText: function (key, v) { data.text[key] = v; save(); },
+    addExam: function (r) { data.exams.push(r); if (data.exams.length > 20) data.exams.shift(); save(); },
+    exams: function () { return data.exams; },
+    reset: function () { data = { done: {}, solved: {}, step: {}, mistakes: {}, free: false, text: {}, exams: [] }; save(); }
   };
 })();

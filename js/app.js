@@ -1,4 +1,4 @@
-// Rutas: #/ (ruta), #/l/p01/0 (lección y paso), #/repaso, #/simulacro
+// Rutas: #/ (ruta), #/l/p03/0 (lección y paso), #/repaso, #/simulacro
 (function () {
   var app = document.getElementById('app');
 
@@ -13,7 +13,7 @@
   function flat() {
     var out = [];
     TA.curriculum.forEach(function (m) {
-      m.lessons.forEach(function (l, i) { out.push({ id: l.id, title: l.title, en: l.en, module: m, index: i }); });
+      m.lessons.forEach(function (l, i) { out.push({ id: l.id, title: l.title, en: l.en, optional: !!l.optional, module: m, index: i }); });
     });
     return out;
   }
@@ -23,7 +23,13 @@
     if (Store.free()) return true;
     var list = flat();
     for (var i = 0; i < list.length; i++) {
-      if (list[i].id === id) return i === 0 || Store.isDone(list[i - 1].id);
+      if (list[i].id !== id) continue;
+      if (list[i].optional) return true;
+      for (var j = i - 1; j >= 0; j--) {
+        if (list[j].optional || !available(list[j].id)) continue;
+        return Store.isDone(list[j].id);
+      }
+      return true;
     }
     return false;
   }
@@ -31,14 +37,14 @@
   // ---------- Ruta ----------
   function viewRoute() {
     var list = flat();
-    var built = list.filter(function (x) { return available(x.id); });
-    var doneN = list.filter(function (x) { return Store.isDone(x.id); }).length;
+    var req = list.filter(function (x) { return !x.optional; });
+    var doneN = req.filter(function (x) { return Store.isDone(x.id); }).length;
     app.innerHTML = '';
     app.appendChild(el('h1', '', 'Tu ruta de estudio'));
-    app.appendChild(el('p', 'muted', 'Preparación para la entrevista técnica de TA (Technical Artist): Python, Maya, matemáticas 3D y diseño de herramientas.'));
+    app.appendChild(el('p', 'muted', 'Entrevista técnica de TA (Technical Artist) para cinemáticas: Python, Maya, matemáticas 3D y diseño de herramientas.'));
     var c = el('div', 'card');
-    c.appendChild(el('div', '', '<b>' + doneN + '</b> de ' + list.length + ' lecciones terminadas'));
-    c.insertAdjacentHTML('beforeend', '<div class="bar"><i style="width:' + Math.round(doneN / list.length * 100) + '%"></i></div>');
+    c.appendChild(el('div', '', '<b>' + doneN + '</b> de ' + req.length + ' lecciones terminadas'));
+    c.insertAdjacentHTML('beforeend', '<div class="bar"><i style="width:' + Math.round(doneN / req.length * 100) + '%"></i></div>');
     var tg = el('div', 'toggle');
     tg.appendChild(el('div', '', '<b>Modo libre</b><div class="muted">Abre todas las lecciones, sin seguir el orden.</div>'));
     var sw = el('label', 'switch', '<input type="checkbox"' + (Store.free() ? ' checked' : '') + '><span></span>');
@@ -47,18 +53,19 @@
     c.appendChild(tg);
     app.appendChild(c);
 
-    var next = list.filter(function (x) { return available(x.id) && !Store.isDone(x.id) && unlocked(x.id); })[0];
+    var next = list.filter(function (x) { return !x.optional && available(x.id) && !Store.isDone(x.id) && unlocked(x.id); })[0];
     if (next) {
-      var go = el('a', 'btn primary', '▶ Continuar: ' + MD.esc(next.title));
+      var go = el('a', 'btn primary block', '▶ Continuar: ' + MD.esc(next.title));
       go.href = '#/l/' + next.id + '/' + Store.getStep(next.id);
-      go.style.display = 'block'; go.style.textAlign = 'center'; go.style.textDecoration = 'none';
       app.appendChild(go);
     }
 
     TA.curriculum.forEach(function (m) {
       var mc = el('div', 'card module');
-      var md = m.lessons.filter(function (l) { return Store.isDone(l.id); }).length;
-      mc.appendChild(el('h2', '', m.icon + ' ' + MD.esc(m.title) + ' <span class="muted">' + md + '/' + m.lessons.length + '</span>'));
+      var mreq = m.lessons.filter(function (l) { return !l.optional; });
+      var md = mreq.filter(function (l) { return Store.isDone(l.id); }).length;
+      mc.appendChild(el('h2', '', m.icon + ' ' + MD.esc(m.title) + ' <span class="muted">' + md + '/' + mreq.length + '</span>'));
+      if (m.note) mc.appendChild(el('p', 'muted', MD.inline(m.note)));
       m.lessons.forEach(function (l, i) {
         var st, cls, href = null;
         if (Store.isDone(l.id)) { st = '✓'; cls = 'done'; href = '#/l/' + l.id + '/0'; }
@@ -68,6 +75,7 @@
         var row = el(href ? 'a' : 'div', 'lesson-row ' + cls);
         if (href) row.href = href;
         var sub = cls === 'soon' ? 'Próximamente' : (cls === 'locked' ? 'Termina la lección anterior para abrirla' : l.en);
+        if (l.optional && cls !== 'done') sub = 'Opcional · repaso rápido';
         row.innerHTML = '<span class="st">' + st + '</span><span class="tt">' + MD.esc(l.title) + '<small>' + MD.esc(sub) + '</small></span>';
         mc.appendChild(row);
       });
@@ -82,8 +90,8 @@
   // ---------- Lección ----------
   function viewLesson(id, step) {
     var lesson = TA.lessons[id], meta = find(id);
-    if (!lesson || !meta) { app.innerHTML = '<div class="empty">Esta lección todavía no está lista.</div>'; return; }
-    if (!unlocked(id)) { app.innerHTML = '<div class="empty">🔒 Termina la lección anterior para abrir esta.<br><br><a href="#/">Volver a la ruta</a></div>'; return; }
+    if (!lesson || !meta) { app.innerHTML = '<div class="empty">Esta lección todavía no está lista.<br><br><a href="#/">Volver a la ruta</a></div>'; return; }
+    if (!unlocked(id)) { app.innerHTML = '<div class="empty">🔒 Termina la lección anterior para abrir esta.<br>(O activa el «Modo libre» en la ruta.)<br><br><a href="#/">Volver a la ruta</a></div>'; return; }
     step = Math.max(0, Math.min(Lesson.STEPS.length - 1, step || 0));
     Store.setStep(id, step);
     Lesson.render(app, lesson, meta, step, function (n) { location.hash = '#/l/' + id + '/' + n; });
@@ -95,36 +103,166 @@
     app.innerHTML = '';
     app.appendChild(el('h1', '', 'Repaso de errores'));
     if (!keys.length) {
-      app.appendChild(el('div', 'empty', '🎉 No tienes errores pendientes.<br>Las preguntas que falles aparecerán aquí.'));
+      app.appendChild(el('div', 'empty', '🎉 No tienes errores pendientes.<br>Las preguntas y ejercicios que falles aparecerán aquí.'));
       return;
     }
-    app.appendChild(el('p', 'muted', 'Aquí están solo las preguntas y ejercicios que fallaste. Cuando los aciertes, desaparecen de la lista.'));
+    app.appendChild(el('p', 'muted', 'Solo lo que fallaste. Cuando lo aciertes, desaparece de la lista.'));
     keys.forEach(function (k) {
       var info = ms[k], lesson = TA.lessons[info.lesson];
       if (!lesson) return;
-      if (info.type === 'mini') {
-        var item = lesson.mini[info.index];
+      if (info.type === 'mini' || info.type === 'extra') {
+        var arr = info.type === 'mini' ? lesson.mini : lesson.extra;
+        var item = arr && arr[info.index];
         if (!item) return;
         app.appendChild(el('div', 'muted', MD.esc(lesson.title)));
         app.appendChild(Lesson.renderMCQ(item, k, info, null));
       } else if (info.type === 'ex') {
         var ex = (lesson.exercises || []).filter(function (e) { return e.id === info.ex; })[0];
         if (!ex) return;
-        var idx = lesson.exercises.indexOf(ex);
         app.appendChild(el('div', 'muted', MD.esc(lesson.title)));
-        app.appendChild(Lesson.renderExercise(lesson, ex, idx, null));
+        app.appendChild(Lesson.renderExercise(lesson, ex, lesson.exercises.indexOf(ex), null));
       }
     });
   }
 
   // ---------- Simulacro ----------
+  function shuffle(a) { for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+  function pool() {
+    var out = [];
+    flat().forEach(function (m) {
+      var L = TA.lessons[m.id];
+      if (!L) return;
+      (L.mini || []).forEach(function (q, i) { out.push({ q: q, key: 'mini:' + L.id + ':' + i, info: { type: 'mini', lesson: L.id, index: i }, module: m.module }); });
+      (L.extra || []).forEach(function (q, i) { out.push({ q: q, key: 'extra:' + L.id + ':' + i, info: { type: 'extra', lesson: L.id, index: i }, module: m.module }); });
+    });
+    return out;
+  }
+  function designCases() {
+    var out = [];
+    flat().forEach(function (m) {
+      var L = TA.lessons[m.id];
+      if (!L || m.module.id !== 'design') return;
+      (L.exercises || []).forEach(function (ex) { if (ex.kind === 'free') out.push({ lesson: L, ex: ex }); });
+    });
+    return out;
+  }
+  function mmss(ms) { var s = Math.round(ms / 1000); return Math.floor(s / 60) + ':' + ('0' + (s % 60)).slice(-2); }
+
   function viewExam() {
-    var list = flat(), all = list.every(function (x) { return Store.isDone(x.id); });
+    var list = flat().filter(function (x) { return !x.optional && available(x.id); });
+    var all = list.length && list.every(function (x) { return Store.isDone(x.id); });
     app.innerHTML = '';
     app.appendChild(el('h1', '', 'Simulacro de entrevista'));
-    app.appendChild(el('div', 'card', all
-      ? 'El simulacro estará listo pronto.'
-      : '⏱️ El simulacro se abre cuando termines todas las lecciones. Mezclará preguntas de todos los temas, medirá el tiempo y te mostrará tus puntos débiles.'));
+    var c = el('div', 'card');
+    c.innerHTML = MD.render('Preguntas al azar de **todos los temas**, con cronómetro. Al final verás tu acierto por tema y tus puntos débiles.\n\nLas preguntas que falles pasan a **Repaso**.');
+    if (!all) c.appendChild(el('div', 'warnbox', '<b>⚠️ Aún no has terminado todas las lecciones.</b> Puedes hacer el simulacro igualmente, pero saldrán temas que no has visto.'));
+    var n = 15;
+    var sel = el('div', 'keys');
+    [10, 15, 25].forEach(function (k) {
+      var b = el('button', k === n ? 'primary' : '', k + ' preguntas'); b.type = 'button';
+      b.addEventListener('click', function () { n = k; [].forEach.call(sel.children, function (x) { x.className = ''; }); b.className = 'primary'; });
+      sel.appendChild(b);
+    });
+    c.appendChild(sel);
+    var lab = el('label', 'check', '<input type="checkbox" checked><span>Terminar con un caso de diseño de herramientas (respuesta libre)</span>');
+    c.appendChild(lab);
+    var start = el('button', 'primary', '⏱️ Empezar'); start.type = 'button'; start.style.width = '100%'; start.style.marginTop = '10px';
+    start.addEventListener('click', function () { runExam(n, lab.querySelector('input').checked); });
+    c.appendChild(start);
+    app.appendChild(c);
+
+    var hist = Store.exams();
+    if (hist.length) {
+      var hc = el('div', 'card'); hc.appendChild(el('h3', '', 'Tus últimos simulacros'));
+      var ul = el('ul');
+      hist.slice().reverse().slice(0, 6).forEach(function (h) {
+        ul.appendChild(el('li', '', new Date(h.at).toLocaleDateString() + ' · <b>' + h.ok + '/' + h.total + '</b> · ' + mmss(h.ms) + (h.weak ? ' · punto débil: ' + MD.esc(h.weak) : '')));
+      });
+      hc.appendChild(ul); app.appendChild(hc);
+    }
+  }
+
+  function runExam(n, withDesign) {
+    var qs = shuffle(pool()).slice(0, n);
+    if (!qs.length) { app.innerHTML = '<div class="empty">No hay preguntas todavía.</div>'; return; }
+    var i = 0, t0 = Date.now(), res = [], timer = null;
+    function header() {
+      var h = el('div', 'examhead');
+      var tm = el('span', 'timer', '⏱️ 0:00');
+      h.appendChild(el('span', '', 'Pregunta <b>' + (i + 1) + '</b> de ' + qs.length));
+      h.appendChild(tm);
+      clearInterval(timer);
+      timer = setInterval(function () { tm.textContent = '⏱️ ' + mmss(Date.now() - t0); }, 1000);
+      tm.textContent = '⏱️ ' + mmss(Date.now() - t0);
+      return h;
+    }
+    function show() {
+      app.innerHTML = '';
+      app.appendChild(header());
+      app.appendChild(el('div', 'bar', '<i style="width:' + Math.round(i / qs.length * 100) + '%"></i>'));
+      var item = qs[i];
+      app.appendChild(el('div', 'muted', item.module.icon + ' ' + MD.esc(item.module.title)));
+      var nextB = el('button', 'primary', i < qs.length - 1 ? 'Siguiente →' : 'Ver resultado'); nextB.type = 'button';
+      nextB.style.width = '100%'; nextB.disabled = true;
+      app.appendChild(Lesson.renderMCQ(item.q, item.key, item.info, function (ok) { res.push({ ok: ok, item: item }); nextB.disabled = false; }));
+      nextB.addEventListener('click', function () { i++; if (i < qs.length) show(); else if (withDesign) design(); else finish(); });
+      app.appendChild(nextB);
+      window.scrollTo(0, 0);
+    }
+    function design() {
+      var cs = designCases();
+      if (!cs.length) { finish(); return; }
+      var pick = cs[Math.floor(Math.random() * cs.length)];
+      app.innerHTML = '';
+      app.appendChild(header());
+      app.appendChild(el('h2', '', '🛠️ Caso de diseño'));
+      app.appendChild(el('p', 'muted', 'Responde como en la entrevista. Intenta tardar unos 3 minutos.'));
+      app.appendChild(Lesson.renderExercise(pick.lesson, pick.ex, 0, null));
+      var fin = el('button', 'primary', 'Ver resultado'); fin.type = 'button'; fin.style.width = '100%';
+      fin.addEventListener('click', finish);
+      app.appendChild(fin);
+      window.scrollTo(0, 0);
+    }
+    function finish() {
+      clearInterval(timer);
+      var ms = Date.now() - t0, ok = res.filter(function (r) { return r.ok; }).length;
+      var by = {};
+      res.forEach(function (r) {
+        var k = r.item.module.title;
+        by[k] = by[k] || { ok: 0, total: 0, icon: r.item.module.icon };
+        by[k].total++; if (r.ok) by[k].ok++;
+      });
+      var weak = null, worst = 2;
+      Object.keys(by).forEach(function (k) { var p = by[k].ok / by[k].total; if (p < worst) { worst = p; weak = k; } });
+      if (worst >= 0.8) weak = null;
+      Store.addExam({ at: Date.now(), ok: ok, total: res.length, ms: ms, weak: weak });
+      app.innerHTML = '';
+      app.appendChild(el('h1', '', 'Resultado'));
+      var c = el('div', 'card center');
+      c.appendChild(el('div', 'big', ok + ' / ' + res.length));
+      c.appendChild(el('div', 'muted', 'Tiempo: ' + mmss(ms) + ' · ' + Math.round(ms / 1000 / Math.max(1, res.length)) + ' s por pregunta'));
+      app.appendChild(c);
+      var bc = el('div', 'card'); bc.appendChild(el('h3', '', 'Acierto por tema'));
+      Object.keys(by).forEach(function (k) {
+        var p = Math.round(by[k].ok / by[k].total * 100);
+        bc.appendChild(el('div', '', by[k].icon + ' ' + MD.esc(k) + ' · <b>' + by[k].ok + '/' + by[k].total + '</b> (' + p + '%)'));
+        bc.appendChild(el('div', 'bar', '<i style="width:' + p + '%;' + (p < 60 ? 'background:var(--ng)' : '') + '"></i>'));
+      });
+      app.appendChild(bc);
+      if (weak) app.appendChild(el('div', 'warnbox', '<b>Punto débil:</b> ' + MD.esc(weak) + '. Repasa sus lecciones y la sección «Repaso».'));
+      else app.appendChild(el('div', 'why ok', '🎉 ¡Muy equilibrado! Ningún tema baja del 80%.'));
+      var wrong = res.filter(function (r) { return !r.ok; });
+      if (wrong.length) {
+        var wc = el('div', 'card'); wc.appendChild(el('h3', '', 'Para repasar'));
+        var ul = el('ul');
+        wrong.forEach(function (r) { ul.appendChild(el('li', '', MD.inline(r.item.q.q) + ' <span class="muted">(' + MD.esc(TA.lessons[r.item.info.lesson].title) + ')</span>')); });
+        wc.appendChild(ul); app.appendChild(wc);
+      }
+      var again = el('a', 'btn primary block', 'Otro simulacro'); again.href = '#/simulacro';
+      app.appendChild(again);
+      window.scrollTo(0, 0);
+    }
+    show();
   }
 
   // ---------- Router ----------
@@ -156,5 +294,17 @@
     applyTheme(modes[(modes.indexOf(cur) + 1) % 3]);
   });
 
-  route();
+  // ---------- Cargar las lecciones (un archivo por lección, según curriculum.js) ----------
+  // Los archivos que no existan todavía aparecen como «Próximamente».
+  var files = [];
+  TA.curriculum.forEach(function (m) { m.lessons.forEach(function (l) { files.push('content/' + m.id + '/' + l.id + '.js'); }); });
+  var pending = files.length;
+  app.innerHTML = '<div class="empty">Cargando…</div>';
+  files.forEach(function (src) {
+    var s = document.createElement('script');
+    s.src = src;
+    s.onload = s.onerror = function () { pending--; if (!pending) route(); };
+    document.body.appendChild(s);
+  });
+  if (!pending) route();
 })();
