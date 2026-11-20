@@ -13,7 +13,7 @@ TA.add({
 
   explain: [
     '**JSON** is a text format for storing data. It looks a lot like Python dictionaries and lists, and almost every program understands it.',
-    { type: 'analogy', text: 'JSON is like a hand-written index card anyone can read: «name: sh010, frames: 48». You can keep it in a drawer (a file) and another tool reads it later.' },
+    { type: 'analogy', text: 'JSON is like a hand-written index card anyone can read: “name: sh010, frames: 48”. You can keep it in a drawer (a file) and another tool reads it later.' },
     '### The four json functions',
     '- `json.dumps(data)` → converts to **text** (dump string).\n- `json.loads(text)` → from text to data.\n- `json.dump(data, file)` → writes to a **file**.\n- `json.load(file)` → reads from a file.',
     'A trick to remember it: the trailing **s** stands for *string*.',

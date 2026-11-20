@@ -108,7 +108,7 @@ TA.add({
       ],
       hints: ['Columns of b: `cols = list(zip(*b))`.', '`[[sum(x * y for x, y in zip(row, col)) for col in cols] for row in a]`'],
       solution: 'def mul_mat(a, b):\n    cols = list(zip(*b))\n    return [[sum(x * y for x, y in zip(row, col)) for col in cols] for row in a]\n',
-      explain: '`zip(*b)` «transposes» the matrix: it turns columns into rows. A very handy Python trick.'
+      explain: '`zip(*b)` “transposes” the matrix: it turns columns into rows. A very handy Python trick.'
     }
   ],
 

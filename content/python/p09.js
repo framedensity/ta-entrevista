@@ -89,7 +89,7 @@ TA.add({
 
   summary: [
     '`enumerate` numbers, `zip` pairs lists, `dict(zip(a, b))` builds dictionaries.',
-    '`all()` and `any()` answer «all of them?» and «any of them?» in one line.',
+    '`all()` and `any()` answer “all of them?” and “any of them?” in one line.',
     '`key=` (a function or `lambda`) says what to compare in `sorted`, `min` and `max`.'
   ]
 });

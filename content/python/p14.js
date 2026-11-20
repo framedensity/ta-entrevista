@@ -28,7 +28,7 @@ TA.add({
     '`pathlib.Path` is the modern way. The path is an object with handy properties, and you join it with `/`.',
     '```python\nfrom pathlib import Path\np = Path("project") / "sq010" / "sh010" / "anim_v002.fbx"\np.name     # "anim_v002.fbx"\np.stem     # "anim_v002"\np.suffix   # ".fbx"\np.parent.name  # "sh010"\nlist(Path("project").rglob("*.fbx"))   # recursive search\n```',
     { type: 'cg', text: 'before a delivery, find every `.fbx` in the project, know which shot each one belongs to (`p.parent.name`) and keep the latest version.' },
-    { type: 'tip', text: 'if they ask which one you use: «`pathlib` for new code, because it reads better; `os.walk` when I need to skip folders while walking (by editing the subfolder list)».' }
+    { type: 'tip', text: 'if they ask which one you use: “`pathlib` for new code, because it reads better; `os.walk` when I need to skip folders while walking (by editing the subfolder list)”.' }
   ],
 
   example: {

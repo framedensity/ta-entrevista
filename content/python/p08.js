@@ -3,7 +3,7 @@ TA.add({
   title: 'Pattern: grouping and counting',
 
   explain: [
-    'Lots of pipeline questions are «how many of each type are there?» or «give me the files grouped by shot». Python has two tools made for this, in the `collections` module.',
+    'Lots of pipeline questions are “how many of each type are there?” or “give me the files grouped by shot”. Python has two tools made for this, in the `collections` module.',
     '### Grouping: the first-item problem',
     'To group, you keep **one list per key**. The problem: the first time, the key does not exist yet.',
     { type: 'compare',
@@ -17,7 +17,7 @@ TA.add({
     '`Counter` counts how many times each item appears. It is a dictionary `{item: times}`.',
     '```python\nfrom collections import Counter\nc = Counter(["mesh", "joint", "mesh", "camera", "mesh"])\nc["mesh"]          # 3\nc.most_common(1)   # [("mesh", 3)]\nc["light"]         # 0 (no error)\n```',
     { type: 'cg', text: 'before delivering a scene, a tool counts the nodes by type. If there are 400 `joint` nodes in a props scene, something is wrong.' },
-    { type: 'tip', text: 'if you catch yourself writing «if the key does not exist, create it with 0, then add 1», say out loud: «here I would use `Counter`». It shows you know the standard library.' }
+    { type: 'tip', text: 'if you catch yourself writing “if the key does not exist, create it with 0, then add 1”, say out loud: “here I would use `Counter`”. It shows you know the standard library.' }
   ],
 
   example: {

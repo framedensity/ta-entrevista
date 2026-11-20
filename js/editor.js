@@ -33,7 +33,7 @@ window.Editor = (function () {
     return line;
   }
 
-  // Enter: same indent as the current line; +4 after «:»; −4 after return/pass/break…
+  // Enter: same indent as the current line; +4 after “:”; −4 after return/pass/break…
   function newline(ta) {
     var s = ta.selectionStart;
     var before = ta.value.slice(lineStart(ta), s);

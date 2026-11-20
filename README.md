@@ -8,7 +8,7 @@ Built to read on a phone. No server needed: it runs on GitHub Pages.
 ## Opening it
 
 - Online: GitHub Pages.
-- Locally: double-click `index.html`. Python (Pyodide) downloads from the internet the first time you tap «Run».
+- Locally: double-click `index.html`. Python (Pyodide) downloads from the internet the first time you tap “Run”.
 
 ## Structure
 

@@ -16,7 +16,7 @@ TA.add({
 
   explain: [
     'The **length** (magnitude) of a vector is how long the arrow is. To **normalize** a vector is to keep its direction but make its length exactly **1**.',
-    { type: 'analogy', text: 'normalizing is like keeping only the compass reading: «north-east», no matter if it is 2 meters or 2 kilometers.' },
+    { type: 'analogy', text: 'normalizing is like keeping only the compass reading: “north-east”, no matter if it is 2 meters or 2 kilometers.' },
     '### Length: Pythagoras',
     'In 2D, the vector `(3, 4)` is `√(3² + 4²) = √25 = 5` long. In 3D you add z: `√(x² + y² + z²)`.',
     { type: 'viz', name: 'normalize' },

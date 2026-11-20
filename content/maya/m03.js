@@ -19,7 +19,7 @@ TA.add({
 
   explain: [
     'The hierarchy organizes the scene: the rig inside one group, the geometry inside another. Tools walk it constantly.',
-    { type: 'analogy', text: 'just like a family: `listRelatives(parent=True)` asks «who is your mother?», `children=True` «who are your children?», and `allDescendents=True` «who are all your descendants: children, grandchildren…?».' },
+    { type: 'analogy', text: 'just like a family: `listRelatives(parent=True)` asks “who is your mother?”, `children=True` “who are your children?”, and `allDescendents=True` “who are all your descendants: children, grandchildren…?”.' },
     '### Moving things in the hierarchy',
     '- `cmds.parent("child", "parent")` → puts the child under the parent.\n- `cmds.parent("node", world=True)` → moves it to the root.\n- `cmds.group("a", "b", name="grp")` → creates a group with those nodes.',
     '### Asking about the family: listRelatives',

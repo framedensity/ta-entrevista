@@ -17,7 +17,7 @@ TA.add({
     'Dictionary keys behave like a set. You can do `d1.keys() & d2.keys()` directly.',
     '- **New** keys: `d2.keys() - d1.keys()`\n- **Removed** keys: `d1.keys() - d2.keys()`\n- Keys whose value **changed**: the shared ones where `d1[k] != d2[k]`',
     { type: 'cg', text: 'comparing a rig\'s attributes between two versions: `{"ikFk": 1, "stretch": 0}` vs `{"ikFk": 0, "stretch": 0, "twist": 1}`. `ikFk` changed and `twist` appeared.' },
-    { type: 'tip', text: 'always mention complexity: «I turn the second list into a set so lookups are O(1), which makes the whole thing O(n + m) instead of O(n × m)».' }
+    { type: 'tip', text: 'always mention complexity: “I turn the second list into a set so lookups are O(1), which makes the whole thing O(n + m) instead of O(n × m)”.' }
   ],
 
   example: {
@@ -28,7 +28,7 @@ TA.add({
       { code: 'added = sorted(v2.keys() - v1.keys())', note: 'Keys only in v2 → `["twist"]`.' },
       { code: 'removed = sorted(v1.keys() - v2.keys())', note: 'Keys only in v1 → `["space"]`.' },
       { code: 'changed = {k: (v1[k], v2[k]) for k in v1.keys() & v2.keys() if v1[k] != v2[k]}', note: 'We walk only the shared keys and store (before, after) if the value changed.' },
-      { code: 'print(added, removed, changed)', note: 'The result of the «diff».' }
+      { code: 'print(added, removed, changed)', note: 'The result of the “diff”.' }
     ],
     output: "['twist'] ['space'] {'ikFk': (1, 0)}"
   },

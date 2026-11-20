@@ -3,14 +3,14 @@ TA.add({
   title: 'Thinking like an artist',
 
   explain: [
-    'You are also a cinematics artist. That is your big advantage as a TA: you know **where it hurts** for the artist. This lesson is about using that.',
+    'Many TAs started as artists. That experience is a big advantage: you know **where it hurts** for the artist. This lesson is about designing from that point of view.',
     { type: 'analogy', text: 'a good waiter does not ask you twenty questions to serve you a coffee. They know what people usually order, suggest it, and only ask what really matters.' },
     '### Principles',
-    '- **Sensible defaults**: the most common case should work in one click.\n- **Few steps**: if the artist has to make 6 clicks every time, they will stop using it.\n- **Do not interrupt creativity**: the tool works in the background; it does not force a new way of working.\n- **Safety**: never lose work. Warn before overwriting, and allow undo.\n- **Feedback**: the artist always knows what is happening (progress) and what happened (summary).\n- **Speak their language**: «shot», «camera», «range», not «MDagPath» or «KeyError».',
+    '- **Sensible defaults**: the most common case should work in one click.\n- **Few steps**: if the artist has to make 6 clicks every time, they will stop using it.\n- **Do not interrupt creativity**: the tool works in the background; it does not force a new way of working.\n- **Safety**: never lose work. Warn before overwriting, and allow undo.\n- **Feedback**: the artist always knows what is happening (progress) and what happened (summary).\n- **Speak their language**: “shot”, “camera”, “range”, not “MDagPath” or “KeyError”.',
     '### Automate the mechanical, not the creative',
     'The best tools remove the **mechanical** work (checking specs, setting up exports, cleaning noise) so the artist spends their time on the **creative** part (camera, acting, timing).',
     { type: 'cg', text: 'instead of a window with 15 options, the exporter reads the project config and only shows the shot list and one button. Advanced options sit in a collapsed section.' },
-    { type: 'tip', text: 'a very «you» sentence for the interview: «Since I also make cutscenes, I know where the time goes. I automate the mechanical work so the team can focus on the creative part».' }
+    { type: 'tip', text: 'if you have production experience as an artist, say so: “Because I have done this work myself, I know where the time goes. I automate the mechanical part so the team can focus on the creative part”.' }
   ],
 
   example: {
@@ -41,7 +41,7 @@ TA.add({
       id: 'e1',
       kind: 'free',
       title: 'Improve the experience',
-      prompt: 'An artist complains: «the export tool is slow to use: every time I have to type the path, the frame range and pick the camera, and sometimes I get it wrong».\n\nWhat would you change?',
+      prompt: 'An artist complains: “the export tool is slow to use: every time I have to type the path, the frame range and pick the camera, and sometimes I get it wrong”.\n\nWhat would you change?',
       checklist: [
         'Detect each shot\'s range and camera automatically (by name or metadata).',
         'Default path from the project and naming convention; remember the last one used.',
@@ -58,6 +58,6 @@ TA.add({
   summary: [
     'Defaults, few steps, feedback, and never lose work.',
     'Automate the mechanical to free up creative time.',
-    'Your experience as an artist is your edge: use it and mention it.'
+    'Experience as an artist is an edge: use it and mention it.'
   ]
 });

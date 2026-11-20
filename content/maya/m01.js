@@ -13,11 +13,11 @@ TA.add({
   title: 'The scene as a family tree',
 
   explain: [
-    'Everything in Maya is a **node**: an object, a camera, a material, even an operation like «make a cube». Each node has a **type** and some **attributes**.',
+    'Everything in Maya is a **node**: an object, a camera, a material, even an operation like “make a cube”. Each node has a **type** and some **attributes**.',
     { type: 'analogy', text: 'the scene is a **family tree**. There are parents, children and siblings. If you move the parent, the whole family moves with it.' },
     'That tree is called the **DAG** (Directed Acyclic Graph). It is the hierarchy you see in the *Outliner*.',
     '### Transform and shape: the inseparable pair',
-    'What you see as «a cube» is actually **two nodes**:',
+    'What you see as “a cube” is actually **two nodes**:',
     '- The **transform**: where it is, how it is rotated and scaled. It is the one you select.\n- The **shape**: the actual geometry (the vertices). It lives **under** the transform, as its child.',
     { type: 'analogy', text: 'the transform is the **hanger** and the shape is the **clothes**. Move the hanger and the clothes go with it. A hanger on its own (an empty group) is invisible.' },
     'So `hero_geo` is the transform, and `hero_geoShape` is its shape of type `mesh`.',

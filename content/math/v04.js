@@ -25,7 +25,7 @@ TA.add({
     '- **Perpendicular** to `a` and to `b`.\n- **Order matters**: `b × a = −(a × b)`. Swapping the order flips the result.\n- **Length** = area of the parallelogram they form. If they are parallel, it is `(0, 0, 0)`.',
     '### Right-hand rule',
     'Maya uses a **right-handed** system: `X × Y = Z`. Point your fingers along `a`, curl them toward `b`, and your thumb shows `a × b`.',
-    { type: 'cg', text: 'a triangle\'s **normal** is the cross product of two of its edges. It also builds the axes of a camera or a joint: from «forward» and «up», the cross product gives you «right».' },
+    { type: 'cg', text: 'a triangle\'s **normal** is the cross product of two of its edges. It also builds the axes of a camera or a joint: from “forward” and “up”, the cross product gives you “right”.' },
     { type: 'tip', text: 'quick difference for the interview: the **dot** product gives a number (how alike are they?), the **cross** product gives a perpendicular vector (which axis is perpendicular to both?).' }
   ],
 

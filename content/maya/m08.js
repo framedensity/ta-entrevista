@@ -31,7 +31,7 @@ TA.add({
     '`listRelatives`, `listConnections`, `keyframe`… return `None`. Nodes may have been deleted. Use `or []` and `cmds.objExists()`.',
     '### 4. Unique names',
     'If two nodes share a name in different groups, the short name raises an error. Work with `ls(long=True)` when the scene is big.',
-    { type: 'tip', text: 'if they show you a script and ask «what would you improve?», check these four things in order: undo, selection, None, names. There is almost always something.' }
+    { type: 'tip', text: 'if they show you a script and ask “what would you improve?”, check these four things in order: undo, selection, None, names. There is almost always something.' }
   ],
 
   example: {

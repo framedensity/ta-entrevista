@@ -6,7 +6,7 @@ TA.add({
     '`print` is fine for testing. But in a tool used by 30 artists, you need to know **what happened**, **when** and **how serious** it was. That is what the `logging` module is for.',
     { type: 'analogy', text: '`logging` is a plane\'s black box. It keeps notes of what happens, with the time and the importance. If something fails, you open the box and read the story.' },
     '### The levels',
-    '- `DEBUG` → details for you while you code.\n- `INFO` → «all good»: exporting sh010…\n- `WARNING` → something odd, but it continues: an optional camera is missing.\n- `ERROR` → something failed: could not export sh020.\n- `CRITICAL` → the tool cannot continue.',
+    '- `DEBUG` → details for you while you code.\n- `INFO` → “all good”: exporting sh010…\n- `WARNING` → something odd, but it continues: an optional camera is missing.\n- `ERROR` → something failed: could not export sh020.\n- `CRITICAL` → the tool cannot continue.',
     'You set the **minimum level** you want to see. With `level=logging.INFO`, `DEBUG` messages are hidden.',
     '```python\nimport logging\nlogging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")\nlog = logging.getLogger("exporter")\nlog.info("Exporting %s", shot)\nlog.warning("No camera in %s", shot)\n```',
     { type: 'compare',

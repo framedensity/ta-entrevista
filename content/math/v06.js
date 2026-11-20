@@ -16,8 +16,8 @@ TA.add({
   title: 'Local and world space',
 
   explain: [
-    'Every object has its position in two «languages»: **local** (object space, relative to its parent) and **world** (relative to the scene origin).',
-    { type: 'analogy', text: 'on a train, your seat is «car 3, row 5» (local). For someone on the platform, you are at a spot that changes as the train moves (world). Your local seat does not change; your world position does.' },
+    'Every object has its position in two “languages”: **local** (object space, relative to its parent) and **world** (relative to the scene origin).',
+    { type: 'analogy', text: 'on a train, your seat is “car 3, row 5” (local). For someone on the platform, you are at a spot that changes as the train moves (world). Your local seat does not change; your world position does.' },
     { type: 'viz', name: 'space' },
     '### Local to world',
     'World position = the **parent\'s matrix** applied to the local position: first rotate (and scale) with the parent, then add the parent\'s position.',
@@ -27,14 +27,14 @@ TA.add({
     '### Hierarchies',
     'With several levels (hip → thigh → knee → foot), each matrix is multiplied by its parent\'s. The foot\'s world matrix is the product of the whole chain. That is **forward kinematics** (FK).',
     { type: 'cg', text: 'in Maya: `getAttr obj.translate` gives the **local** position; `xform(obj, q=True, ws=True, t=True)` gives the **world** one. Mixing them up is one of the most common bugs in animation tools (for example when snapping a control to a joint).' },
-    { type: 'tip', text: 'if they ask about `worldMatrix` and `parentInverseMatrix`: «the world matrix is the local matrix times the parent\'s world matrix; to bring something from world to local, I multiply by the inverse of the parent\'s world matrix».' }
+    { type: 'tip', text: 'if they ask about `worldMatrix` and `parentInverseMatrix`: “the world matrix is the local matrix times the parent\'s world matrix; to bring something from world to local, I multiply by the inverse of the parent\'s world matrix”.' }
   ],
 
   example: {
     intro: 'A child at local (2, 0) under a parent at (3, 1) rotated 90°.',
     lines: [
       { code: ROT.replace(/\n$/, ''), note: '2D rotation (the matrix from v05, written by hand).' },
-      { code: 'parent_pos, parent_angle = (3, 1), 90\nlocal = (2, 0)', note: 'The child sits 2 units «to the right» of its parent.' },
+      { code: 'parent_pos, parent_angle = (3, 1), 90\nlocal = (2, 0)', note: 'The child sits 2 units “to the right” of its parent.' },
       { code: 'r = rotate(local, parent_angle)', note: 'First rotate with the parent: (2, 0) → (0, 2).' },
       { code: 'world = (parent_pos[0] + r[0], parent_pos[1] + r[1])', note: 'Then add the parent\'s position.' },
       { code: 'print(tuple(round(c, 6) for c in world))', note: 'In world space, the child is above the parent.' }

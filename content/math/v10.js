@@ -15,7 +15,7 @@ TA.add({
   title: 'Spherical interpolation',
 
   explain: [
-    'If you interpolate **directions** or **orientations** with a plain lerp, the result «shrinks» along the way and the speed is not constant. **Slerp** (spherical linear interpolation) follows the arc at constant angular speed.',
+    'If you interpolate **directions** or **orientations** with a plain lerp, the result “shrinks” along the way and the speed is not constant. **Slerp** (spherical linear interpolation) follows the arc at constant angular speed.',
     { type: 'analogy', text: 'picture a clock hand going from 12 to 3. A lerp would cut straight across the inside of the circle (the hand gets shorter). Slerp moves the tip along the edge, like a real clock hand.' },
     { type: 'viz', name: 'slerp' },
     '### Three options',
@@ -25,8 +25,8 @@ TA.add({
     { type: 'warn', text: 'if `a` and `b` are almost the same, `sin θ` is almost 0 and you divide by zero. In that case use lerp (or nlerp), which is practically identical.' },
     '### With quaternions',
     'The same slerp works for quaternions. But first check the **shortest path**: if `dot(q1, q2) < 0`, flip the sign of `q2` (remember: `q` and `−q` are the same rotation). Otherwise the interpolation goes the long way around.',
-    { type: 'cg', text: 'when blending two poses or two animation clips, the engine slerps (or nlerps) the quaternion of every joint. A turn that «goes the long way around» in a blend is usually this shortest-path problem.' },
-    { type: 'tip', text: 'in the interview: «for orientations I use quaternion slerp, checking the shortest path first; if they are very close, I use nlerp to avoid dividing by zero».' }
+    { type: 'cg', text: 'when blending two poses or two animation clips, the engine slerps (or nlerps) the quaternion of every joint. A turn that “goes the long way around” in a blend is usually this shortest-path problem.' },
+    { type: 'tip', text: 'in the interview: “for orientations I use quaternion slerp, checking the shortest path first; if they are very close, I use nlerp to avoid dividing by zero”.' }
   ],
 
   example: {
@@ -107,7 +107,7 @@ TA.add({
       ],
       hints: ['`d = sum(x * y for x, y in zip(q1, q2))`', '`if d < 0: return tuple(-c for c in q2)`'],
       solution: 'def shortest_path(q1, q2):\n    d = sum(x * y for x, y in zip(q1, q2))\n    if d < 0:\n        return tuple(-c for c in q2)\n    return tuple(q2)\n',
-      explain: 'This small step avoids the classic «turning the long way around» in animation blends.'
+      explain: 'This small step avoids the classic “turning the long way around” in animation blends.'
     }
   ],
 

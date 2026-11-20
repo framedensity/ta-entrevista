@@ -13,8 +13,8 @@ TA.add({
     '```python\nimport maya.OpenMayaUI as omui\nfrom shiboken6 import wrapInstance\nfrom PySide6 import QtWidgets\n\ndef maya_window():\n    ptr = omui.MQtUtil.mainWindow()\n    return wrapInstance(int(ptr), QtWidgets.QWidget)\n```',
     '### The golden rules',
     '- **Separate logic and UI**: the window calls `check(nodes)`, which knows nothing about Qt. That way the same logic works in a batch with no window.\n- **A single instance**: if the artist opens the tool twice, close the previous one (or reuse it).\n- **Do not freeze Maya**: for long processes, show progress (`QProgressDialog`) and allow cancelling.\n- **Object name** (`setObjectName`) to find and close the old window.',
-    { type: 'cg', text: 'a cinematics exporter: a list of shots with checkboxes, an «Export selected» button and a progress bar. Under the hood, each shot is exported by the same function the render farm uses without a UI.' },
-    { type: 'tip', text: 'if they ask about PySide, what scores best is not knowing every widget, but saying: «I separate logic from UI; the UI only collects parameters and shows results».' },
+    { type: 'cg', text: 'a cinematics exporter: a list of shots with checkboxes, an “Export selected” button and a progress bar. Under the hood, each shot is exported by the same function the render farm uses without a UI.' },
+    { type: 'tip', text: 'if they ask about PySide, what scores best is not knowing every widget, but saying: “I separate logic from UI; the UI only collects parameters and shows results”.' },
     'This lesson has no simulator: the exercises are written answers.'
   ],
 
@@ -57,7 +57,7 @@ TA.add({
         'A final report: which shots went fine and which failed, with the reason.',
         'Window parented to Maya and only one instance open.'
       ],
-      model: '**Widgets:** a `QTreeWidget` with the shots (checkbox, name, frame range, camera), a `QLineEdit` + button for the output folder, a `QComboBox` for the format, and «Check» and «Export» buttons.\n\n**Code:**\n- `exporter.py`: pure functions (`plan`, `validate`, `export_shot`), no Qt.\n- `exporter_ui.py`: the window. It collects parameters, calls the logic and shows results.\n\n**30-shot batch:** a `QProgressDialog` that advances per shot and can be cancelled. Each shot runs in a `try/except`: if one fails, it is logged with `logging` and the batch continues. At the end, a summary «28 OK, 2 with errors (and why)».\n\n**Details:** the window is parented to Maya, has an `objectName` so the old one closes on reopen, and remembers the last folder used (`QSettings`).',
+      model: '**Widgets:** a `QTreeWidget` with the shots (checkbox, name, frame range, camera), a `QLineEdit` + button for the output folder, a `QComboBox` for the format, and “Check” and “Export” buttons.\n\n**Code:**\n- `exporter.py`: pure functions (`plan`, `validate`, `export_shot`), no Qt.\n- `exporter_ui.py`: the window. It collects parameters, calls the logic and shows results.\n\n**30-shot batch:** a `QProgressDialog` that advances per shot and can be cancelled. Each shot runs in a `try/except`: if one fails, it is logged with `logging` and the batch continues. At the end, a summary “28 OK, 2 with errors (and why)”.\n\n**Details:** the window is parented to Maya, has an `objectName` so the old one closes on reopen, and remembers the last folder used (`QSettings`).',
       followups: ['How would you keep Maya from freezing during the export?', 'How would you reuse the logic on the farm, with no UI?', 'What would you store in `QSettings`?']
     },
     {

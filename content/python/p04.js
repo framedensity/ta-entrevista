@@ -16,12 +16,12 @@ TA.add({
     '### Dict comprehension',
     'A **comprehension** builds a new dictionary in a single line. Use it to **filter** or **transform**.',
     '```python\nlong_shots = {s: f for s, f in shots.items() if f > 60}\n```',
-    'Read it as: «for each shot `s` with frames `f`, keep `s: f`, only if `f > 60`».',
+    'Read it as: “for each shot `s` with frames `f`, keep `s: f`, only if `f > 60`”.',
     '### Sorting and finding the max',
     'A dictionary does not sort itself. But you can get its keys sorted by value with `key=`.',
     '- `sorted(shots, key=shots.get)` → keys sorted from lowest to highest value.\n- `max(shots, key=shots.get)` → the key with the biggest value.\n- `sum(shots.values())` → the sum of all values.',
     { type: 'cg', text: 'a cinematics tool receives a `{shot: frames}` dictionary and has to say how long the sequence is, which shots are long and which is the longest.' },
-    { type: 'tip', text: 'if they ask for «the key with the highest value», the short answer is `max(d, key=d.get)`. Knowing it shows you know Python, not just loops.' }
+    { type: 'tip', text: 'if they ask for “the key with the highest value”, the short answer is `max(d, key=d.get)`. Knowing it shows you know Python, not just loops.' }
   ],
 
   example: {
@@ -43,7 +43,7 @@ TA.add({
       q: 'What does `for k, v in d.items():` give on each pass?',
       options: ['Only the key', 'Only the value', 'The key and the value together'],
       answer: 2,
-      why: '`.items()` gives (key, value) pairs. We «unpack» them into `k` and `v`.'
+      why: '`.items()` gives (key, value) pairs. We “unpack” them into `k` and `v`.'
     },
     {
       q: 'With `d = {"a": 5, "b": 9, "c": 1}`, what does `max(d, key=d.get)` return?',

@@ -280,12 +280,12 @@ window.Viz = (function () {
       var cosXZ = Math.abs(xAxis[0] * zAxis[0] + xAxis[1] * zAxis[1] + xAxis[2] * zAxis[2]);
       var locked = cosXZ > 0.985;
       r.innerHTML = 'Rotation axes of the rings (XYZ order).<br>Angle between the X axis and the Z axis: <b>' + fmt(deg(Math.acos(Math.min(1, cosXZ))), 0) + '°</b><br>' +
-        (locked ? '⚠️ <b>Gimbal lock:</b> X and Z rotate around the same axis. You have lost one direction of rotation.' : 'The three axes are different: you can rotate in all three directions.');
+        (locked ? '<b>Gimbal lock:</b> X and Z rotate around the same axis. You have lost one direction of rotation.' : 'The three axes are different: you can rotate in all three directions.');
     }
     slider(box, 'Rotate X (°)', -180, 180, 5, st.x, function (v) { st.x = v; draw(); });
     slider(box, 'Rotate Y (°)', -90, 90, 5, st.y, function (v) { st.y = v; draw(); });
     slider(box, 'Rotate Z (°)', -180, 180, 5, st.z, function (v) { st.z = v; draw(); });
-    hint(box, 'Set «Rotate Y» to 90 and watch what happens to X and Z.');
+    hint(box, 'Set “Rotate Y” to 90 and watch what happens to X and Z.');
     setTimeout(draw, 0); window.addEventListener('resize', draw);
   };
 

@@ -16,7 +16,7 @@ TA.add({
 
   explain: [
     '**Euler angles** are the three numbers in `rotateX`, `rotateY`, `rotateZ`. They are easy to read, but they have two problems: **order** and **gimbal lock**.',
-    { type: 'analogy', text: 'rotating with Euler is like giving three instructions in a row: «turn your head right, then tilt it up, then lean it sideways». Change the order of the instructions and the head ends up somewhere else.' },
+    { type: 'analogy', text: 'rotating with Euler is like giving three instructions in a row: “turn your head right, then tilt it up, then lean it sideways”. Change the order of the instructions and the head ends up somewhere else.' },
     '### Rotation order',
     'The three rotations are applied **one after another**. In Maya, the `rotateOrder` attribute sets the order (default `xyz`). The same three numbers with a different order give a different orientation.',
     '### Gimbal lock',
@@ -26,7 +26,7 @@ TA.add({
     { type: 'cg', text: 'in animation, gimbal lock causes weird spins and jumps in the curves. That is why riggers pick the `rotateOrder` based on the motion: for a neck that turns a lot in Y, Y goes **first or last**, so the axis that moves most does not cause the lock.' },
     '### 360° jumps',
     '`rotateY = 190` and `rotateY = -170` are the same orientation. But if one key is 170 and the next is -175, the curve spins almost a full turn backwards. The Graph Editor\'s **Euler Filter** fixes this by adding or subtracting 360°.',
-    { type: 'tip', text: 'summary for the interview: «Euler is intuitive and it is what animators see, but it depends on the order and has gimbal lock. Internally, to interpolate or combine rotations, I use matrices or quaternions».' }
+    { type: 'tip', text: 'summary for the interview: “Euler is intuitive and it is what animators see, but it depends on the order and has gimbal lock. Internally, to interpolate or combine rotations, I use matrices or quaternions”.' }
   ],
 
   example: {

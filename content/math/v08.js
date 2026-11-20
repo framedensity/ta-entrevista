@@ -18,7 +18,7 @@ TA.add({
 
   explain: [
     'A **quaternion** stores a rotation in **four** numbers: `(w, x, y, z)`. It has no gimbal lock and interpolates very well. That is why game engines use them internally.',
-    { type: 'analogy', text: 'Euler is like giving three instructions in a row («turn, tilt, lean»). A quaternion is a single instruction: «turn this many degrees around **this** axis».' },
+    { type: 'analogy', text: 'Euler is like giving three instructions in a row (“turn, tilt, lean”). A quaternion is a single instruction: “turn this many degrees around **this** axis”.' },
     '### Axis and angle',
     'To turn by θ around a unit axis `(ex, ey, ez)`:\n\n`q = (cos(θ/2), ex·sin(θ/2), ey·sin(θ/2), ez·sin(θ/2))`',
     'Notice the **θ/2**: it is the part that surprises people most. A rotation quaternion always has length 1.',
@@ -26,7 +26,7 @@ TA.add({
     '### What you need to know',
     '- **No gimbal lock**: the rotation is a single turn around one axis.\n- **Combining** two rotations = multiplying quaternions. Order matters (as with matrices).\n- **Interpolating** between two orientations is smooth with no jumps: that is **slerp** (lesson v10).\n- **Double cover**: `q` and `−q` are the same rotation. When interpolating, you pick the closer one.\n- `(1, 0, 0, 0)` is the **identity**: no rotation.',
     { type: 'cg', text: 'in Maya, `om.MQuaternion` and `MTransformationMatrix.rotation(asQuaternion=True)`. Rotation curves in an FBX exported to an engine are usually converted to quaternions for in-game interpolation.' },
-    { type: 'tip', text: 'you do not need to prove anything. In the interview it is enough to say: «four numbers, axis and angle with θ/2, no gimbal lock, smooth interpolation with slerp, and q and −q are the same rotation».' }
+    { type: 'tip', text: 'you do not need to prove anything. In the interview it is enough to say: “four numbers, axis and angle with θ/2, no gimbal lock, smooth interpolation with slerp, and q and −q are the same rotation”.' }
   ],
 
   example: {
@@ -63,7 +63,7 @@ TA.add({
       why: 'Double cover: q and −q give the same orientation.'
     },
     {
-      q: 'Which quaternion means «no rotation»?',
+      q: 'Which quaternion means “no rotation”?',
       options: ['`(0, 0, 0, 0)`', '`(1, 0, 0, 0)`', '`(0, 1, 1, 1)`'],
       answer: 1,
       why: 'cos(0) = 1 and sin(0) = 0: it is the identity.'

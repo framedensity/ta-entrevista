@@ -9,7 +9,7 @@ TA.add({
     '1. **Contain**: stop whatever is causing the problem (pull the tool version, tell the team not to publish). Keep it from growing.\n2. **Measure**: which scenes are affected? A script that walks all 200 and checks for the symptom (lessons p13, p14, p17). No guessing.\n3. **Fix**: if possible, an automatic batch fix, with a *dry run*, backups and verification. If not, prioritize with production (which shots ship first).\n4. **Prevent**: why did it happen? Add a check to the validator, a test, or a validation in the tool.',
     '### Communication',
     'As important as the code: tell the supervisors and affected departments early, say what you know and what you do not, and give an estimate. Be the **bridge** between artists and programmers.',
-    { type: 'tip', text: 'this case connects with your answer 【6】 for Kojima: «in cinematics, one problem can hit 100 or 200 scenes; my role is to be the bridge between artists and programmers and minimize the impact». Have a real example ready (without confidential details).' },
+    { type: 'tip', text: 'a useful way to frame it: “in cinematics, one problem can hit 100 or 200 scenes; the TA\'s role is to be the bridge between artists and programmers and keep the impact small”. Have a real example ready (without confidential details).' },
     { type: 'cg', text: 'a rig change renamed a control. 200 animation scenes have keys on the old name. One script detects it, and another remaps the keys to the new name, with a dry run and a backup of each scene.' }
   ],
 
@@ -42,7 +42,7 @@ TA.add({
       id: 'e1',
       kind: 'free',
       title: 'Explain how you would handle it',
-      prompt: '«An update to your export tool introduced a bug: cameras were exported one frame off. It has been used on about 200 scenes for a week. What do you do?»\n\nAnswer as in the interview.',
+      prompt: '“An update to your export tool introduced a bug: cameras were exported one frame off. It has been used on about 200 scenes for a week. What do you do?”\n\nAnswer as in the interview.',
       checklist: [
         '**Contain**: pull the buggy version (roll back to the previous one) and tell the team.',
         '**Measure**: a script that finds which scenes/files were exported with that version (thanks to the version in the logs or metadata).',
@@ -51,7 +51,7 @@ TA.add({
         '**Communicate**: tell people early, with what is known, what is not, and when it will be done.',
         '**Prevent**: a test or check that would have caught the offset.'
       ],
-      model: '«First I would **contain** it: roll back to the previous tool version and tell the team not to export any more with the broken one.\n\nThen I would **measure** the scope: since the tool stores its version in the logs and in each file\'s metadata, a script can list exactly which exports used the buggy version, instead of guessing.\n\nTo **fix** it, I would re-export in a batch only those scenes, with a dry run first, and then check that the frame range matches the scene. With production I would decide the order: what ships first goes first.\n\nI would keep **communicating**: what happened, how many scenes, what is fixed and how much is left.\n\nAnd to **prevent** it, I would add an automatic check comparing the exported range with the scene range, so an offset like this cannot slip through unnoticed again.»',
+      model: '“First I would **contain** it: roll back to the previous tool version and tell the team not to export any more with the broken one.\n\nThen I would **measure** the scope: since the tool stores its version in the logs and in each file\'s metadata, a script can list exactly which exports used the buggy version, instead of guessing.\n\nTo **fix** it, I would re-export in a batch only those scenes, with a dry run first, and then check that the frame range matches the scene. With production I would decide the order: what ships first goes first.\n\nI would keep **communicating**: what happened, how many scenes, what is fixed and how much is left.\n\nAnd to **prevent** it, I would add an automatic check comparing the exported range with the scene range, so an offset like this cannot slip through unnoticed again.”',
       followups: ['How would you know which scenes were exported with the bad version?', 'What would you do if there were no version records?', 'How would you stop an update from reaching everyone before it is tested?']
     }
   ],

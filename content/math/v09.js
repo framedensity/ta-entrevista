@@ -24,9 +24,9 @@ TA.add({
     '### Inverse lerp and remapping',
     '- **Inverse lerp**: given a value `x` between `a` and `b`, which `t` does it match? `t = (x − a) / (b − a)`.\n- **Remap**: move a value from one range to another. It is an inverse lerp followed by a lerp.',
     '### Smoothing: ease in / ease out',
-    'A plain lerp starts and stops abruptly. To make it speed up and slow down, you «bend» `t` before using it. The most common function is **smoothstep**: `3t² − 2t³`.',
+    'A plain lerp starts and stops abruptly. To make it speed up and slow down, you “bend” `t` before using it. The most common function is **smoothstep**: `3t² − 2t³`.',
     { type: 'cg', text: '*linear* tangents in the Graph Editor are a lerp between keys. *Auto* or *spline* tangents smooth the start and end, like a smoothstep. And remapping is handy, for example, to turn the camera distance (2 to 20 meters) into a depth-of-field aperture.' },
-    { type: 'tip', text: '`t` does not have to be time: it is «how much of the way». With `t` outside [0, 1] the lerp **extrapolates** (overshoots). Often you want to clamp it.' }
+    { type: 'tip', text: '`t` does not have to be time: it is “how much of the way”. With `t` outside [0, 1] the lerp **extrapolates** (overshoots). Often you want to clamp it.' }
   ],
 
   example: {

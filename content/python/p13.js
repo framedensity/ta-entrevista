@@ -25,7 +25,7 @@ TA.add({
     '- `os.listdir(folder)` → list of names inside the folder (without the path).\n- `os.path.join(a, b)` → joins parts of a path.\n- `os.path.exists(p)`, `os.path.isfile(p)`, `os.path.isdir(p)` → does it exist? is it a file? a folder?\n- `os.path.basename(p)` → the final name. `os.path.dirname(p)` → the folder.\n- `os.path.splitext(name)` → splits into `("sh010_v001", ".ma")`.\n- `os.makedirs(p, exist_ok=True)` → creates folders (and the ones in between). No error if it already exists.\n- `os.rename(old, new)`, `os.remove(p)` → rename and delete.',
     { type: 'warn', text: '`os.listdir` returns the names in **any order**. If order matters, use `sorted()`.' },
     { type: 'cg', text: 'before exporting a shot, the tool creates `export/sq010/sh010/` with `makedirs(..., exist_ok=True)`. That way it does not fail if the folder already existed from a previous export.' },
-    'In these exercises, every time you tap «Run», a fresh working folder with test files appears.'
+    'In these exercises, every time you tap “Run”, a fresh working folder with test files appears.'
   ],
 
   example: {

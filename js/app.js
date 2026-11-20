@@ -55,7 +55,7 @@
 
     var next = list.filter(function (x) { return !x.optional && available(x.id) && !Store.isDone(x.id) && unlocked(x.id); })[0];
     if (next) {
-      var go = el('a', 'btn primary block', '▶ Continue: ' + MD.esc(next.title));
+      var go = el('a', 'btn primary block', 'Continue: ' + MD.esc(next.title));
       go.href = '#/l/' + next.id + '/' + Store.getStep(next.id);
       app.appendChild(go);
     }
@@ -64,14 +64,14 @@
       var mc = el('div', 'card module');
       var mreq = m.lessons.filter(function (l) { return !l.optional; });
       var md = mreq.filter(function (l) { return Store.isDone(l.id); }).length;
-      mc.appendChild(el('h2', '', m.icon + ' ' + MD.esc(m.title) + ' <span class="muted">' + md + '/' + mreq.length + '</span>'));
+      mc.appendChild(el('h2', '', MD.esc(m.title) + ' <span class="muted">' + md + '/' + mreq.length + '</span>'));
       if (m.note) mc.appendChild(el('p', 'muted', MD.inline(m.note)));
       m.lessons.forEach(function (l, i) {
         var st, cls, href = null;
         if (Store.isDone(l.id)) { st = '✓'; cls = 'done'; href = '#/l/' + l.id + '/0'; }
         else if (!available(l.id)) { st = '…'; cls = 'soon'; }
         else if (unlocked(l.id)) { st = i + 1; cls = 'open'; href = '#/l/' + l.id + '/' + Store.getStep(l.id); }
-        else { st = '🔒'; cls = 'locked'; }
+        else { st = '<svg class="lock" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="locked"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'; cls = 'locked'; }
         var row = el(href ? 'a' : 'div', 'lesson-row ' + cls);
         if (href) row.href = href;
         var sub = cls === 'soon' ? 'Coming soon' : (cls === 'locked' ? 'Finish the previous lesson to unlock it' : l.en);
@@ -91,7 +91,7 @@
   function viewLesson(id, step) {
     var lesson = TA.lessons[id], meta = find(id);
     if (!lesson || !meta) { app.innerHTML = '<div class="empty">This lesson is not ready yet.<br><br><a href="#/">Back to the path</a></div>'; return; }
-    if (!unlocked(id)) { app.innerHTML = '<div class="empty">🔒 Finish the previous lesson to unlock this one.<br>(Or turn on «Free mode» on the path.)<br><br><a href="#/">Back to the path</a></div>'; return; }
+    if (!unlocked(id)) { app.innerHTML = '<div class="empty">Finish the previous lesson to unlock this one.<br>(Or turn on “Free mode” on the path.)<br><br><a href="#/">Back to the path</a></div>'; return; }
     step = Math.max(0, Math.min(Lesson.STEPS.length - 1, step || 0));
     Store.setStep(id, step);
     Lesson.render(app, lesson, meta, step, function (n) { location.hash = '#/l/' + id + '/' + n; });
@@ -103,7 +103,7 @@
     app.innerHTML = '';
     app.appendChild(el('h1', '', 'Review your mistakes'));
     if (!keys.length) {
-      app.appendChild(el('div', 'empty', '🎉 Nothing to review.<br>Questions and exercises you get wrong will show up here.'));
+      app.appendChild(el('div', 'empty', 'Nothing to review.<br>Questions and exercises you get wrong will show up here.'));
       return;
     }
     app.appendChild(el('p', 'muted', 'Only what you got wrong. Once you get it right, it leaves the list.'));
@@ -155,7 +155,7 @@
     app.appendChild(el('h1', '', 'Mock interview'));
     var c = el('div', 'card');
     c.innerHTML = MD.render('Random questions from **every module**, with a timer. At the end you see your score per module and your weak spots.\n\nQuestions you miss go to **Review**.');
-    if (!all) c.appendChild(el('div', 'warnbox', '<b>⚠️ You have not finished every lesson yet.</b> You can still take the mock exam, but it will include topics you have not seen.'));
+    if (!all) c.appendChild(el('div', 'warnbox', '<b>You have not finished every lesson yet.</b> You can still take the mock exam, but it will include topics you have not seen.'));
     var n = 15;
     var sel = el('div', 'keys');
     [10, 15, 25].forEach(function (k) {
@@ -166,7 +166,7 @@
     c.appendChild(sel);
     var lab = el('label', 'check', '<input type="checkbox" checked><span>Finish with a tool design case (free answer)</span>');
     c.appendChild(lab);
-    var start = el('button', 'primary', '⏱️ Start'); start.type = 'button'; start.style.width = '100%'; start.style.marginTop = '10px';
+    var start = el('button', 'primary', 'Start'); start.type = 'button'; start.style.width = '100%'; start.style.marginTop = '10px';
     start.addEventListener('click', function () { runExam(n, lab.querySelector('input').checked); });
     c.appendChild(start);
     app.appendChild(c);
@@ -188,12 +188,12 @@
     var i = 0, t0 = Date.now(), res = [], timer = null;
     function header() {
       var h = el('div', 'examhead');
-      var tm = el('span', 'timer', '⏱️ 0:00');
+      var tm = el('span', 'timer', '0:00');
       h.appendChild(el('span', '', 'Question <b>' + (i + 1) + '</b> of ' + qs.length));
       h.appendChild(tm);
       clearInterval(timer);
-      timer = setInterval(function () { tm.textContent = '⏱️ ' + mmss(Date.now() - t0); }, 1000);
-      tm.textContent = '⏱️ ' + mmss(Date.now() - t0);
+      timer = setInterval(function () { tm.textContent = mmss(Date.now() - t0); }, 1000);
+      tm.textContent = mmss(Date.now() - t0);
       return h;
     }
     function show() {
@@ -201,7 +201,7 @@
       app.appendChild(header());
       app.appendChild(el('div', 'bar', '<i style="width:' + Math.round(i / qs.length * 100) + '%"></i>'));
       var item = qs[i];
-      app.appendChild(el('div', 'muted', item.module.icon + ' ' + MD.esc(item.module.title)));
+      app.appendChild(el('div', 'muted', MD.esc(item.module.title)));
       var nextB = el('button', 'primary', i < qs.length - 1 ? 'Next →' : 'See results'); nextB.type = 'button';
       nextB.style.width = '100%'; nextB.disabled = true;
       app.appendChild(Lesson.renderMCQ(item.q, item.key, item.info, function (ok) { res.push({ ok: ok, item: item }); nextB.disabled = false; }));
@@ -215,7 +215,7 @@
       var pick = cs[Math.floor(Math.random() * cs.length)];
       app.innerHTML = '';
       app.appendChild(header());
-      app.appendChild(el('h2', '', '🛠️ Design case'));
+      app.appendChild(el('h2', '', 'Design case'));
       app.appendChild(el('p', 'muted', 'Answer as you would in the interview. Aim for about 3 minutes.'));
       app.appendChild(Lesson.renderExercise(pick.lesson, pick.ex, 0, null));
       var fin = el('button', 'primary', 'See results'); fin.type = 'button'; fin.style.width = '100%';
@@ -229,7 +229,7 @@
       var by = {};
       res.forEach(function (r) {
         var k = r.item.module.title;
-        by[k] = by[k] || { ok: 0, total: 0, icon: r.item.module.icon };
+        by[k] = by[k] || { ok: 0, total: 0 };
         by[k].total++; if (r.ok) by[k].ok++;
       });
       var weak = null, worst = 2;
@@ -245,12 +245,12 @@
       var bc = el('div', 'card'); bc.appendChild(el('h3', '', 'Score per module'));
       Object.keys(by).forEach(function (k) {
         var p = Math.round(by[k].ok / by[k].total * 100);
-        bc.appendChild(el('div', '', by[k].icon + ' ' + MD.esc(k) + ' · <b>' + by[k].ok + '/' + by[k].total + '</b> (' + p + '%)'));
+        bc.appendChild(el('div', '', MD.esc(k) + ' · <b>' + by[k].ok + '/' + by[k].total + '</b> (' + p + '%)'));
         bc.appendChild(el('div', 'bar', '<i style="width:' + p + '%;' + (p < 60 ? 'background:var(--ng)' : '') + '"></i>'));
       });
       app.appendChild(bc);
-      if (weak) app.appendChild(el('div', 'warnbox', '<b>Weak spot:</b> ' + MD.esc(weak) + '. Go over its lessons and the «Review» tab.'));
-      else app.appendChild(el('div', 'why ok', '🎉 Well balanced! No module is below 80%.'));
+      if (weak) app.appendChild(el('div', 'warnbox', '<b>Weak spot:</b> ' + MD.esc(weak) + '. Go over its lessons and the “Review” tab.'));
+      else app.appendChild(el('div', 'why ok', 'Well balanced! No module is below 80%.'));
       var wrong = res.filter(function (r) { return !r.ok; });
       if (wrong.length) {
         var wc = el('div', 'card'); wc.appendChild(el('h3', '', 'To review'));
@@ -295,7 +295,7 @@
   });
 
   // ---------- Load the lessons (one file per lesson, from curriculum.js) ----------
-  // Files that do not exist yet show up as «Coming soon».
+  // Files that do not exist yet show up as “Coming soon”.
   var files = [];
   TA.curriculum.forEach(function (m) { m.lessons.forEach(function (l) { files.push('content/' + m.id + '/' + l.id + '.js'); }); });
   var pending = files.length;

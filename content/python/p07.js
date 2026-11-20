@@ -5,7 +5,7 @@ TA.add({
   explain: [
     'Duplicate names in a scene, two shots with the same number, an asset imported twice… Finding duplicates is another interview classic.',
     { type: 'analogy', text: 'imagine checking tickets at a concert door. You drop every ticket number that has already gone in into a box. If one arrives that is already in the box, it is a duplicate!' },
-    'That «box of already seen» is a **set**. We call it `seen`.',
+    'That “box of already seen” is a **set**. We call it `seen`.',
     { type: 'compare',
       badTitle: 'count() inside a loop: walks the list n times',
       bad: 'dups = []\nfor x in names:\n    if names.count(x) > 1 and x not in dups:\n        dups.append(x)',
@@ -18,7 +18,7 @@ TA.add({
     '### Removing duplicates without losing the order',
     '`set(list)` removes repeats, but **scrambles the order**. To keep the order, use `dict.fromkeys()`: dictionaries remember insertion order.',
     '```python\nunique = list(dict.fromkeys(names))\n```',
-    '### Duplicates that are «the same but different»?',
+    '### Duplicates that are “the same but different”?',
     'Sometimes `"Cam_A"` and `"cam_a"` are the same name for the pipeline. Before comparing, **normalize**: lowercase, strip spaces.',
     { type: 'cg', text: 'on Windows, `Hero.fbx` and `hero.fbx` are the same file. An exporter that does not catch this can overwrite data.' }
   ],

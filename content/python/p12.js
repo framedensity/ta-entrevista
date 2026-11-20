@@ -15,11 +15,11 @@ TA.add({
       good: 'try:\n    export(shot)\nexcept FileNotFoundError as e:\n    errors.append((shot, str(e)))',
       note: 'A bare `except:` hides programming mistakes (a misspelled name, for example). Then nobody knows why it fails.' },
     '### else and finally',
-    '- `else:` runs if there was **no** error.\n- `finally:` runs **always**, error or not. Ideal for «closing» things (for example, closing an *undo chunk* in Maya).',
+    '- `else:` runs if there was **no** error.\n- `finally:` runs **always**, error or not. Ideal for “closing” things (for example, closing an *undo chunk* in Maya).',
     '### Raising your own errors',
     'If a function receives impossible data, it is better to **complain loudly** than to return something odd: `raise ValueError("end is before start")`.',
-    { type: 'cg', text: 'in a batch process: catch the error of **each** scene, store it in a list and move on to the next. At the end, show the report: «198 OK, 2 with errors, and why».' },
-    { type: 'tip', text: 'if they ask how you handle errors, the key answer is: «I do not stop the whole batch for one scene; I log the error with context and keep going».' }
+    { type: 'cg', text: 'in a batch process: catch the error of **each** scene, store it in a list and move on to the next. At the end, show the report: “198 OK, 2 with errors, and why”.' },
+    { type: 'tip', text: 'if they ask how you handle errors, the key answer is: “I do not stop the whole batch for one scene; I log the error with context and keep going”.' }
   ],
 
   example: {

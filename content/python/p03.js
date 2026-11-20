@@ -4,7 +4,7 @@ TA.add({
 
   explain: [
     'In a list, you find data by its number. But sometimes it is easier to find it by its **name**.',
-    'For example, for a shot you want its start and end. Remembering «the start is item 1» is hard. Remembering `"start"` is easy.',
+    'For example, for a shot you want its start and end. Remembering “the start is item 1” is hard. Remembering `"start"` is easy.',
     { type: 'analogy', text: 'a **dictionary** is like the contacts on your phone. You look up a person\'s name and get their number.' },
     'Each entry has two parts:',
     '- The **key**: the name you look up. For example, `"start"`.\n- The **value**: the stored data. For example, `1001`.',

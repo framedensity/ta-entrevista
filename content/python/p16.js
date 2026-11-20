@@ -6,7 +6,7 @@ TA.add({
     'When data and actions always go together (a shot has a start, an end, a camera… and knows how to compute its duration), a **class** keeps them organized.',
     { type: 'analogy', text: 'a **class** is the blueprint of a house. An **object** (instance) is a house built from that blueprint. You can build many houses from the same blueprint, each with its own furniture.' },
     '```python\nclass Shot:\n    def __init__(self, name, start, end):\n        self.name = name\n        self.start = start\n        self.end = end\n\n    def duration(self):\n        return self.end - self.start + 1\n\ns = Shot("sh010", 1001, 1048)\ns.duration()   # 48\n```',
-    '- `__init__` runs when the object is created: it sets up its data.\n- `self` is «this particular object». That is why each shot keeps its own `start`.\n- A **method** is a function inside the class: `s.duration()`.',
+    '- `__init__` runs when the object is created: it sets up its data.\n- `self` is “this particular object”. That is why each shot keeps its own `start`.\n- A **method** is a function inside the class: `s.duration()`.',
     '### __repr__: how it looks when printed',
     'Without `__repr__`, printing an object gives something like `<Shot object at 0x7f...>`. With it, you see something useful while debugging.',
     '### dataclass: less code for data classes',

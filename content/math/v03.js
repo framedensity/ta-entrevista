@@ -23,8 +23,8 @@ TA.add({
     { type: 'viz', name: 'dot' },
     '### Reading the result',
     '- **Positive**: less than 90° apart (roughly the same direction).\n- **Zero**: perpendicular (90°).\n- **Negative**: more than 90° apart (opposite directions).\n- With unit vectors: **1** = same direction, **-1** = opposite.',
-    { type: 'cg', text: 'is the enemy in front of or behind the player? `dot(enemy - player, facing)`. If it is positive, it is in front. Lots of vision cones and «can the camera see the character» checks work this way.' },
-    { type: 'tip', text: 'classic interview question: «how do you know if an object is in front of the camera?». Answer: the dot product of the camera direction and the vector to the object; if it is positive, it is in front.' }
+    { type: 'cg', text: 'is the enemy in front of or behind the player? `dot(enemy - player, facing)`. If it is positive, it is in front. Lots of vision cones and “can the camera see the character” checks work this way.' },
+    { type: 'tip', text: 'classic interview question: “how do you know if an object is in front of the camera?”. Answer: the dot product of the camera direction and the vector to the object; if it is positive, it is in front.' }
   ],
 
   example: {
@@ -118,7 +118,7 @@ TA.add({
   summary: [
     'a · b = sum of products; it gives a number.',
     'Positive = same direction, 0 = perpendicular, negative = opposite.',
-    'With unit vectors it is the cosine of the angle: use it for «in front / behind» and vision cones.'
+    'With unit vectors it is the cosine of the angle: use it for “in front / behind” and vision cones.'
   ]
 });
 })();

@@ -1,8 +1,8 @@
 // Study path order. Each lesson lives in content/<module id>/<lesson id>.js
 // To add a lesson: create the file and add one line here. No need to touch index.html.
 TA.curriculum = [
-  { id: 'python', title: 'Python', icon: '🐍',
-    note: 'The first two lessons are optional. The important part starts at «Dictionaries».',
+  { id: 'python', title: 'Python',
+    note: 'The first two lessons are optional. The important part starts at “Dictionaries”.',
     lessons: [
     { id: 'p01', title: 'Variables and data types', en: 'int, float, str, bool, f-strings', optional: true },
     { id: 'p02', title: 'Lists', en: 'indexing, slicing, append, in', optional: true },
@@ -25,7 +25,7 @@ TA.curriculum = [
     { id: 'p19', title: 'TA: safe batch rename', en: 'batch rename with dry run' },
     { id: 'p20', title: 'TA: tool configuration', en: 'tool config with defaults' }
   ]},
-  { id: 'maya', title: 'Maya', icon: '🧊',
+  { id: 'maya', title: 'Maya',
     note: 'The exercises use a `maya.cmds` simulator that runs in the browser.',
     lessons: [
     { id: 'm01', title: 'The scene as a family tree', en: 'nodes, DAG, transform & shape' },
@@ -39,7 +39,7 @@ TA.curriculum = [
     { id: 'm09', title: 'OpenMaya API 2.0', en: 'MSelectionList, MFn, MDagPath' },
     { id: 'm10', title: 'UI with PySide', en: 'widgets, signals, logic vs UI' }
   ]},
-  { id: 'math', title: '3D Math', icon: '📐',
+  { id: 'math', title: '3D Math',
     note: 'You can drag the figures with your finger.',
     lessons: [
     { id: 'v01', title: 'Vectors', en: 'add, subtract, scale' },
@@ -53,7 +53,7 @@ TA.curriculum = [
     { id: 'v09', title: 'Linear interpolation', en: 'lerp, remap, smoothstep' },
     { id: 'v10', title: 'Spherical interpolation', en: 'nlerp, slerp, shortest path' }
   ]},
-  { id: 'design', title: 'Tool design', icon: '🛠️',
+  { id: 'design', title: 'Tool design',
     note: 'Free answers: you write, then compare against the key points.',
     lessons: [
     { id: 'd01', title: 'What makes a good tool?', en: 'problem → solution → result' },

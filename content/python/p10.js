@@ -16,10 +16,10 @@ TA.add({
       bad: 'def add(shot, items=[]):\n    items.append(shot)\n    return items\n\nadd("sh010")  # ["sh010"]\nadd("sh020")  # ["sh010", "sh020"]  ← surprise!',
       goodTitle: 'Use None and create the list inside',
       good: 'def add(shot, items=None):\n    if items is None:\n        items = []\n    items.append(shot)\n    return items' },
-    { type: 'tip', text: 'this trap is a common interview question. Explain the «why»: the default value is evaluated when the function is defined, not when it is called.' },
+    { type: 'tip', text: 'this trap is a common interview question. Explain the “why”: the default value is evaluated when the function is defined, not when it is called.' },
     '### Returning several things',
     'With `return a, b` you return a **tuple**. When calling, you unpack it: `low, high = frame_range(frames)`.',
-    { type: 'cg', text: 'separate «compute» from «act»: one function decides what needs renaming (and returns the list); another does it. That way you can test the first one without touching the scene.' }
+    { type: 'cg', text: 'separate “compute” from “act”: one function decides what needs renaming (and returns the list); another does it. That way you can test the first one without touching the scene.' }
   ],
 
   example: {

@@ -6,12 +6,12 @@ TA.add({
     'A studio tool lives for years. Projects change, Maya versions change, the game engine changes, and so does the person maintaining it. Designing it so it is **easy to change** is part of the job.',
     { type: 'analogy', text: 'an extensible tool is like a power strip: when a new device arrives, you plug it in. A rigid tool is like having the cable soldered in: for every new device you have to open the wall.' },
     '### Techniques',
-    '- **Config outside the code** (per-project JSON, lessons p15 and p20): changing fps or format needs no programming.\n- **Rules as data** (lesson p18): adding a check is adding a line to a list.\n- **Logic separate from the UI** (lesson m10): the same logic works in the window, in a batch and on the farm.\n- **Small single-purpose functions**: easy to test and reuse.\n- **A «plugin» registry**: a list of checks or exporters you can add to without touching the core.',
+    '- **Config outside the code** (per-project JSON, lessons p15 and p20): changing fps or format needs no programming.\n- **Rules as data** (lesson p18): adding a check is adding a line to a list.\n- **Logic separate from the UI** (lesson m10): the same logic works in the window, in a batch and on the farm.\n- **Small single-purpose functions**: easy to test and reuse.\n- **A “plugin” registry**: a list of checks or exporters you can add to without touching the core.',
     '```python\nCHECKS = []\n\ndef check(func):\n    CHECKS.append(func)\n    return func\n\n@check\ndef valid_range(scene): ...\n\n@check\ndef cameras_named(scene): ...\n\n# the core just loops over the list\nfor c in CHECKS:\n    problems += c(scene)\n```',
     '### Versions and Maya changes',
-    'Avoid depending on fragile details: internal IDs that change between versions, hard-coded paths, «magic» names. Store the tool **version** in the logs and in the files it creates.',
-    { type: 'cg', text: 'your MotionBuilder case: component IDs changed with every version and the tools broke. You switched to looking things up by **type name**, and the tools kept working across several versions. That is extensible design.' },
-    { type: 'tip', text: 'tell that story in the interview: it is a real, concrete example of thinking about long-term maintenance.' }
+    'Avoid depending on fragile details: internal IDs that change between versions, hard-coded paths, “magic” names. Store the tool **version** in the logs and in the files it creates.',
+    { type: 'cg', text: 'a common case: a tool finds scene components by an internal ID, the ID changes in the next software version, and the tool breaks. Looking things up by **type name** instead keeps the tool working across versions. That is extensible design.' },
+    { type: 'tip', text: 'if you have a story like this, tell it in the interview: it is a concrete example of thinking about long-term maintenance.' }
   ],
 
   example: {

@@ -16,7 +16,7 @@ TA.add({
 
   explain: [
     'Almost every tool starts the same way: **finding** the nodes to work with. The star command is `cmds.ls()`.',
-    { type: 'analogy', text: '`ls` is a library catalog. You can ask for «every book», «the ones by this author» or «the ones starting with *Hero*».' },
+    { type: 'analogy', text: '`ls` is a library catalog. You can ask for “every book”, “the ones by this author” or “the ones starting with *Hero*”.' },
     '### ls: searching',
     '- `cmds.ls()` → every node.\n- `cmds.ls(type="mesh")` → just one type (also a list of types).\n- `cmds.ls("*_geo")` → with wildcards: `*` = any text.\n- `cmds.ls(selection=True)` (or `sl=True`) → the selection.\n- `cmds.ls(long=True)` → **full paths**: `|group|hero_geo`.',
     { type: 'warn', text: 'two nodes in different groups **can have the same name**. The short name is not always unique; the long path (`long=True`) is.' },

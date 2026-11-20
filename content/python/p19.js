@@ -25,7 +25,7 @@ TA.add({
       good: 'plan = make_plan(names)\nclashes = conflicts(plan, names)\nif clashes:\n    raise RuntimeError(clashes)\napply(folder, plan, dry_run=True)' },
     { type: 'warn', text: 'on Windows, `os.rename` fails if the target exists; on Mac and Linux, it **overwrites it silently**. That is why you must check for conflicts first.' },
     { type: 'cg', text: 'renders arrive from an outside vendor with names like `Shot10_v1.exr`. The pipeline expects `sh010_v001.exr`. The tool shows the plan, the supervisor approves it, and only then does it rename.' },
-    { type: 'tip', text: 'saying «I always do a dry run and check for conflicts before touching files» in the interview tells them you have worked in real production.' }
+    { type: 'tip', text: 'saying “I always do a dry run and check for conflicts before touching files” in the interview tells them you have worked in real production.' }
   ],
 
   example: {
@@ -42,7 +42,7 @@ TA.add({
 
   mini: [
     {
-      q: 'What does a «dry run» mode do?',
+      q: 'What does a “dry run” mode do?',
       options: ['Renames faster', 'Shows what it would do, without changing anything', 'Deletes the old files'],
       answer: 1,
       why: 'It is a rehearsal: you can review the plan before touching files.'

@@ -16,14 +16,14 @@ TA.add({
 
   explain: [
     'A **vector** is an arrow: it has a **direction** and a **length**. In 3D it is written as three numbers `(x, y, z)`.',
-    { type: 'analogy', text: 'a vector is like directions to a place: «3 steps right and 4 steps forward». It does not say where you start, only how to move.' },
+    { type: 'analogy', text: 'a vector is like directions to a place: “3 steps right and 4 steps forward”. It does not say where you start, only how to move.' },
     { type: 'viz', name: 'vector' },
     '### Point vs vector',
     'A **point** is a place: where an object is. A **vector** is a displacement: how to get from one place to another. Both are written the same way, `(x, y, z)`, but they mean different things.',
     '### The three basic operations',
     '- **Add**: `a + b` = one arrow after the other. Add component by component.\n- **Subtract**: `b - a` = the arrow that goes **from a to b**. The one you will use most as a TA.\n- **Scale** (scalar multiplication): `v * 2` = same direction, twice as long. With `-1`, it flips around.',
     { type: 'cg', text: 'the camera is at `(0, 2, 10)` and the character at `(3, 2, 6)`. The vector `character - camera = (3, 0, -4)` is the direction the camera has to look.' },
-    { type: 'tip', text: 'rule for subtraction: **target minus origin**. «From the camera to the character» is `character - camera`.' },
+    { type: 'tip', text: 'rule for subtraction: **target minus origin**. “From the camera to the character” is `character - camera`.' },
     'Maya already has vectors (`om.MVector`), but in the interview they may ask you to write them by hand with tuples. That shows you understand what is inside.'
   ],
 

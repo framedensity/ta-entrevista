@@ -19,7 +19,7 @@ TA.add({
       '<text x="274" y="74" text-anchor="middle" style="fill:var(--ink)">24.0</text>' +
       '</g><text x="165" y="114" text-anchor="middle" font-size="12" style="fill:var(--mute)">label = name · inside = value</text></svg>' },
     'In Python you create a variable with the `=` sign. The name goes on the left. The value goes on the right.',
-    'Careful! Here `=` does not mean «is equal to». It means «put this in this box».',
+    'Careful! Here `=` does not mean “is equal to”. It means “put this in this box”.',
     '```python\nfps = 24\n```',
     '### Data types',
     'Every piece of data has a **data type**. The type says what kind of thing is in the box.',

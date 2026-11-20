@@ -18,8 +18,8 @@ TA.add({
       good: 'existing = set(big_list)\nif "sh999" in existing: ...' },
     '### Set operations',
     '- `a | b` → **union**: in a **or** in b.\n- `a & b` → **intersection**: in **both**.\n- `a - b` → **difference**: in a but **not** in b.\n- `a ^ b` → in **only one** of the two.',
-    { type: 'cg', text: '«Which cameras does the script call for that do not exist in the scene?» is `expected - existing`. One line, and fast even with thousands.' },
-    { type: 'tip', text: 'when they ask about efficiency, say: «To check membership many times, I convert the list to a `set`, because `in` goes from O(n) to O(1) on average».' }
+    { type: 'cg', text: '“Which cameras does the script call for that do not exist in the scene?” is `expected - existing`. One line, and fast even with thousands.' },
+    { type: 'tip', text: 'when they ask about efficiency, say: “To check membership many times, I convert the list to a `set`, because `in` goes from O(n) to O(1) on average”.' }
   ],
 
   example: {

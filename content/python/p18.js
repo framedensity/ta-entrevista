@@ -13,10 +13,10 @@ TA.add({
       goodTitle: 'Rules as data; the logic does not change',
       good: 'RULES = {\n    "camera": r"cam_sh\\d{3}",\n    "joint": r"[a-z]+_(l|r|c)_jnt",\n}\npattern = RULES.get(kind)\nif pattern and not re.fullmatch(pattern, name): ...' },
     'That way the rules can come from a project **JSON** (lesson 15), and each project has its own without touching the tool.',
-    '### A useful report, not just «failed»',
+    '### A useful report, not just “failed”',
     'A good checker says **which** name fails and **why**, and if it can, it **suggests** the right name. Grouping the failures by reason helps fix them in one go.',
     { type: 'cg', text: 'before sending the scene to lighting, the checker finds `Cam_SH10` (should be `cam_sh010`) and `Hip_JNT`. The artist fixes them in a minute instead of the render failing.' },
-    { type: 'tip', text: 'in the interview, describe the structure: «rules in a JSON, a pure function that returns the problems, and the UI only displays them. That way I can run it in batch without opening Maya».' }
+    { type: 'tip', text: 'in the interview, describe the structure: “rules in a JSON, a pure function that returns the problems, and the UI only displays them. That way I can run it in batch without opening Maya”.' }
   ],
 
   example: {
@@ -42,7 +42,7 @@ TA.add({
       q: 'A node is of a type that has **no** rule. What is most reasonable?',
       options: ['Flag it as an error', 'Skip it (there is nothing to check)', 'Delete it'],
       answer: 1,
-      why: 'If there is no rule for that type, there is nothing to break. (Optionally, you can list it as «not checked».)'
+      why: 'If there is no rule for that type, there is nothing to break. (Optionally, you can list it as “not checked”.)'
     }
   ],
 
