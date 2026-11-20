@@ -270,7 +270,11 @@
     var h = location.hash || '#/';
     var tab = 'path';
     var m = h.match(/^#\/l\/([a-z0-9]+)(?:\/(\d+))?/);
-    if (m) viewLesson(m[1], parseInt(m[2] || '0', 10));
+    var t = h.match(/^#\/tool\/([a-z0-9_]+)(?:\/(\w+))?(?:\/(\d+))?(?:\/(\d+))?/);
+    ToolsView.closePanel();
+    if (t) { tab = 'tools'; ToolsView.tool(app, t[1], t[2], t[3], t[4]); }
+    else if (h.indexOf('#/tools') === 0) { tab = 'tools'; ToolsView.list(app); }
+    else if (m) viewLesson(m[1], parseInt(m[2] || '0', 10));
     else if (h.indexOf('#/review') === 0) { tab = 'review'; viewReview(); }
     else if (h.indexOf('#/mock') === 0) { tab = 'mock'; viewExam(); }
     else viewRoute();
