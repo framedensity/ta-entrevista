@@ -23,7 +23,9 @@ TA.curriculum = [
     { id: 'p17', title: 'logging', en: 'logging instead of print' },
     { id: 'p18', title: 'TA: naming convention checker', en: 'rules as data' },
     { id: 'p19', title: 'TA: safe batch rename', en: 'batch rename with dry run' },
-    { id: 'p20', title: 'TA: tool configuration', en: 'tool config with defaults' }
+    { id: 'p20', title: 'TA: tool configuration', en: 'tool config with defaults' },
+    { id: 'p21', title: 'Classes working together', en: 'composition, self, callbacks' },
+    { id: 'p22', title: 'Modules and packages', en: 'import, __init__.py, relative imports' }
   ]},
   { id: 'maya', title: 'Maya',
     note: 'The exercises use a `maya.cmds` simulator that runs in the browser.',
@@ -37,7 +39,8 @@ TA.curriculum = [
     { id: 'm07', title: 'Keyframes', en: 'setKeyframe / keyframe' },
     { id: 'm08', title: 'Good practices in Maya', en: 'undo chunks, no selection, None' },
     { id: 'm09', title: 'OpenMaya API 2.0', en: 'MSelectionList, MFn, MDagPath' },
-    { id: 'm10', title: 'UI with PySide', en: 'widgets, signals, logic vs UI' }
+    { id: 'm10', title: 'UI with PySide', en: 'widgets, signals, logic vs UI' },
+    { id: 'm11', title: 'Structure of a real Maya tool', en: 'UndoChunk class, plan/apply, classes together' }
   ]},
   { id: 'math', title: '3D Math',
     note: 'You can drag the figures with your finger.',
