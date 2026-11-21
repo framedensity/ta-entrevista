@@ -84,7 +84,18 @@ class FileInfo(object):
         return None
 
     def _abs_module_file(self, dotted):
-        return self._module_file(dotted.replace('.', '/'))
+        # from the tool root, or from any parent folder of this file (tests add those to sys.path)
+        if not dotted:
+            return None
+        rel = dotted.replace('.', '/')
+        base = os.path.dirname(self.rel)
+        while True:
+            f = self._module_file(os.path.join(base, rel) if base else rel)
+            if f:
+                return f
+            if not base:
+                return None
+            base = os.path.dirname(base)
 
     def _collect_imports(self):
         for node in ast.walk(self.tree):
@@ -93,7 +104,7 @@ class FileInfo(object):
                     alias = a.asname or a.name.split('.')[0]
                     target = a.name if a.asname else a.name.split('.')[0]
                     f = self._abs_module_file(a.name)
-                    self.imports[alias] = ('file', f) if f and a.asname else ('ext', canon(target))
+                    self.imports[alias] = ('file', f) if f and (a.asname or '.' not in a.name) else ('ext', canon(target))
             elif isinstance(node, ast.ImportFrom):
                 if node.level:
                     base = self._resolve_rel(node.level, node.module)

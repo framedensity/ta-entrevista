@@ -117,6 +117,50 @@ add('maya.api.OpenMayaAnim.MFnAnimCurve', 'Function set to create and edit anima
 add('maya.cmds.undo', 'Undoes the last undo step (or chunk).')
 add('random.Random', 'A random number generator with its own seed, so tests get the same "random" numbers every run.')
 
+add('QtWidgets.QColorDialog', 'The standard color picker dialog. `getColor()` returns the chosen color (check `isValid()`).')
+add('QtWidgets.QListWidgetItem', 'One row in a `QListWidget`: text, icon, checkbox and extra data.')
+add('bisect.bisect_left', 'Binary search in a sorted list: the index where a value would be inserted, before any equal values. Much faster than scanning.')
+add('bisect.bisect_right', 'Like `bisect_left`, but after any equal values.')
+add('math.atan', 'Inverse tangent: the angle (radians) of a slope.')
+add('maya.api.OpenMaya.MBoundingBox', 'An axis-aligned box (min and max corners).')
+add('maya.api.OpenMaya.MColor', 'A color with alpha, used by the viewport drawing API.')
+add('maya.api.OpenMaya.MColorArray', 'A list of `MColor`s, passed to the viewport in one call.')
+add('maya.api.OpenMaya.MPointArray', 'A list of `MPoint`s, passed to the viewport in one call.')
+add('maya.api.OpenMaya.MConditionMessage', 'Callbacks when a Maya condition changes, for example `playingBack` starting or stopping.')
+add('maya.api.OpenMaya.MEventMessage', 'Callbacks for named Maya events: `timeChanged`, `SelectionChanged`, `Undo`, `Redo`, `playbackRangeChanged`...')
+add('maya.api.OpenMaya.MFnCamera', 'Function set for cameras: view direction, focal length, film back...')
+add('maya.api.OpenMaya.MFnData', 'Data type constants for attributes (`kString`, `kMatrix`...).')
+add('maya.api.OpenMaya.MFnPlugin', 'Used in `initializePlugin` / `uninitializePlugin` to register and remove nodes and commands.')
+add('maya.api.OpenMaya.MFnTypedAttribute', 'Creates attributes that hold typed data such as a string or a matrix.')
+add('maya.api.OpenMaya.MPxNode', 'Base class for custom nodes; also holds node type constants and `addAttribute`.')
+add('maya.api.OpenMaya.MTypeId', 'The unique numeric id of a custom node type.')
+add('maya.api.OpenMaya.MUserData', 'Custom data a draw override passes from `prepareForDraw` to the drawing step.')
+add('maya.api.OpenMayaAnim.MAnimControl', 'The time slider through the API: current time, playback range, whether it is playing.')
+add('maya.api.OpenMayaAnim.MAnimMessage', 'Animation callbacks, for example "these animation curves were edited", with the exact curves.')
+add('maya.api.OpenMayaRender', 'Viewport 2.0 API: draw overrides, render items, the UI draw manager.')
+add('maya.api.OpenMayaRender.MDrawRegistry', 'Registers which draw override draws which node classification.')
+add('maya.api.OpenMayaRender.MFrameContext', 'Information about the frame being drawn: camera, view direction and position, display style.')
+add('maya.api.OpenMayaRender.MPxDrawOverride', 'Base class for custom Viewport 2.0 drawing of a node: prepare data, then add drawables.')
+add('maya.api.OpenMayaRender.MRenderItem', 'A renderable item; here only its depth priority constants are used.')
+add('maya.api.OpenMayaRender.MRenderer', 'The Viewport 2.0 renderer; holds constants such as which graphics APIs are supported.')
+add('maya.api.OpenMayaRender.MUIDrawManager', 'Draws simple shapes in the viewport: lines, points, meshes, text, with color, width and style.')
+add('maya.api.OpenMayaUI', 'Maya UI API 2.0: viewports (`M3dView`) and locator nodes.')
+add('maya.api.OpenMayaUI.M3dView', 'A 3D viewport: its camera, converting between screen pixels and 3D (`worldToView`, `viewToWorld`), and refreshing.')
+add('maya.api.OpenMayaUI.MPxLocatorNode', 'Base class for custom locator nodes (drawable helpers with no geometry).')
+add('maya.cmds.currentCtx', 'The name of the active tool (context).')
+add('maya.cmds.draggerContext', 'Creates a custom viewport tool with press, drag and release callbacks.')
+add('maya.cmds.evalDeferred', 'Runs code later, when Maya is idle. `lowestPriority=True` waits until everything else is done.')
+add('maya.cmds.flushUndo', 'Clears the whole undo queue.')
+add('maya.cmds.listHistory', 'Every node upstream of a node: what feeds it (curves, constraints, deformers...).')
+add('maya.cmds.pluginInfo', 'Queries a plugin, for example whether it is loaded.')
+add('maya.cmds.setToolTo', 'Makes a tool (context) the active one.')
+add('maya.cmds.shelfLayout', 'A shelf; here queried for its buttons.')
+add('maya.cmds.unloadPlugin', 'Unloads a plugin.')
+add('mock.MagicMock', 'Python 2 package of `unittest.mock`: a fake object that accepts any call.')
+add('unittest.mock.MagicMock', 'A fake object that accepts any attribute or call and remembers how it was used; used to stand in for Maya in tests.')
+add('types.ModuleType', 'Creates an empty module object; tests use it to build fake `maya` modules.')
+add('uuid.uuid4', 'A random unique id.')
+
 # ----------------------------------------------------------------- Qt
 add('QtWidgets', 'The Qt module with all widgets (buttons, fields, layouts, dialogs). Imported from PySide2 in Maya 2020 (PySide6 in Maya 2025).')
 add('QtCore', 'Qt core classes: signals, timers, enums (`QtCore.Qt.*`), events.')
@@ -437,6 +481,47 @@ M = {
     'setTextAlignment': 'Alignment of the text in a table cell.',
     'verticalHeader': 'The row-number header on the left of a table.',
     'sliderReleased': 'Signal: the user let go of a slider.',
+    'asString': '`MPlug.asString()`: reads a string attribute.',
+    'beginDrawable': 'Starts a group of drawing calls in `MUIDrawManager`.',
+    'endDrawable': 'Ends that group.',
+    'beginDrawInXray': 'Starts drawing that is always visible through geometry (newer Maya).',
+    'endDrawInXray': 'Ends X-ray drawing.',
+    'setColor': 'Drawing color for the next draw calls.',
+    'setLineWidth': 'Line width for the next draw calls.',
+    'setLineStyle': 'Solid or dashed lines.',
+    'setPointSize': 'Point size for the next draw calls.',
+    'setFontSize': 'Text size for the next draw calls.',
+    'setDepthPriority': 'Draws in front of other items with lower priority.',
+    'line': 'Draws one line between two points.',
+    'lineStrip': 'Draws connected lines through a list of points.',
+    'point': 'Draws one point.',
+    'points': 'Draws a list of points.',
+    'mesh': '`MUIDrawManager.mesh(kind, points, normals, colors)`: draws many lines or points in one call, with a color per point.',
+    'getTuple': 'Reads a vector from the frame context (view direction, view position).',
+    'registerNode': 'Registers a custom node type in a plugin.',
+    'deregisterNode': 'Removes it when the plugin unloads.',
+    'distanceTo': 'Distance between two `MPoint`s.',
+    'inclusiveMatrix': 'The world matrix of a DAG path (including the node itself).',
+    'isValid': 'True if an API handle (or a picked color) is still valid.',
+    'fullPathName': 'Full DAG path of a node as text.',
+    'getCamera': 'The camera of a viewport, as a DAG path.',
+    'viewDirection': 'The direction a camera looks.',
+    'worldToView': 'Converts a 3D point to viewport pixels.',
+    'viewToWorld': 'Converts viewport pixels to a 3D ray (near point and direction).',
+    'itemData': 'The data stored on a combo box entry.',
+    'selectedItems': 'The selected rows of a list.',
+    'setSelected': 'Selects or deselects a row.',
+    'setSelectionMode': 'Single or multiple selection in a list.',
+    'setStretch': 'How much extra space a layout item gets.',
+    'setKeyboardTracking': 'Whether a spin box reports every keystroke or only the final value.',
+    'fill': 'Fills a pixmap with one color.',
+    'redF': 'Red component as 0-1.',
+    'greenF': 'Green component as 0-1.',
+    'blueF': 'Blue component as 0-1.',
+    'uniform': 'A random number between two values.',
+    'itemChanged': 'Signal: a list row changed (for example its checkbox).',
+    'itemDoubleClicked': 'Signal: a list row was double-clicked.',
+    'sliderPressed': 'Signal: the user grabbed a slider.',
     'currentData': 'The data stored on the selected combo box entry (the second argument of `addItem`).',
     'findData': 'Index of the combo box entry that carries this data, or -1.',
     'setCheckable': 'Makes a button stay pressed (on/off) instead of just clicking.',

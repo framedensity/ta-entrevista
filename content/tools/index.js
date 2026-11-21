@@ -16,5 +16,11 @@ TOOLS.list = [
 "title": "Bookmark Export",
 "tagline": "Playblast every time slider bookmark as its own clean .mp4, with an optional subtle camera move.",
 "order": 3
+},
+{
+"id": "flowtrail",
+"title": "FlowTrail",
+"tagline": "Fast, editable motion trails: see arcs and spacing, drag the trail to fix the arc, slide keys to retime.",
+"order": 4
 }
 ];

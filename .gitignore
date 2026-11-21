@@ -1,3 +1,4 @@
 tools_build/anon_local.py
 tools_build/__pycache__/
 tools_build/notes/__pycache__/
+.claude/
